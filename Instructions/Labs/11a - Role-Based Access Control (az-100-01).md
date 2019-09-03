@@ -1,287 +1,259 @@
+﻿---
+랩:
+    제목: '역할 기반 액세스 제어'
+    모듈: 'Azure 구독 및 리소스 관리'
 ---
-lab:
-    title: 'Role-Based Access Control'
-    module: 'Module 11 - Governance and Compliance'
----
 
-# Lab: Role-Based Access Control 
+# 랩: 역할 기반 액세스 제어 
 
-All tasks in this lab are performed from the Azure portal (including a PowerShell Cloud Shell session)  
+이 랩의 모든 작업은 Azure 포털(PowerShell 클라우드 셸 세션 포함)에서 수행됩니다  
 
-   > **Note**: When not using Cloud Shell, the lab virtual machine must have the Azure PowerShell 1.2.0 module (or newer) installed [https://docs.microsoft.com/en-us/powershell/azure/install-az-ps](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps)
+   > **참고**: Cloud Shell을 사용하지 않는 경우 랩 가상 시스템에 Azure PowerShell 1.2.0 모듈(또는 최신 모듈)이 설치되어 있어야 [https://docs.microsoft.com/ko-kr/powershell/azure/install-az-ps?view=azps-1.2.0](https://docs.microsoft.com/ko-kr/powershell/azure/install-az-ps?view=azps-1.2.0)합니다.
 
-Lab files: none
+랩 파일: 없음
 
-### Scenario
+### 시나리오
   
-Adatum Corporation wants to use Azure Role Based Access Control and Azure Policy to control provisioning and management of their Azure resources. It also wants to be able to automate and track provisioning and management tasks.
+Adatum Corporation은 Azure 역할 기반 액세스 제어 및 Azure 정책을 사용하여 Azure 리소스의 프로비저닝 및 관리를 제어하려고 합니다. 또한 프로비저닝 및 관리 작업을 자동화하고 추적할 수 있기를 원합니다.
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
--  Configure delegation of provisioning and management of Azure resources by using built-in Role-Based Access Control (RBAC) roles and built-in Azure policies
+-  기본 제공 역할 기반 액세스 제어(RBAC) 역할 및 기본 제공 Azure 정책을 사용하여 Azure 리소스의 프로비저닝 및 관리 위임을 구성합니다
 
--  Verify delegation by provisioning Azure resources as a delegated admin and auditing provisioning events
-
-
-### Exercise 1: Configure delegation of provisioning and management of Azure resources by using built-in Role-Based Access Control (RBAC) roles and built-in Azure policies
-
-The main tasks for this exercise are as follows:
-
-1. Create Azure Active Directory (AD) users and groups
-
-1. Create Azure resource groups
-
-1. Delegate management of an Azure resource group via a built-in RBAC role
-
-1. Assign a built-in Azure policy to an Azure resource group
+-  Azure 리소스를 위임된 관리자로 프로비전하고 프로비저닝 이벤트를 감사하여 위임을 확인합니다
 
 
-#### Task 1: Create Azure AD users and groups
+### 연습 1: 기본 제공 역할 기반 액세스 제어(RBAC) 역할 및 기본 제공 Azure 정책을 사용하여 Azure 리소스의 프로비저닝 및 관리 위임을 구성합니다
 
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the Azure subscription you intend to use in this lab and is a Global Administrator of the Azure AD tenant associated with that subscription.
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. In the Azure portal, navigate to the **Azure Active Directory** blade 
+1. Azure Active Directory(AD) 사용자 및 그룹 만들기
 
-1. From the **Azure Active Directory** blade, navigate to the **Custom domain names** blade and identify the primary DNS domain name associated the Azure AD tenant. Note its value - you will need it later in this task.
+1. Azure 리소스 그룹 만들기
 
-1. From the Azure AD **Custom domain names** blade, navigate to the **Users - All users** blade. 
+1. 기본 제공 RBAC 역할을 통해 Azure 리소스 그룹의 관리 위임
 
-1. From the **Users - All users** blade, create a new user with the following settings:
-
-    - Name: **aaduser100011**
-
-    - User name: **aaduser100011@&lt;DNS-domain-name&gt;** where &lt;DNS-domain-name&gt; represents the primary DNS domain name you identified earlier in this task.
-
-    - Profile: **Not configured**
-
-    - Properties: **Default**
-
-    - Groups: **0 groups selected**
-
-    - Directory role: **User**
-
-    - Password: select the checkbox **Show Password** and note the string appearing in the **Password** text box. You will need it later in this lab.
-
-1. From the **Users - All users** blade, navigate to the **Groups - All groups** blade. 
-
-1. From the **Groups - All groups** blade, create a new group with the following settings:
-
-    - Group type: **Security**
-
-    - Group name: **az1001 Contributors**
-
-    - Group description: **az1001 Contributors**
-
-    - Membership type: **Assigned**
-
-    - Members: **aaduser100011**
+1. Azure 리소스 그룹에 기본 제공 Azure 정책 할당
 
 
-#### Task 2: Create Azure resource groups
+#### 작업 1: Azure AD 사용자 및 그룹 만들기
 
-1. In the Azure portal, navigate to the **Resource groups** blade.
+1. 랩 가상 머신에서 Microsoft Edge를 시작하고 **[http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 이 랩에서 사용할 Azure 구독에서 소유자 역할이 있고 글로벌 관리자인 Microsoft 계정을 사용하여 로그인합니다. 해당 구독과 연결된 Azure AD 테넌트의.
 
-1. From the **Resource groups** blade, create the first resource group with the following settings:
+1. Azure 포털에서 **Azure Active Directory** 블레이드로 이동합니다 
 
-    - Resource group name: **az1000101-RG**
+1. **Azure Active Directory** 블레이드에서 **사용자 지정 도메인 이름** 블레이드로 이동하여 AzureAD 테넌트와 연결된 기본 DNS 도메인 이름을 식별합니다. 해당 값을 기록합니다 - 이 작업의 나중에 필요합니다.
 
-    - Subscription: the name of the subscription you are using in this lab
+1. Azure AD **사용자 지정 도메인 이름** 블레이드에서 **사용자 - 모든 사용자** 블레이드로 이동합니다. 
 
-    - Resource group location: the name of the Azure region which is closest to the lab location and where you can provision Azure VMs.
+1. **사용자 - 모든 사용자** 블레이드에서 다음 설정을 사용하여 새 사용자를 만듭니다:
 
-   > **Note**: To identify Azure regions available in your subscription, refer to [**https://azure.microsoft.com/en-us/regions/offers/**](https://azure.microsoft.com/en-us/regions/offers/)
+    - 이름: **aaduser100011**
 
-1. From the **Resource groups** blade, create the second resource group with the following settings:
+    - 사용자 이름: **aaduser100011@&DNS 도메인 이름>** 여기서 &lt;DNS 도메인 이름&gt;이 작업에서 앞에서 식별한 기본 DNS 도메인 이름을 나타냅니다.
 
-    - Resource group name: **az1000102-RG**
+    - 프로필: **구성되지 않음**
 
-    - Subscription: the name of the subscription you selected in the previous step
+    - 속성: **기본값**
 
-    - Resource group location: the name of the Azure region you selected in the previous step
+    - 그룹: **선택한 그룹 0개**
+
+    - 디렉터리 역할: **사용자**
+
+    - 암호: **암호 표시** 확인란을 선택하고 **암호** 텍스트 상자에 나타나는문자열을 기록합니다. 이 실험실에서 나중에 필요할 것입니다.
+
+1. **사용자 - 모든 사용자** 블레이드, **그룹으로 이동 - 모든 그룹**블레이드. 
+
+1. **그룹에서 - 모든 그룹** 블레이드에서 다음 설정을 사용하여 새 그룹을 만듭니다:
+
+    - 그룹 유형: **보안**
+
+    - 그룹 이름: **az1001 기여자**
+
+    - 그룹 설명: **az1001 기여자**
+
+    - 멤버십 유형: **할당**
+
+    - 회원: **aaduser100011**
 
 
-#### Task 3: Delegate management of an Azure resource group via a built-in RBAC role
+#### 작업 2: Azure 리소스 그룹 만들기
 
-1. In the Azure portal, from the **Resource groups** blade, navigate to the **az1000101-RG** blade.
+1. Azure 포털에서 **리소스 그룹** 블레이드로 이동합니다.
 
-1. From the **az1000101-RG** blade, display its **Access control (IAM)** blade.
+1. **리소스 그룹** 블레이드에서 다음 설정을 사용하여 첫 번째 리소스 그룹을만듭니다.
 
-1. From the **az1000101-RG - Access control (IAM)** blade, display the **Role assignments**  blade.
+    - 리소스 그룹 이름: **az1000101-RG**
 
-1. From the **Role assignments** blade, create the following **role assignment**:
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Role: **Contributor**
+    - 리소스 그룹 위치: 랩 위치에 가장 가까운 Azure 지역의 이름및 Azure VM을 프로비전할 수 있는 위치입니다.
 
-    - Assign access to: **Azure AD user, group, or service principal**
+   > **참고**: 구독에서 사용할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 
-    - Select: **az1001 Contributors**
+1. **리소스 그룹** 블레이드에서 다음 설정을 사용하여 두 번째 리소스 그룹을만듭니다.
+
+    - 리소스 그룹 이름: **az1000102-RG**
+
+    - 구독: 이전 단계에서 선택한 구독의 이름
+
+    - 리소스 그룹 위치: 이전 단계에서 선택한 Azure 영역의 이름
 
 
-#### Task 4: Assign a built-in Azure policy to an Azure resource group
+#### 작업 3: 기본 제공 RBAC 역할을 통해 Azure 리소스 그룹의 관리 위임
 
-1. From the **az1000101-RG** blade, display its **Policies** blade.
+1. Azure 포털에서 **리소스 그룹** 블레이드에서 **az1000101-RG**블레이드로 이동합니다.
 
-1. From the **Policy - Compliance** blade, display the **Assign policy** blade.
+1. **az1000101-RG** 블레이드에서 **IAM(액세스 제어)** 블레이드를 표시합니다.
 
-1. Assign the policy with the following settings:
+1. **az1000101-RG - IAM(액세스 제어)** 블레이드에서 **역할 할당** 블레이드를 표시합니다.
 
-    - Scope: **az1000101-RG**
+1. **역할 할당** 블레이드에서 다음 **역할 할당** 을 만듭니다:
 
-    - Exclusions: leave the entry blank
+    - 역할: **기고자**
 
-    - Policy definition: **Allowed virtual machine SKUs**
+    - 다음에 대한 액세스 권한을 할당합니다.: **Azure AD 사용자, 그룹 또는 서비스 주체**
 
-    - Assignment name: **Allowed virtual machine SKUs**
+    - 선택: **az1001 기여자**
 
-    - Description: **Allowed selected virtual machine SKUs (Standard_DS1_v2)**
 
-    - Assigned by: leave the entry set to its default value
+#### 작업 4: Azure 리소스 그룹에 기본 제공 Azure 정책 할당
+
+1. **az1000101-RG** 블레이드에서 **정책** 블레이드를 표시합니다.
+
+1. **정책 - 규정 준수** 블레이드에서 **할당 정책** 블레이드를 표시합니다.
+
+1. 다음 설정으로 정책을 할당합니다:
+
+    - 범위: **az1000101-RG**
+
+    - 제외: 항목을 비워 둡니다
+
+    - 정책 정의: **허용된 가상 머신 SKU**
+
+    - 과제 이름: **허용된 가상 머신 SKU**
+
+    - 설명: **선택된 가상 머신 SKU 허용(표준_DS1_v2)**
+
+    - 할부: 항목을 기본값으로 설정
 	
-    - Allowed SKUs: **Standard_DS1_v2**
+    - 허용된 SKU: **Standard_DS1_v2**
 
-    - Create a Managed Identity: leave the entry blank
+    - 관리되는 ID 만들기: 항목을 비워 둡니다
 
-> **Result**: After you completed this exercise, you have created an Azure AD user and an Azure AD group, created two Azure resource groups, delegated management of the first Azure resource group via the built-in Azure VM Contributor RBAC role, and assigned to the same resource group the built-in Azure policy restricting SKUs that can be used for Azure VMs.
+> **결과**: 이 연습을 완료한 후 Azure AD 사용자 및 Azure AD 그룹을 만들고, 두 개의 Azure 리소스 그룹을 만들고, 기본 제공 Azure VM 기여자 RBAC 역할을 통해 첫 번째 Azure 리소스 그룹의 관리를 위임하고, 동일한 리소스에 할당했습니다. Azure VM에 사용할 수 있는 SCO를 제한하는 기본 제공 Azure 정책을 그룹화합니다.
 
 
-### Exercise 2: Verify delegation by provisioning Azure resources as a delegated admin and auditing provisioning events
+### 연습 2: Azure 리소스를 위임된 관리자로 프로비전하고 프로비저닝 이벤트를 감사하여 위임을 확인합니다
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Identify an available DNS name for an Azure VM deployment
+1. Azure VM 배포에 사용할 수 있는 DNS 이름 식별
 
-1. Attempt an automated deployment of a policy non-compliant Azure VM as a delegated admin
+1. 위임된 관리자로 비호환 Azure VM의 자동 배포 시도
 
-1. Perform an automated deployment of a policy compliant Azure VM as a delegated admin
+1. 위임된 관리자로 Azure VM을 준수하는 정책의 자동 배포 수행
 
-1. Review Azure Activity Log events corresponding to Azure VM deployments
+1. Azure VM 배포에 해당하는 Azure 활동 로그 이벤트 검토
 
 
-#### Task 1: Identify an available DNS name for an Azure VM deployment
+#### 작업 1: Azure VM 배포에 사용할 수 있는 DNS 이름 식별
 
-1. From the Azure Portal, start a PowerShell session in the Cloud Shell. 
+1. Azure 포털에서 클라우드 셸에서 PowerShell 세션을 시작합니다. 
 
-   > **Note**: If this is the first time you are launching the Cloud Shell in the current Azure subscription, you will be asked to create an Azure file share to persist Cloud Shell files. If so, accept the defaults, which will result in creation of a storage account in an automatically generated resource group.
+   > **참고**: 현재 Azure 구독에서 클라우드 셸을 처음 시작하는 경우 클라우드 셸 파일을 유지하도록 Azure 파일 공유를 만들라는 메시지가 표시됩니다. 이 경우 기본값을 허용하면 자동으로 생성된 리소스 그룹에서 저장소 계정이 생성됩니다.
 
-1. In the Cloud Shell pane, run the following command, substituting the placeholder &lt;custom-label&gt; with any string which is likely to be unique and the placeholder &lt;location-of-az1000101-RG&gt; with the name of the Azure region in which you created the **az1000101-RG** resource group.
+1. 클라우드 셸 창에서 다음 명령을 실행하여 자리 표시자 및 lt;사용자 지정 레이블> 고유 할 가능성이있는 문자열및 자리 표시자 및 lt;위치 -az1000101-RG> **az1000101-RG** 리소스 그룹을 만든 Azure 지역의 이름으로 표시됩니다.
 
-   ```pwsh
+   ```
    Test-AzDnsAvailability -DomainNameLabel <custom-label> -Location '<location-of-az1000101-RG>'
    ```
 
-1. Verify that the command returned **True**. If not, rerun the same command with a different value of the &lt;custom-label&gt; until the command returns **True**. 
+1. 명령이 **True**. 그렇지 않은 경우 &lt;custom 레이블>gt의 다른 값으로 동일한 명령을 다시 실행합니다. 명령이 **True** 를 반환할 때까지. 
 
-1. Note the value of the &lt;custom-label&gt; that resulted in the successful outcome. You will need it in the next task
+1. 성공적인 결과를 가져온 &lt;custom-label&gt; 가치에 주목하십시오. 다음 작업에 필요합니다
 
-1. Run these commands:
+1. 다음 명령을 실행합니다:
 
-   ```pwsh
+   ```
    Register-AzResourceProvider –ProviderNamespace Microsoft.Network
    ```
 
-   ```pwsh
+   ```
    Register-AzResourceProvider –ProviderNamespace Microsoft.Compute
    ```
-Note: These cmdlets register the Azure Resource Manager Microsoft.Network and Microsoft.Compute resource providers. This is a one-time operation (per subscription) required when using Azure Resource Manager templates to deploy resources managed by these resource providers (if these resource providers have not been yet registered).
+참고: 이러한 cmdlet은 Azure 리소스 관리자 Microsoft.Network 및 Microsoft.Compute 리소스 공급자를 등록합니다. Azure Resource Manager 템플릿을 사용하여 이러한 리소스 공급자가 관리하는 리소스를 배포하는 데 필요한 일회성 작업(구독당)입니다(이러한 리소스 공급자가 아직 등록되지 않은 경우).
 
-Also Note: If you encounter an error after running these commands that mentions a token expiry set to a time that is before the current time, click the power button icon on our Cloud Shell UI and reboot your Cloud Shell instance.  Once restarted, retry these commands.
 
-#### Task 2: Attempt an automated deployment of a policy non-compliant Azure VM as a delegated admin
 
-1. Launch another browser window in the Private mode.
+#### 작업 2: 위임된 관리자로 비호환 Azure VM의 자동 배포 시도
 
-1. In the new browser window, navigate to the Azure portal and sign in using the user account you created in the previous exercise. When prompted, change the password to a new value.
+1. 비공개 모드에서 다른 브라우저 창을 실행합니다.
 
-1. In the Azure portal, navigate to the **Resource groups** blade and note that you can view only the resource group **az1000101-RG**.
+1. 새 브라우저 창에서 Azure 포털로 이동하 고 이전 연습에서 만든 사용자 계정을 사용 하 여 로그인 합니다. 메시지가 표시되면 암호를 새 값으로 변경합니다.
 
-1. In the Azure portal, navigate to the **Create a resource** blade. 
+1. Azure 포털에서 **리소스 그룹** 블레이드로 이동하여 리소스 그룹 **az1000101-RG** 만 볼 수 있습니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Template deployment**.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다. 
 
-1. Use the list of search results to navigate to the **Deploy a custom template** blade.
+1. **리소스 만들기** 블레이드에서 Azure 마켓플레이스에서 **템플릿 배포** 를 검색합니다.
 
-1. On the **Custom deployment** blade, in the **Load a GitHub quickstart template** drop-down list, select the **101-vm-simple-linux** entry and navigate to the **Edit template** blade.
+1. 검색 결과 목록을 사용하여 **사용자 지정 템플릿** 블레이드 배포로 이동합니다.
 
-1. On the **Edit template** blade, navigate to the **Variables** section and locate the **vmSize** entry.
+1. **사용자 지정 배포** 블레이드에서 **GitHub 퀵스타트 템플릿 드롭다운 목록 로드** 에서 **101vm-simple-linux** 항목을 선택하고 **편집 템플릿** 블레이드로 이동합니다.
 
-1. Note that the template is using hard-coded **Standard_A1** VM size.
+1. **템플릿 블레이드 편집**에서 **변수** 섹션으로 이동하여 **vmSize** 항목을 찾습니다.
 
-1. Discard any changes you might have made to the template and navigate to the **Deploy a simple Ubuntu Linux VM** blade.
+1. 템플릿은 하드 코딩된 **표준_A1** VM 크기를 사용하고 있습니다.
 
-1. From the **Deploy a simple Ubuntu Linux VM** blade, initiate a template deployment with the following settings:
+1. 템플릿에 대해 변경한 내용을 삭제하고 **간단한 Ubuntu Linux VM** 블레이드 배포로 이동합니다.
 
-    - Subscription: the same subscription you selected in the previous exercise
+1. **간단한 Ubuntu Linux VM** 블레이드 배포에서,다음 설정으로 템플릿 배포를 시작:
 
-    - Resource group: **az1000101-RG**
+    - 구독: 이전 연습에서 선택한 구독과 동일합니다
 
-    - Location: the name of the Azure region which you selected in the previous exercise
+    - 리소스 그룹: **az1000101-RG**
 
-    - Admin Username: **Student**
+    - 위치: 이전 연습에서 선택한 Azure 지역의 이름
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 사용자 이름: **학생**
 
-    - Dns Label Prefix: the &lt;custom-label&gt; you identified in the previous task
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Ubuntu OS Version: accept the default value
+    - Dns 레이블 접두사: &lt;custom-label&gt; 이전 작업에서 식별한
 
-    - Location: accept the default value
+    - Ubuntu OS 버전: 기본값을 수락
+
+    - 위치: 기본값 수락
     
-1. Note that the initiation of the deployment fails. Navigate to the **Errors** blade and note that the deployment of the resource is not allowed by the policy **Allowed virtual machine SKUs**.   
+1. 배포를 다시 실행하지 못합니다. **오류** 블레이드로 이동하여 리소스 배포는 **허용된 가상 머신 SKUs** 정책에서 허용되지 않습니다.   
 
 
-#### Task 3: Perform an automated deployment of a policy compliant Azure VM as a delegated admin
+#### 작업 3: 위임된 관리자로 Azure VM을 준수하는 정책의 자동 배포 수행
  
-1. From the **Deploy a simple Ubuntu Linux VM** blade, navigate to the **Edit template** blade.
+1. **간단한 Ubuntu Linux VM 배포** 블레이드에서 **편집 템플릿** 블레이드로 이동합니다.
 
-1. On the **Edit template** blade, navigate back to the **Variables** section and locate the **vmSize** entry.
+1. **템플릿 블레이드 편집** 에서 **변수** 섹션으로 돌아가 **vmSize** 항목을 찾습니다.
 
-1. Replace the value **Standard_A1** with **Standard_DS1_v2** and save the change.
+1. 값을 **표준_A1값** 을 **표준_DS1_v2** 로 바꾸고변경 값을 저장합니다.
 
-1. Initiate a deployment again. Note that this time validation is successful. 
+1. 배포를 다시 시작합니다. 이 시간 유효성 검사는 성공했습니다. 
 
-1. Do not wait for the deployment to complete but proceed to the next task.
+1. 배포가 완료될 때까지 기다리지 말고 다음 작업으로 진행합니다.
 
 
-#### Task 4: Review Azure Activity Log events corresponding to Azure VM deployments
+#### 작업 4: Azure VM 배포에 해당하는 Azure 활동 로그 이벤트 검토
 
-1. Switch to the browser window that you used in the previous exercise.
+1. 이전 연습에서 사용한 브라우저 창으로 전환합니다.
 
-1. In the Azure portal, navigate to the **az1000101-RG** resource group blade.
+1. Azure 포털에서 **az1000101-RG** 리소스그룹 블레이드로 이동합니다.
 
-1. From the **az1000101-RG** resource group blade, display its **Activity log** blade. 
+1. **az1000101-RG** 리소스 그룹 블레이드에서 **활동 로그** 블레이드를 표시합니다. 
 
-1. In the list of operations, note the ones corresponding to the failed and successful validation events. 
+1. 작업 목록에서 실패하고 성공한 유효성 검사 이벤트에 해당하는 작업을 기록합니다. 
 
-1. Refresh the view of the blade and observe events corresponding to the Azure VM provisioning, including the final one representing the successful deployment.
+1. 블레이드 보기를 새로 고치고 성공적인 배포를 나타내는 마지막 이벤트를 포함하여 Azure VM 프로비저닝에 해당하는 이벤트를 관찰합니다.
 
-> **Result**: After you completed this exercise, you have identified an available DNS name for an Azure VM deployment, attempted an automated deployment of a policy non-compliant Azure VM as a delegated admin, performed an automated deployment of a policy compliant Azure VM as the same delegated admin, and reviewed Azure Activity Log entries corresponding to both Azure VM deployments.
-
-## Exercise 3: Remove lab resources
-
-#### Task 1: Open Cloud Shell
-
-1. At the top of the portal, click the **Cloud Shell** icon to open the Cloud Shell pane.
-
-1. At the Cloud Shell interface, select **Bash**.
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to list all resource groups you created in this lab:
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv
-   ```
-
-1. Verify that the output contains only the resource groups you created in this lab. These groups will be deleted in the next task.
-
-#### Task 2: Delete resource groups
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to delete the resource groups you created in this lab
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
-   ```
-
-1. Close the **Cloud Shell** prompt at the bottom of the portal.
-
-> **Result**: In this exercise, you removed the resources used in this lab.
+> **결과**: 이 연습을 완료한 후 Azure VM 배포에 사용할 수 있는 DNS 이름을 식별하고, 정책을 비준수하는 Azure VM을 위임된 관리자로 자동 배포하려고 시도했으며, Azure VM을 준수하는 정책의 자동 배포를 수행했습니다. 동일한 위임된 관리자및 두 Azure VM 배포에 해당하는 Azure 활동 로그 항목을 검토했습니다.

@@ -1,347 +1,343 @@
+﻿---
+랩:
+    제목: 'VNet 피어링 및 서비스 체인'
+    모듈: '가상 네트워크 구성 및 관리'
 ---
-lab:
-    title: 'VNet Peering and Service Chaining'
-    module: 'Module 05 - Intersite Connectivity'
----
 
-# Lab: VNet Peering and Service Chaining
+# 랩: VNet 피어링 및 서비스 체인링
   
-All tasks in this lab are performed from the Azure portal except for Exercise 2 Task 3, Exercise 3 Task 1, and Exercise 3 Task 2, which include steps performed from a Remote Desktop session to an Azure VM
+이 랩의 모든 작업은 [2과제 3] 및 3과제 1 및 3과제 2를 제외한 Azure 포털에서 수행되며, 여기에는 원격 데스크톱 세션에서 Azure VM까지 수행된 단계가 포함됩니다
 
-Lab files: 
+랩 파일: 
 
--  **Labfiles\\Module_05\VNet_Peering_and_Service_Chaining\\az-100-04_01_azuredeploy.json**
+-  **Labfiles\\AZ100\\Mod04\\az-100-04_01_azuredeploy.json**
 
--  **Labfiles\\Module_05\VNet_Peering_and_Service_Chaining\\az-100-04_02_azuredeploy.json**
+-  **Labfiles\\AZ100\\Mod04\\az-100-04_02_azuredeploy.json**
 
--  **Labfiles\\Module_05\VNet_Peering_and_Service_Chaining\\az-100-04_azuredeploy.parameters.json**
+-  **Labfiles\\AZ100\\Mod04\\az-100-04_azuredeploy.parameters.json**
 
-### Scenario
+### 시나리오
   
-Adatum Corporation wants to implement service chaining between Azure virtual networks in its Azure subscription. 
+Adatum Corporation은 Azure 구독에서 Azure 가상 네트워크 간의 서비스 체인을 구현하려고 합니다. 
 
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
-- Create Azure virtual networks and deploy Azure VM by using Azure Resource Manager templates.
+- Azure Resource Manager 템플릿을 사용하여 Azure 가상 네트워크를 만들고 Azure VM을 배포합니다.
 
-- Configure VNet peering.
+- VNet 피어링을 구성합니다.
 
-- Implement custom routing
+- 사용자 지정 라우팅 구현
 
-- Validate service chaining
+- 서비스 체인의 유효성 검사
 
 
-### Exercise 0: Prepare the Azure environment
+### 연습 0: Azure 환경 준비
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Create the first virtual network hosting two Azure VMs by using an Azure Resource Manager template
+1. Azure Resource Manager 템플릿을 사용하여 두 개의 Azure VM을 호스팅하는 첫 번째 가상 네트워크 만들기
 
-1. Create the second virtual network in the same region hosting a single Azure VM by using an Azure Resource Manager template
+1. Azure Resource Manager 템플릿을 사용하여 단일 Azure VM을 호스팅하는 동일한 지역에서 두 번째 가상 네트워크 만들기
 
-#### Task 1: Create the first virtual network hosting two Azure VMs by using an Azure Resource Manager template
+#### 작업 1: Azure Resource Manager 템플릿을 사용하여 두 개의 Azure VM을 호스팅하는 첫 번째 가상 네트워크 만들기
 
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the Azure subscription you intend to use in this lab.
+1. 랩 가상 머신에서 Microsoft Edge를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 이 랩에서 사용하려는 Azure 구독에서 소유자 역할이 있는 Microsoft 계정을 사용하여 로그인합니다.
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Template deployment**.
+1. **리소스 만들기** 블레이드에서 Azure 마켓플레이스에서 **템플릿 배포** 를 검색합니다.
 
-1. Use the list of search results to navigate to the **Template deployment (deploy using custom templates)** blade, and then click **Create**.
+1. 검색 결과 목록을 사용하여 **사용자 지정 템플릿** 블레이드 배포로 이동합니다.
 
-1. On the **Custom deployment** blade, click the **Build your own template in the editor** link. If you do not see this link, click **Edit template** instead.
+1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿 빌드** 를 선택합니다.
 
-1. From the **Edit template** blade, load the template file **Labfiles\\Module_05\VNet_Peering_and_Service_Chaining\\az-100-04_01_azuredeploy.json**. 
+1. **편집 템플릿** 블레이드에서 템플릿 파일 **Labfiles\\\AZ100\\Mod04\\az-100-04_01_azuredeploy.json** 을 로드합니다. 
 
-   > **Note**: Review the content of the template and note that it defines deployment of an Azure VM hosting Windows Server 2016 Datacenter.
+   > **참고**: 템플릿의 내용을 검토하고 Windows Server 2016 데이터 센터를 호스팅하는 Azure VM의 배포를 정의합니다.
 
-1. Save the template and return to the **Custom deployment** blade. 
+1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, navigate to the **Edit parameters** blade.
+1. **사용자 지정 배포** 블레이드에서 **매개 변수 편집** 블레이드로 이동합니다.
 
-1. From the **Edit parameters** blade, load the parameters file **Labfiles\\Module_05\VNet_Peering_and_Service_Chaining\\az-100-04_azuredeploy.parameters.json**. 
+1. **편집 매개 변수** 블레이드에서 매개 변수 파일 **Labfiles\\AZ100\\Mod04\\az-100-04_azuredeploy.parameters.json**을 로드합니다. 
 
-1. Save the parameters and return to the **Custom deployment** blade. 
+1. 매개 변수를 저장하고 **사용자** 지정 배포 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, initiate a template deployment with the following settings:
+1. **사용자 지정 배포** 블레이드에서 다음 설정을 사용하고 템플릿 배포를 시작합니다.
 
-    - Subscription: the name of the subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: the name of a new resource group **az1000401-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1000401-RG** 의 이름
 
-    - Location: the name of the Azure region which is closest to the lab location and where you can provision Azure VMs
+    - 위치: 랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 위치
 
-    - Vm Size: **Standard_DS2_v2**
+    - Vm 크기: **Standard_DS1_v2**
 
     - Vm1Name: **az1000401-vm1**
 
     - Vm2Name: **az1000401-vm2**
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Virtual Network Name: **az1000401-vnet1**
+    - 가상 네트워크 이름: **az1000401-vnet1**
 
-   > **Note**: To identify Azure regions where you can provision Azure VMs, refer to [**https://azure.microsoft.com/en-us/regions/offers/**](https://azure.microsoft.com/en-us/regions/offers/)
+   > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 
-   > **Note**: Do not wait for the deployment to complete but proceed to the next task. You will use the network and the virtual machines included in this deployment in the second exercise of this lab.
+   > **참고**: 배포가 완료될 때까지 기다리지 말고 다음 작업으로 진행합니다. 이 랩의 두 번째 연습에서는 이 배포에 포함된 네트워크 및 가상 머신를 사용합니다.
 
 
-#### Task 2: Create the second virtual network in the same region hosting a single Azure VM by using an Azure Resource Manager template
+#### 작업 2: Azure Resource Manager 템플릿을 사용하여 단일 Azure VM을 호스팅하는 동일한 지역에서 두 번째 가상 네트워크 만들기
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Template deployment**.
+1. **리소스 만들기** 블레이드에서 Azure 마켓플레이스에서 **템플릿 배포**를 검색합니다.
 
-1. Use the list of search results and select the **Template deployment (deploy using custom templates)** result, and then click **Create**.
+1. 검색 결과 목록을 사용하여 **사용자 지정 템플릿** 블레이드 배포로 이동합니다.
 
-1. On the **Custom deployment** blade, click the **Build your own template in the editor** link. If you do not see this link, click **Edit template** instead.
+1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿 빌드** 를 선택합니다.
 
-1. From the **Edit template** blade, load the template file **Labfiles\\Module_05\VNet_Peering_and_Service_Chaining\\az-100-04_02_azuredeploy.json**. 
+1. **편집 템플릿** 블레이드에서 템플릿 파일 **Labfiles\\\AZ100\\Mod04\\az-100-04_02_azuredeploy.json** 을 로드합니다. 
 
-   > **Note**: Review the content of the template and note that it defines deployment of an Azure VM hosting Windows Server 2016 Datacenter.
+   > **참고**: 템플릿의 내용을 검토하고 Windows Server 2016 데이터 센터를 호스팅하는 Azure VM의 배포를 정의합니다.
 
-1. Save the template and return to the **Custom deployment** blade. 
+1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, navigate to the **Edit parameters** blade.
+1. **사용자 지정 배포** 블레이드에서 **매개 변수 편집** 블레이드로 이동합니다.
 
-1. From the **Edit parameters** blade, load the parameters file **Labfiles\\Module_05\VNet_Peering_and_Service_Chaining\\az-100-04_azuredeploy.parameters.json**. 
+1. **편집 매개 변수** 블레이드에서 매개 변수 파일 **Labfiles\\AZ100\\Mod04\\az-100-04_azuredeploy.parameters.json** 을 로드합니다. 
 
-1. Save the parameters and return to the **Custom deployment** blade. 
+1. 매개 변수를 저장하고 **사용자** 지정 배포 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, initiate a template deployment with the following settings:
+1. **사용자 지정 배포** 블레이드에서 다음 설정을 사용하고 템플릿 배포를 시작합니다.
 
-    - Subscription: the name of the subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: the name of a new resource group **az1000402-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1000402-RG** 의 이름
 
-    - Location: the name of the Azure region which you selected in the previous task
+    - 위치: 이전 작업에서 선택한 Azure 지역의 이름
 
-    - Vm Size: **Standard_DS2_v2**
+    - Vm 크기: **Standard_DS1_v2**
 
     - VmName: **az1000402-vm3**
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Virtual Network Name: **az1000402-vnet2**
+    - 가상 네트워크 이름: **az1000402-vnet2**
 
-   > **Note**: Do not wait for the deployment to complete but proceed to the next task. You will use the network and the virtual machines included in this deployment in the second exercise of this lab.
+   > **참고**: 배포가 완료될 때까지 기다리지 말고 다음 작업으로 진행합니다. 이 랩의 두 번째 연습에서는 이 배포에 포함된 네트워크 및 가상 머신를 사용합니다.
 
-> **Result**: After you completed this exercise, you have created two Azure virtual networks and initiated deployments of three Azure VM by using Azure Resource Manager templates.
-
-
-### Exercise 1: Configure VNet peering 
-
-The main tasks for this exercise are as follows:
-
-1. Configure VNet peering for the first virtual network
-
-1. Configure VNet peering for the second virtual network
+> **결과**: 이 연습을 완료한 후 Azure Resource Manager 템플릿을 사용하여 두 개의 Azure 가상 네트워크를 만들고 세 개의 Azure VM에 대한 배포를 시작했습니다.
 
 
-#### Task 1: Configure VNet peering for the first virtual network
+### 연습 1: VNet 피어링 구성 
+
+이 연습의 주요 작업은 다음과 같습니다:
+
+1. 첫 번째 가상 네트워크에 대한 VNet 피어링 구성
+
+1. 두 번째 가상 네트워크에 대한 VNet 피어링 구성
+
+
+#### 작업 1: 첫 번째 가상 네트워크에 대한 VNet 피어링 구성
   
-1. In the Azure portal, navigate to the **az1000401-vnet1** virtual network blade.
+1. Azure 포털에서 **az1000401-vnet1** 가상네트워크 블레이드로 이동합니다.
 
-1. From the **az1000401-vnet1** virtual network blade, display its **Peerings** blade.
+1. **az1000401-vnet1** 가상 네트워크 블레이드에서 **피어링스** 블레이드를 표시합니다.
 
-1. From the **az1000401-vnet1 - Peerings** blade, click **+ Add** to create a VNet peering with the following settings:
+1. **az1000401-vnet1 - 피어링** 블레이드에서 다음 설정으로 VNet 피어링을 만듭니다.
 
-    - Name: **az1000401-vnet1-to-az1000402-vnet2**
+    - 이름: **az1000401-vnet1-a1000402-vnet2**
 
-    - Virtual network deployment model: **Resource manager**
+    - 가상 네트워크 배포 모델: **Resource Manager**
 
-    - Subscription: the name of the Azure subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
-    - Virtual network: **az1000402-vnet2**
+    - 가상 네트워크: **az1000402-vnet2**
 
-    - Name of peering from az1000402-vnet2 to az1000401-vnet1: **az1000402-vnet2-to-az1000401-vnet1**
+    - 가상 네트워크 액세스 허용: **사용**
 
-    - Allow virtual network access: **Enabled**
+    - 전달된 트래픽 허용: 사용 안 함
 
-    - Allow forwarded traffic: **disabled**
+    - 게이트웨이 전송 허용: 사용 안 함
 
-    - Allow gateway transit: **disabled**
-
-> **Note**: Because you have administrative access to both virtual networks, the portal is configuring both directions (from vnet1 to vnet2, AND vnet2 to vnet1) in a single action. From the CLI, PowerShell, or REST API, these tasks must be performed independently. 
+    - 원격 게이트웨이 사용: 사용 안 함
 
 
-### Exercise 2: Implement custom routing
+#### 작업 2: 두 번째 가상 네트워크에 대한 VNet 피어링 구성
   
-The main tasks for this exercise are as follows:
+1. Azure 포털에서 **az1000402-vnet2** 가상네트워크 블레이드로 이동합니다.
 
-1. Enable IP forwarding for a network interface of an Azure VM
+1. **az1000402-vnet2** 가상 네트워크 블레이드에서 **피어링스** 블레이드를 표시합니다.
 
-1. Configure user defined routing 
+1. **az1000402-vnet2 - 피어링** 블레이드에서 다음 설정으로 VNet 피어링을 만듭니다.
 
-1. Configure routing in an Azure VM running Windows Server 2016
+    - 이름: **az1000402-vnet2-a1000401-vnet1**
+
+    - 가상 네트워크 배포 모델: **Resource Manager**
+
+    - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
+
+    - 가상 네트워크: **az1000401-vnet1**
+
+    - 가상 네트워크 액세스 허용: **사용**
+
+    - 전달된 트래픽 허용: 사용 안 함
+
+    - 게이트웨이 전송 허용: 사용 안 함
+
+    - 원격 게이트웨이 사용: 사용 안 함
+
+> **결과**: 이 연습을 완료한 후 두 가상 네트워크 간에 가상 네트워크 피어링을 구성했습니다.
 
 
-#### Task 1: Enable IP forwarding for a network interface of an Azure VM
+### 연습 2: 사용자 지정 라우팅 구현
   
-   > **Note**: Before you start this task, ensure that the template deployments you started in Exercise 0 have completed. 
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. In the Azure portal, navigate to the blade of the second Azure VM **az1000401-vm2**.
+1. Azure VM의 네트워크 인터페이스에 대한 IP 전달 사용
 
-1. From the **az1000401-vm2** blade, display its **Networking** blade. 
+1. 사용자 정의 라우팅 구성 
 
-1. From the **az1000401-vm2 - Networking** blade, display the blade of the network adapter (**az1000401-nic2**) of the Azure VM.
-
-1. From the **az1000401-nic2** blade, display its **IP configurations** blade.
-
-1. From the **az1000401-nic2 - IP configurations** set IP forwarding to **Enabled**, and then click **Save**.
-
-   > **Note**: The Azure VM **az1000401-vm2**, which network interface you configured in this task, will function as a router, facilitating service chaining between the two virtual networks.
+1. Windows 서버 2016을 실행하는 Azure VM에서 라우팅 구성
 
 
-#### Task 2: Configure user defined routing 
-
-1. In the Azure portal, navigate to the **Create a resource** blade.
-
-1. From the **Create a resource** blade, search Azure Marketplace for **Route table**.
-
-1. Select **Route table**, and then click **Create**.
-
-1. From the **Create route table** blade, create a new route table with the following settings:
-
-    - Name: **az1000402-rt1**
-
-    - Subscription: the name of the Azure subscription you use for this lab
-
-    - Resource group: **az1000402-RG**
-
-    - Location: the same Azure region in which you created the virtual networks
+#### 작업 1: Azure VM의 네트워크 인터페이스에 대한 IP 전달 사용
   
-    - Virtual network gateway route propagation: **Disabled**
+   > **참고**: 이 작업을 시작하기 전에 연습 0에서 시작한 템플릿 배포가 완료되었는지 확인합니다. 
 
-1. In the Azure portal, navigate to the **az1000402-rt1** blade.
+1. Azure 포털에서 두 번째 Azure VM **az1000401-vm2** 의블레이드로 이동합니다.
 
-1. From the **az1000402-rt1** blade, display its **Routes** blade. 
+1. **az1000401-vm2 블레이드** 에서 **네트워킹** 블레이드를 표시합니다. 
 
-1. From the **az1000402-rt1 - Routes** blade, add to the route table a route with the following settings: 
+1. **az1000401-vm2 - 네트워킹** 블레이드에서 Azure VM의 네트워크 어댑터(**az1000401-nic2**)의 블레이드를 표시합니다.
 
-    - Route name: **custom-route-to-az1000401-vnet1**
+1. **az1000401-nic2** 블레이드에서 **IP 구성** 블레이드를 표시합니다.
 
-    - Address prefix: **10.104.0.0/16**
+1. **az1000401-nic2 - IP 구성** 블레이드에서 **IP 포워딩** 을 활성화합니다.
 
-    - Next hop type: **Virtual appliance**
-
-    - Next hop address: **10.104.1.4**
-
-   > **Note**: **10.104.1.4** is the IP address of the network interface of **az1000401-vm2**, which will provide service chaining between the two virtual networks.
-
-1. From the **az1000402-rt1** blade, display its **Subnets** blade. 
-
-1. From the **az1000402-rt1 - Subnets** blade, associate the route table **az1000402-rt1** with **subnet0** of **az1000402-vnet2**.
+   > **참고**: 이 작업에서 구성한 네트워크 인터페이스인 Azure VM **az1000401-vm2** 는라우터로 작동하여 두 가상 네트워크 간의 서비스 체인을 용이하게 합니다.
 
 
-#### Task 3: Configure routing in an Azure VM running Windows Server 2016
+#### 작업 2: 사용자 정의 라우팅 구성 
 
-1. In the Azure portal, navigate to the blade of the **az1000401-vm2** Azure VM. 
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Overview** pane of the **az1000401-vm2** blade, generate an RDP file and use it to connect to **az1000401-vm2**.
+1. **리소스 만들기** 블레이드에서 Azure 마켓플레이스에서 **경로** 테이블을 검색합니다.
 
-1. When prompted, authenticate by specifying the following credentials:
+1. 검색 결과 목록을 사용하여 **경로 테이블 만들기** 블레이드로 이동합니다.
 
-    - User name: **Student**
+1. 경로 **테이블 만들기** 블레이드에서 다음 설정을 사용하여 새 경로 테이블을 만듭니다.
 
-    - Password: **Pa55w.rd1234**
+    - 이름: **az1000402-rt1**
 
-1. Within the Remote Desktop session to **az1000401-vm2**, from **Server Manager**, select **Manage**  use the **Add Roles and Features Wizard** 
-1. Click **Next** twice, ensure **az1000401-vm2** is selected and click **Next**,  select the **Remote Access** server role then click **Next** three times, Select the **Routing** role service, select **Add Features**  and all required features. Select **Next** three times, click **Install**. Click **Close** when the installation is complete.
+    - 구독: 이 랩에 사용하는 Azure 구독의 이름
 
-   > **Note**: If you receive an error message **There may be a version mismatch between this computer and the destination server or VHD** once you select the **Remote Access**  checkbox on the **Server Roles** page of the **Add Roles and Features Wizard**, clear the checkbox, click **Next**, click **Previous** and select the **Remote Access**  checkbox again.
+    - 리소스 그룹: **az1000402-RG**
 
-1. Within the Remote Desktop session to **az1000401-vm2**, from Server Manager, select **Tools** start the **Routing and Remote Access** console. 
-
-1. In the **Routing and Remote Access** console, right click on the server name and select **Configure and Enable Routing and Remote Access**, Select **Next** use the **Custom configuration** then **Next**, enable **LAN routing** then **Next**, click **Finish** and the click **Start Service**.
-
-1. Within the Remote Desktop session to **az1000401-vm2**, start the **Windows Firewall with Advanced Security** console and enable **File and Printer Sharing (Echo Request - ICMPv4-In)** inbound rule for all profiles.
-
-> **Result**: After completing this exercise, you have implemented custom routing between peered Azure virtual networks. 
-
-
-### Exercise 3: Validating service chaining
-
-The main tasks for this exercise are as follows:
-
-1. Configure Windows Firewall with Advanced Security on the target Azure VM
-
-1. Test service chaining between peered virtual networks
-
-
-#### Task 1: Configure Windows Firewall with Advanced Security on the target Azure VM
-
-1. In the Azure portal, navigate to the blade of the **az1000401-vm1** Azure VM. 
-
-1. From the **Overview** pane of the **az1000401-vm1** blade, generate an RDP file and use it to connect to **az1000401-vm1**.
-
-1. When prompted, authenticate by specifying the following credentials:
-
-    - User name: **Student**
-
-    - Password: **Pa55w.rd1234**
-
-1. Within the Remote Desktop session to **az1000401-vm1**, open the **Windows Firewall with Advanced Security** console and enable **File and Printer Sharing (Echo Request - ICMPv4-In)** inbound rule for all profiles.
-
-
-#### Task 2: Test service chaining between peered virtual networks
+    - 위치: 가상 네트워크를 만든 동일한 Azure 지역
   
-1. In the Azure portal, navigate to the blade of the **az1000402-vm3** Azure VM. 
+    - BGP 경로 전파: **비활성화**
 
-1. From the **Overview** pane of the **az1000402-vm3** blade, generate an RDP file and use it to connect to **az1000402-vm3**.
+1. Azure 포털에서 **az1000402-rt1** 블레이드로 이동합니다.
 
-1. When prompted, authenticate by specifying the following credentials:
+1. **az1000402-rt1** 블레이드에서 **경로** 블레이드를 표시합니다. 
 
-    - User name: **Student**
+1. **az1000402-rt1 - 배관** 블레이드에서 다음 설정을 사용하여 경로 테이블에 경로를 추가합니다. 
 
-    - Password: **Pa55w.rd1234**
+    - 경로 이름: **사용자 지정경로-az1000401-vnet1**
 
-1. Once you are connected to **az1-1000402-vm3** via the Remote Desktop session, start **Windows PowerShell**.
+    - 주소 접두사: **10.104.0.0/16**
 
-1. In the **Windows PowerShell** window, run the following:
+    - 다음 홉 유형: **가상 어플라이언스**
 
-   ```pwsh
+    - 다음 홉 주소: **10.104.1.4**
+
+   > **참고**: **10.104.1.4** 는 **az1000401-vm2** 의 네트워크 인터페이스의 IP주소로, 두 가상 네트워크 간에 서비스 체인을 제공합니다.
+
+1. **az1000402-rt1** 블레이드에서 **서브넷** 블레이드를 표시합니다. 
+
+1. **az1000402-rt1 - Subnets** 블레이드에서 경로 테이블 **az1000402-rt1** 을 **az1000402-vnet2** 의 **서브넷0** 과 연결합니다.
+
+
+#### 작업 3: Windows 서버 2016을 실행하는 Azure VM에서 라우팅 구성
+
+1. Azure 포털에서 **az1000401-vm2** Azure VM의 블레이드로 이동합니다. 
+
+1. **az1000401-vm2** 블레이드의 **개요** 창에서 RDP 파일을 생성하고 **az1000401-vm2** 에 연결하는 데 사용합니다.
+
+1. 메시지가 표시되면 다음 자격 증명을 지정하여 인증합니다:
+
+    - 사용자 이름: **학생**
+
+    - 암호: **Pa55w.rd1234**
+
+1. **서버 관리자** 에서 **az1000401-vm2** 에 대한 원격 데스크톱 세션 내에서 **역할 및 기능 추가 마법사** 를 사용하여 **라우팅** 역할 서비스 및 필요한 모든 기능을 사용하여 **원격 액세스** 서버 역할을 추가합니다. 
+
+   > **참고**: 오류 메시지가 발생하면 **서버 역할** 및 기능 **추가** **마법사의 서버 역할 페이지에서 원격 액세스 확인란을 선택하면** **이 컴퓨터와 대상 서버 또는 VHD 간에 버전 불일치가 있을 수** 있습니다. 확인란을 클릭하고 **다음** 을 클릭하고 **이전** 을 클릭하고 **원격 액세스** 확인란을 다시 선택합니다.
+
+1. 서버 관리자에서 **az1000401-vm2** 에 원격 데스크톱 세션 내에서 **라우팅 및 원격 액세스** 콘솔을 시작합니다. 
+
+1. **라우팅 및 원격 액세스** 콘솔에서 **라우팅 및 원격 액세스 서버 설치 마법사** 를 실행하고, **사용자 지정 구성** 옵션을 사용하고, **LAN 라우팅** 을 활성화하고, **라우팅 및 원격 액세스** 서비스를 시작합니다.
+
+1. **az1000401-vm2** 에 대한 원격 데스크톱 세션 내에서 **고급 보안 콘솔을 사용하여 Windows 방화벽** 을 시작하고 모든 프로필에 대해 **파일 및 프린터 공유(에코 요청 - ICMPv4-In)** 인바운드 규칙을 사용하도록 설정합니다.
+
+> **결과**: 이 연습을 완료한 후 피어있는 Azure 가상 네트워크 간에 사용자 지정 라우팅을 구현했습니다. 
+
+
+### 연습 3: 서비스 체인 유효성 검사
+
+이 연습의 주요 작업은 다음과 같습니다:
+
+1. 대상 Azure VM에서 고급 보안을 갖춘 Windows 방화벽 구성
+
+1. 피어링된 가상 네트워크 간의 서비스 체인 테스트
+
+
+#### 작업 1: 대상 Azure VM에서 고급 보안을 갖춘 Windows 방화벽 구성
+
+1. Azure 포털에서 **az1000401-vm1** Azure VM의 블레이드로 이동합니다. 
+
+1. **az1000401-vm1** 블레이드의 **개요** 창에서 RDP 파일을 생성하고 **az1000401-vm1** 에 연결하는 데 사용합니다.
+
+1. 메시지가 표시되면 다음 자격 증명을 지정하여 인증합니다:
+
+    - 사용자 이름: **학생**
+
+    - 암호: **Pa55w.rd1234**
+
+1. 원격 데스크톱 세션 내에서 **az1000401-vm1** 로 고급 보안 콘솔을 사용하여 **Windows 방화벽** 을 열고 모든 프로필에대해 **파일 및 프린터 공유(에코 요청 - ICMPv4-In)** 인바운드 규칙을 사용하도록 설정합니다.
+
+
+#### 작업 2: 피어링된 가상 네트워크 간의 서비스 체인 테스트
+  
+1. Azure 포털에서 **az1000402-vm3** Azure VM의 블레이드로 이동합니다. 
+
+1. **az1000402-vm3** 블레이드의 **개요** 창에서 RDP 파일을 생성하고 **az1000402-vm3** 에 연결하는 데 사용합니다.
+
+1. 메시지가 표시되면 다음 자격 증명을 지정하여 인증합니다:
+
+    - 사용자 이름: **학생**
+
+    - 암호: **Pa55w.rd1234**
+
+1. 원격 데스크톱 세션을 통해 **az1-1000402-vm3** 에 연결되면 **Windows PowerShell** 을 시작합니다.
+
+1. **Windows PowerShell** 창에서 다음을 실행합니다.
+
+   ```
    Test-NetConnection -ComputerName 10.104.0.4 -TraceRoute
    ```
 
-   > **Note**: **10.104.0.4** is the IP address of the network interface of the first Azure VM **az1000401-vm1**
+   > **참고**: **10.104.0.4는** 첫 번째 Azure VM **az1000401-vm1** 의 네트워크 인터페이스의 IP 주소입니다.
 
-1. Verify that test is successful and note that the connection was routed over **10.104.1.4**
+1. 테스트가 성공했는지 확인하고 연결이 **10.104.1.4** 를 초과하여 라우팅되었는지 확인합니다.
 
-   > **Note**: Without custom routing in place, the traffic would flow directly between the two Azure VMs. 
-> **Result**: After you completed this exercise, you have validated service chaining between peered Azure virtual networks.
-
-## Exercise 4: Remove lab resources
-
-#### Task 1: Open Cloud Shell
-
-1. At the top of the portal, click the **Cloud Shell** icon to open the Cloud Shell pane.
-
-1. At the Cloud Shell interface, select **Bash**.
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to list all resource groups you created in this lab:
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv
-   ```
-
-1. Verify that the output contains only the resource groups you created in this lab. These groups will be deleted in the next task.
-
-#### Task 2: Delete resource groups
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to delete the resource groups you created in this lab
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
-   ```
-
-1. Close the **Cloud Shell** prompt at the bottom of the portal.
-
-> **Result**: In this exercise, you removed the resources used in this lab.
+   > **참고**: 사용자 지정 라우팅이 없으면 트래픽이 두 Azure VM 간에 직접 흐르게 됩니다. 
+> **결과**: 이 연습을 완료한 후 피어링된 Azure 가상 네트워크 간에 서비스 체인의 유효성을 검사했습니다.

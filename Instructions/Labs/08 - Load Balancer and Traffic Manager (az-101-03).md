@@ -1,674 +1,676 @@
+﻿---
+랩:
+    제목: '로드 밸런서 및 Traffic Manager'
+    모듈: '고급 가상 네트워킹 구현'
 ---
-lab:
-    title: 'Load Balancer and Traffic Manager'
-    module: 'Module 08 - Network Traffic Management'
----
 
-# Lab: Load Balancer and Traffic Manager
+# 랩: 로드 밸런서 및 Traffic Manager
 
-All tasks in this lab are performed from the Azure portal (including a PowerShell Cloud Shell session) except for Exercise 1 Task 3, which includes steps performed from a Remote Desktop session to an Azure VM
+이 실습의 모든 작업은 Azure 포털 (PowerShell 클라우드 셸 세션 포함)에서 수행됩니다 (실습 1 작업 3 제외). 원격 데스크톱 세션에서 Azure VM까지 수행되는 단계가 포함됩니다
 
-Lab files: 
+랩 파일: 
 
--  **Labfiles\\Module_08\\Load_Balancer_and_Traffic_Manager\\az-101-03_01_azuredeploy.json**
+-  **Labfiles\\AZ101\\Mod03\\az-101-03_01_azuredeploy.json**
 
--  **Labfiles\\Module_08\\Load_Balancer_and_Traffic_Manager\\az-101-03_01_1_azuredeploy.parameters.json**
+-  **Labfiles\\AZ101\\Mod03\\az-101-03_01_1_azuredeploy.parameters.json**
 
--  **Labfiles\\Module_08\\Load_Balancer_and_Traffic_Manager\\az-101-03_01_2_azuredeploy.parameters.json**
+-  **Labfiles\\AZ101\\Mod03\\az-101-03_01_2_azuredeploy.parameters.json**
 
-### Scenario
+### 시나리오
   
-Adatum Corporation wants to implement Azure VM-hosted web workloads and facilitate their management for its subsidiary Contoso Corporation in a highly available manner by leveraging load balancing and Network Address Translation (NAT) features of Azure Load Balancer
+Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크 주소 변환) 기능을 활용하여 자회사 Contoso Corporation의 관리를 가용성 이면에 맞게 구현하고자 합니다. 
 
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
--  Deploy Azure VMs by using Azure Resource Manager templates
+-  Azure 리소스 관리자 템플릿을 사용하여 Azure VM 배포
 
--  Implement Azure Load Balancing
+-  Azure 로드 분산 구현
 
--  Implement Azure Traffic Manager load balancing
+-  Azure Traffic Manager 로드 균형 조정 구현
 
 
-### Exercise 0: Deploy Azure VMs by using Azure Resource Manager templates
+### 연습 0: Azure 리소스 관리자 템플릿을 사용하여 Azure VM 배포
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Deploy management Azure VMs running Windows Server 2016 Datacenter with the Web Server (IIS) role installed into an availability set in the first Azure region by using an Azure Resource Manager template
+1. Azure 리소스 관리자 템플릿을 사용하여 첫 번째 Azure 리전에서 가용성 집합에 설치된 IIS(웹 서버) 역할을 사용하여 Windows Server 2016 데이터 센터를 실행하는 관리 Azure VM배포
 
-1. Deploy management Azure VMs running Windows Server 2016 Datacenter with the Web Server (IIS) role installed into an availability set in the second Azure region by using an Azure Resource Manager template
+1. Azure 리소스 관리자 템플릿을 사용하여 두 번째 Azure 지역의 가용성 집합에 설치된 IIS(웹 서버) 역할을 사용하여 Windows Server 2016 데이터 센터를 실행하는 관리 Azure VM을 배포합니다.
 
 
-#### Task 1: Deploy management Azure VMs running Windows Server 2016 Datacenter with the Web Server (IIS) role installed into an availability set in the first Azure region by using an Azure Resource Manager template
+#### 작업 1: Azure 리소스 관리자 템플릿을 사용하여 첫 번째 Azure 리전에서 가용성 집합에 설치된 IIS(웹 서버) 역할을 사용하여 Windows Server 2016 데이터 센터를 실행하는 관리 Azure VM배포
 
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the target Azure subscription.
+1. 랩 가상 머신에서 Microsoft Edge를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 탐색하고 대상 Azure 가입에서 소유자 역할을 가진 Microsoft 계정을 사용하여 로그인합니다.
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Template deployment**.
+1. **리소스 만들기** 블레이드에서 Azure 마켓플레이스에서 **템플릿 배포** 를 검색합니다.
 
-1. Use the list of search results to navigate to the **Deploy a custom template** blade.
+1. 검색 결과 목록을 사용하여 **사용자 지정 템플릿** 블레이드 배포로 이동합니다.
 
-1. On the **Custom deployment** blade, click the **Build your own template in the editor** link. If you do not see this link, click **Edit template** instead.
+1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿 빌드** 를 선택합니다.
 
-1. From the **Edit template** blade, load the template file **Labfiles\\Module_08\\Load_Balancer_and_Traffic_Manager\\az-101-03_01_azuredeploy.json**. 
+1. **편집 템플릿** 블레이드에서 템플릿 파일 **Labfiles\\\AZ101\\Mod03\\az-101-03_01_azuredeploy.json** 을 로드합니다. 
 
-   > **Note**: Review the content of the template and note that it defines deployment of two Azure VMs hosting Windows Server 2016 Datacenter Core into an availability set.
+   > **참고**: 템플릿의 내용을 검토하고 Windows Server 2016 Datacenter Core를 호스팅하는 Azure VM 두 대를 가용성 집합에 배포하는 것을 정의한다는 점에 유의하십시오.
 
-1. Save the template and return to the **Custom deployment** blade. 
+1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, navigate to the **Edit parameters** blade.
+1. **사용자 지정 배포** 블레이드에서 **매개 변수 편집** 블레이드로 이동합니다.
 
-1. From the **Edit parameters** blade, load the parameters file **Labfiles\\Module_08\\Load_Balancer_and_Traffic_Manager\\az-101-03_01_1_azuredeploy.parameters.json**. 
+1. **편집 매개 변수** 블레이드에서 매개 변수 파일 **Labfiles\\AZ101\\Mod03\\az-101-03_01_1_azuredeploy.parameters.json** 을 로드합니다. 
 
-1. Save the parameters and return to the **Custom deployment** blade. 
+1. 매개 변수를 저장하고 **사용자지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, initiate a template deployment with the following settings:
+1. **사용자 지정 배포** 블레이드에서 다음 설정을 사용하고 템플릿 배포를 시작합니다.
 
-    - Subscription: the name of the subscription you intend to use in this lab
+    - 구독: 이 실험실에서 사용하려는 구독의 이름
 
-    - Resource group: the name of a new resource group **az1010301-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1010301-RG** 의 이름
 
-    - Location: the name of the Azure region which is closest to the lab location and where you can provision Azure VMs
+    - 위치: 랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 위치
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Vm Name Prefix: **az1010301w-vm**
+    - Vm 이름 접두사: **az1010301w-vm**
 
-    - Nic Name Prefix: **az1010301w-nic**
+    - 닉 이름 접두사: **az1010301w-nic**
 
-    - Image Publisher: **MicrosoftWindowsServer**
+    - 이미지 게시자: **MicrosoftWindowsServer**
 
-    - Image Offer: **WindowsServer**
+    - 이미지 제공: **WindowsServer**
 
-    - Image SKU: **2016-Datacenter**
+    - 이미지 SKU: **2016-Datacenter**
 
-    - Vm Size: **Standard_D2s_v3**
+    - Vm 크기: **Standard_DS1_v2**
 
-    - Virtual Network Name: **az1010301-vnet**
+    - 가상 네트워크 이름: **az1010301-vnet**
 
-    - Address Prefix: **10.101.31.0/24**
+    - 주소 접두사: **10.101.31.0/24**
 
-    - Virtual Network Resource Group: **az1010301-RG**
+    - 가상 네트워크 리소스 그룹: **az1010301-RG**
 
     - Subnet0Name: **subnet0**
 
     - Subnet0Prefix: **10.101.31.0/26**
 
-    - Availability Set Name: **az1010301w-avset**
+    - 가용성 세트 이름: **az1010301w-avset**
 
-    - Network Security Group Name: **az1010301w-vm-nsg**
+    - 네트워크 보안 그룹 이름: **az1010301w-vm-nsg**
 
-    - Modules Url: **https://github.com/Azure/azure-quickstart-templates/raw/master/dsc-extension-iis-server-windows-vm/ContosoWebsite.ps1.zip**
+    - 모듈 URL: **https://github.com/Azure/azure-quickstart-templates/raw/master/dsc-extension-iis-server-windows-vm/ContosoWebsite.ps1.zip**
 
-    - Configuration Function: **ContosoWebsite.ps1\\ContosoWebsite**
+    - 구성 기능: **ContosoWebsite.ps1\\\\ContosoWebsite**
 
-   > **Note**: To identify Azure regions where you can provision Azure VMs, refer to [**https://azure.microsoft.com/en-us/regions/offers/**](https://azure.microsoft.com/en-us/regions/offers/)
+   > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 
-   > **Note**: Do not wait for the deployment to complete but proceed to the next task. 
+   > **참고**: 배포가 완료될 때까지 기다리지 말고 다음 작업으로 진행합니다. 
 
 
-#### Task 2: Deploy management Azure VMs running Windows Server 2016 Datacenter with the Web Server (IIS) role installed into an availability set in the second Azure region by using an Azure Resource Manager template
+#### 작업 2: Azure 리소스 관리자 템플릿을 사용하여 두 번째 Azure 지역의 가용성 집합에 설치된 IIS(웹 서버) 역할을 사용하여 Windows Server 2016 데이터 센터를 실행하는 관리 Azure VM을 배포합니다.
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Template deployment**.
+1. **리소스 만들기** 블레이드에서 Azure 마켓플레이스에서 **템플릿 배포** 를 검색합니다.
 
-1. Use the list of search results to navigate to the **Deploy a custom template** blade.
+1. 검색 결과 목록을 사용하여 **사용자 지정 템플릿** 블레이드 배포로 이동합니다.
 
-1. On the **Custom deployment** blade, click the **Build your own template in the editor** link. If you do not see this link, click **Edit template** instead.
+1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿 빌드** 를 선택합니다.
 
-1. From the **Edit template** blade, load the template file **Labfiles\\Module_08\\Load_Balancer_and_Traffic_Manager\\az-101-03_01_azuredeploy.json**. 
+1. **편집 템플릿** 블레이드에서 템플릿 파일 **Labfiles\\\AZ101\\Mod03\\az-101-03_01_azuredeploy.json** 을 로드합니다. 
 
-   > **Note**: This is the same template you used in the previous task. You will use it to deploy a pair of Azure VMs to the second region. 
+   > **참고**: 이전 작업에서 사용한 템플릿과 동일합니다. 이를 사용하여 두 번째 지역에 Azure VM 쌍을 배포합니다. 
 
-1. Save the template and return to the **Custom deployment** blade. 
+1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, navigate to the **Edit parameters** blade.
+1. **사용자 지정 배포** 블레이드에서 **매개 변수 편집** 블레이드로 이동합니다.
 
-1. From the **Edit parameters** blade, load the parameters file **Labfiles\\Module_08\\Load_Balancer_and_Traffic_Manager\\az-101-03_01_2_azuredeploy.parameters.json**. 
+1. **편집 매개 변수** 블레이드에서 매개 변수 파일 **Labfiles\\AZ101\\Mod03\\az-101-03_01_2_azuredeploy.parameters.json**. 
 
-1. Save the parameters and return to the **Custom deployment** blade. 
+1. 매개 변수를 저장하고 **사용자지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, initiate a template deployment with the following settings:
+1. **사용자 지정 배포** 블레이드에서 다음 설정을 사용하고 템플릿 배포를 시작합니다.
 
-    - Subscription: the name of the subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: the name of a new resource group **az1010302-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1010302-RG** 의 이름
 
-    - Location: the name of the Azure region different from the one you chose in the previous task and where you can provision Azure VMs
+    - 위치 : 이전 작업에서 선택한 것과 다른 Azure 영역의 이름과 Azure VM을 준비 할 수있는 위치
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Vm Name Prefix: **az1010302w-vm**
+    - Vm 이름 접두사: **az1010302w-vm**
 
-    - Nic Name Prefix: **az1010302w-nic**
+    - 닉 이름 접두사: **az1010302w-nic**
 
-    - Image Publisher: **MicrosoftWindowsServer**
+    - 이미지 게시자: **MicrosoftWindowsServer**
 
-    - Image Offer: **WindowsServer**
+    - 이미지 제공: **WindowsServer**
 
-    - Image SKU: **2016-Datacenter**
+    - 이미지 SKU: **2016-Datacenter**
 
-    - Vm Size: **Standard_D2s_v3**
+    - Vm 크기: **Standard_DS1_v2**
 
-    - Virtual Network Name: **az1010302-vnet**
+    - 가상 네트워크 이름: **az1010302-vnet**
 
-    - Address Prefix: **10.101.32.0/24**
+    - 주소 접두사: **10.101.32.0/24**
 
-    - Virtual Network Resource Group: **az1010302-RG**
+    - 가상 네트워크 리소스 그룹: **az1010302-RG**
 
     - Subnet0Name: **subnet0**
 
     - Subnet0Prefix: **10.101.32.0/26**
 
-    - Availability Set Name: **az1010302w-avset**
+    - 가용성 세트 이름: **az1010302w-avset**
 
-    - Network Security Group Name: **az1010302w-vm-nsg**
+    - 네트워크 보안 그룹 이름: **az1010302w-vm-nsg**
 
-    - Modules Url: **https://github.com/Azure/azure-quickstart-templates/raw/master/dsc-extension-iis-server-windows-vm/ContosoWebsite.ps1.zip**
+    - 모듈 URL: **https://github.com/Azure/azure-quickstart-templates/raw/master/dsc-extension-iis-server-windows-vm/ContosoWebsite.ps1.zip**
 
-    - Configuration Function: **ContosoWebsite.ps1\\ContosoWebsite**
+    - 구성 기능: **ContosoWebsite.ps1\\\\ContosoWebsite**
 
-   > **Note**: Do not wait for the deployment to complete but proceed to the next exercise.
+   > **참고**: 배포가 완료될 때까지 기다리지 말고 다음 연습으로 진행합니다.
 
-> **Result**: After you completed this exercise, you have used Azure Resource Manager templates to initiate deployment of Azure VMs running Windows Server 2016 Datacenter with the Web Server (IIS) role installed into availability sets in two Azure regions.
+> **결과**: 이 연습을 완료한 후 Azure 리소스 관리자 템플릿을 사용하여 두 Azure 지역의 가용성 집합에 설치된 IIS(웹 서버) 역할을 사용하여 Windows Server 2016 데이터 센터를 실행하는 Azure VM의 배포를 시작했습니다.
 
 
-### Exercise 1: Implement Azure Load Balancing
+### 연습 1: Azure 로드 분산 구현
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Implement Azure load balancing rules in the first region.
+1. 첫 번째 리전에서 Azure 부하 분산 규칙을 구현합니다.
 
-1. Implement Azure load balancing rules in the second region.
+1. 두 번째 리전에서 Azure 부하 분산 규칙을 구현합니다.
 
-1. Implement Azure NAT rules in the first region.
+1. 첫 번째 리전에서 Azure NAT 규칙을 구현합니다.
 
-1. Implement Azure NAT rules in the second region.
+1. 두 번째 리전에서 Azure NAT 규칙을 구현합니다.
 
-1. Verify Azure load balancing and NAT rules
+1. Azure 로드 분산 및 NAT 규칙 확인
 
 
-#### Task 1: Implement Azure load balancing rules in the first region
+#### 작업 1: 첫 번째 리전에서 Azure 부하 분산 규칙 구현
 
-   > **Note**: Before you start this task, ensure that the template deployment you started in the first task of the previous exercise has completed. 
+   > **참고**: 이 작업을 시작하기 전에 이전 연습의 첫 번째 작업에서 시작한 템플릿 배포가 완료되었는지 확인합니다. 
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Load Balancer**.
+1. **리소스 만들기** 블레이드에서 Azure Marketplace에서 **로드 밸런서** 를 검색하십시오.
 
-1. Use the list of search results to navigate to the **Create load balancer** blade.
+1. 검색 결과 목록을 사용하여로드 **밸런서 만들기** 블레이드로 이동하십시오.
 
-1. From the **Create load balancer** blade, create a new Azure Load Balancer with the following settings:
+1. **로드 밸런서 만들기** 블레이드에서 다음 설정으로 새 Azure load balancer 를 만듭니다:
 
-    - Name: **az1010301w-lb**
+    - 이름: **az1010301w-lb**
 
-    - Type: **Public**
+    - 입력: **공용**
 
-    - SKU: **Basic**
+    - SKU: **기본**
 
-    - Public IP address: a new public IP address named **az1010301w-lb-pip**
+    - 공용 IP 주소: ****az1010301w-lb-pip라는 새 공용 IP 주소
 
-    - Assignment: **Dynamic**
+    - 과제: **동적**
 
-    - Subscription: the name of the subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: **az1010301-RG**
+    - 리소스 그룹: **az1010301-RG**
 
-    - Location: the name of the Azure region in which you deployed Azure VMs in the first task of the previous exercise
+    - 위치: 이전 연습의 첫 번째 작업에 Azure VM을 배포한 Azure 영역의 이름입니다
 
-1. In the Azure portal, navigate to the blade of the newly deployed Azure load balancer **az1010301w-lb**.
+1. Azure 포털에서 새로 배포 된 Azure Load Balancer 장치인 **az1010301w-lb** 의 블레이드로 이동합니다.
 
-1. From the **az1010301w-lb** blade, display the **az1010301w-lb - Backend pools** blade.
+1. **az1010301w-lb** 블레이드에서 **az1010301w-lb - 백엔드 풀** 블레이드를 표시합니다.
 
-1. From the **az1010301w-lb - Backend pools** blade, add a backend pool with the following settings:
+1. **az1010301w-lb - 백 엔드 풀** 블레이드에서 다음 설정으로 백 엔드 풀을 추가합니다:
 
-    - Name: **az1010301w-bepool**
+    - 이름: **az1010301w-bepool**
 
-    - IP version: **IPv4**
+    - IP 버전: **IPv4**
 
-    - Associated to: **Availability set**
+    - 관련: **가용성 집합**
 
-    - Availability set: **az1010301w-avset**
+    - 가용성 세트: **az1010301w-avset**
 
-    - Virtual machine: **az1010301w-vm0** 
+    - 가상 기기: **az1010301w-vm0** 
 
-    - Network IP configuration: **az1010301w-nic0/ipconfig1 (10.101.31.4)**
+    - 네트워크 IP 구성: **az1010301w-nic0/ipconfig1 (10.101.31.4)**
 
-    - Virtual machine: **az1010301w-vm1** 
+    - 가상 기기: **az1010301w-vm1** 
 
-    - Network IP configuration: **az1010301w-nic1/ipconfig1 (10.101.31.5)**
+    - 네트워크 IP 구성: **az1010301w-nic1/ipconfig1 (10.101.31.5)**
 
-   > **Note**: It is possible that the IP addresses of the Azure VMs are assigned in the reverse order. 
+   > **참고**: Azure VM의 IP 주소가 역순으로 할당될 수 있습니다. 
 
-   > **Note**: Wait for the operation to complete. This should take less than a minute.
+   > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. From the **az1010301w-lb - Backend pools** blade, display the **az1010301w-lb - Health probes** blade.
+1. **az1010301w-lb - 백엔드 풀** 블레이드에서 **az1010301w-lb - 건강** 프로브 블레이드를 표시합니다.
 
-1. From the **az1010301w-lb - Health probes** blade, add a health probe with the following settings:
+1. **az1010301w-lb - 상태 프로브** 블레이드에서 다음 설정으로 상태 프로브를 추가합니다.
 
-    - Name: **az1010301w-healthprobe**
+    - 이름: **az1010301w-healthprobe**
 
-    - Protocol: **TCP**
+    - 프로토콜: **TCP**
 
-    - Port: **80**
+    - 포트: **80**
 
-    - Interval: **5** seconds
+    - 간격: **5초**
 
-    - Unhealthy threshold: **2** consecutive failures
+    - 비정상 임계값: **2회**연속 실패
 
-    > **Note**: Wait for the operation to complete. This should take less than a minute.
+    > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. From the **az1010301w-lb - Health probes** blade, display the **az1010301w-lb - Load balancing rules** blade.
+1. **az1010301w-lb - 상태 프로브** 블레이드에서 **az1010301w-lb - 부하** 균형 규칙 블레이드를 표시합니다.
 
-1. From the **az1010301w-lb - Load balancing rules** blade, add a load balancing rule with the following settings:
+1. **az1010301w-lb - 부하 분산 규칙** 블레이드에서 다음 설정으로 부하 분산 규칙을 추가합니다.
 
-    - Name: **az1010301w-lbrule01**
+    - 이름: **az1010301w-lbrule01**
 
-    - IP Version: **IPv4**
+    - IP 버전: **IPv4**
 
-    - Frontend IP address: **LoadBalancerFrontEnd**
+    - 프론트 엔드 IP 주소: **LoadBalancerFrontEnd**
 
-    - Protocol: **TCP**
+    - 프로토콜: **TCP**
 
-    - Port: **80**
+    - 포트: **80**
 
-    - Backend port: **80**
+    - 백 엔드 포트: **80**
 
-    - Backend pool: **az1010301w-bepool (2 virtual machines)**
+    - 백 엔드 풀: **az1010301w-bepool (가상 머신 2개)**
 
-    - Health probe: **az1010301w-healthprobe (TCP:80)**
+    - 상태 프로브: **az1010301w-헬스프로브 (TCP:80)**
 
-    - Session persistence: **None**
+    - 세션 지속성: **없음**
 
-    - Idle timeout (minutes): **4**
+    - 유휴 시간 초과 (분): **4**
 
-    - Floating IP (direct server return): **Disabled**
+    - 부동 IP (직접 서버 반환): **비활성화**
 
 
-#### Task 2: Implement Azure load balancing rules in the second region
+#### 작업 2: 두 번째 지역에서 Azure 부하 분산 규칙 구현
 
-   > **Note**: Before you start this task, ensure that the template deployment you started in the second task of the previous exercise has completed. 
+   > **참고**: 이 작업을 시작하기 전에 이전 연습의 두 번째 작업에서 시작한 템플릿 배포가 완료되었는지 확인합니다. 
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Load Balancer**.
+1. **리소스 만들기** 블레이드에서 Azure Marketplace에서 **로드 밸런서** 를 검색하십시오.
 
-1. Use the list of search results to navigate to the **Create load balancer** blade.
+1. 검색 결과 목록을 사용하여로드 **밸런서 만들기** 블레이드로 이동하십시오.
 
-1. From the **Create load balancer** blade, create a new Azure Load Balancer with the following settings:
+1. **로드 밸런서 만들기** 블레이드에서 다음 설정으로 새 Azure load balancer 를 만듭니다:
 
-    - Name: **az1010302w-lb**
+    - 이름: **az1010302w-lb**
 
-    - Type: **Public**
+    - 입력: **공용**
 
-    - SKU: **Basic**
+    - SKU: **기본**
 
-    - Public IP address: a new public IP address named **az1010302w-lb-pip**
+    - 공용 IP 주소: **az1010302w-lb-pip** 라는 새 공용 IP 주소
 
-    - Assignment: **Dynamic**
+    - 과제: **동적**
 
-    - Subscription: the name of the subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: **az1010302-RG**
+    - 리소스 그룹: **az1010302-RG**
 
-1. In the Azure portal, navigate to the blade of the newly deployed Azure load balancer **az1010302w-lb**.
+    - 위치: 이전 연습의 두 번째 작업에 Azure VM을 배포한 Azure 영역의 이름입니다
 
-1. From the **az1010302w-lb** blade, display the **az1010302w-lb - Backend pools** blade.
+1. Azure 포털에서 새로 배포 된 Azure Load Balancer 장치인 **az1010302w-lb** 의 블레이드로 이동합니다.
 
-1. From the **az1010302w-lb - Backend pools** blade, add a backend pool with the following settings:
+1. **az1010302w-lb** 블레이드에서 **az1010302w-lb - 백엔드 풀** 블레이드를 표시합니다.
 
-    - Name: **az1010302w-bepool**
+1. **az1010302w-lb - 백 엔드 풀** 블레이드에서 다음 설정으로 백 엔드 풀을 추가합니다:
 
-    - IP version: **IPv4**
+    - 이름: **az1010302w-bepool**
 
-    - Associated to: **Availability set**
+    - IP 버전: **IPv4**
 
-    - Availability set: **az1010302w-avset**
+    - 관련: **가용성 집합**
 
-    - Virtual machine: **az1010302w-vm0** 
+    - 가용성 세트: **az1010302w-avset**
 
-    - Network IP configuration: **az1010302w-nic0/ipconfig1 (10.101.32.4)**
+    - 가상 기기: **az1010302w-vm0** 
 
-    - Virtual machine: **az1010302w-vm1** 
+    - 네트워크 IP 구성: **az1010302w-nic0/ipconfig1 (10.101.32.4)**
 
-    - Network IP configuration: **az1010302w-nic1/ipconfig1 (10.101.32.5)**
+    - 가상 기기: **az1010302w-vm1** 
 
-   > **Note**: It is possible that the IP addresses of the Azure VMs are assigned in the reverse order. 
+    - 네트워크 IP 구성: **az1010302w-nic1/ipconfig1 (10.101.32.5)**
 
-   > **Note**: Wait for the operation to complete. This should take less than a minute.
+   > **참고**: Azure VM의 IP 주소가 역순으로 할당될 수 있습니다. 
 
-1. From the **az1010302w-lb - Backend pools** blade, display the **az1010302w-lb - Health probes** blade.
+   > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. From the **az1010302w-lb - Health probes** blade, add a health probe with the following settings:
+1. **az1010302w-lb - 백엔드 풀** 블레이드에서 **az1010302w-lb - 상태 프로브** 블레이드를 표시합니다.
 
-    - Name: **az1010302w-healthprobe**
+1. **az1010302w-lb - 상태 프로브** 블레이드에서 다음 설정으로 상태 프로브를 추가합니다.
 
-    - Protocol: **TCP**
+    - 이름: **az1010302w-healthprobe**
 
-    - Port: **80**
+    - 프로토콜: **TCP**
 
-    - Interval: **5** seconds
+    - 포트: **80**
 
-    - Unhealthy threshold: **2** consecutive failures
+    - 간격: **5초**
 
-    > **Note**: Wait for the operation to complete. This should take less than a minute.
+    - 비정상 임계값: **2회** 연속 실패
 
-1. From the **az1010302w-lb - Health probes** blade, display the **az1010302w-lb - Load balancing rules** blade.
+    > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. From the **az1010302w-lb - Load balancing rules** blade, add a load balancing rule with the following settings:
+1. **az1010302w-lb - 상태 프로브** 블레이드에서 **az1010302w-lb - 부하** 균형 규칙 블레이드를 표시합니다.
 
-    - Name: **az1010302w-lbrule01**
+1. **az1010302w-lb - 부하 분산 규칙** 블레이드에서 다음 설정으로 부하 분산 규칙을 추가합니다.
 
-    - IP Version: **IPv4**
+    - 이름: **az1010302w-lbrule01**
 
-    - Frontend IP address: **LoadBalancerFrontEnd**
+    - IP 버전: **IPv4**
 
-    - Protocol: **TCP**
+    - 프론트 엔드 IP 주소: **LoadBalancerFrontEnd**
 
-    - Port: **80**
+    - 프로토콜: **TCP**
 
-    - Backend port: **80**
+    - 포트: **80**
 
-    - Backend pool: **az1010302w-bepool (2 virtual machines)**
+    - 백 엔드 포트: **80**
 
-    - Health probe: **az1010302w-healthprobe (TCP:80)**
+    - 백 엔드 풀: **az1010302w-bepool (가상 머신 2개)**
 
-    - Session persistence: **None**
+    - 상태 프로브: **az1010302w-헬스프로브 (TCP:80)**
 
-    - Idle timeout (minutes): **4**
+    - 세션 지속성: **없음**
 
-    - Floating IP (direct server return): **Disabled**
+    - 유휴 시간 초과 (분): **4**
 
+    - 부동 IP (직접 서버 반환): **비활성화**
 
-#### Task 3: Implement Azure NAT rules in the first region
 
-1. In the Azure portal, navigate to the blade of the Azure load balancer **az1010301w-lb**.
+#### 작업 3: 첫 번째 리전에서 Azure NAT 규칙 구현
 
-1. From the **az1010301w-lb** blade, display the **az1010301w-lb - Inbound NAT rules** blade.
+1. Azure 포털에서 Azure load balancer **az1010301w-lb** 의 블레이드로 이동합니다.
 
-   > **Note**: The NAT functionality does not rely on health probes.
+1. **az1010301w-lb** 블레이드에서 **az1010301w-lb - 인바운드 NAT 룰** 블레이드를 표시하십시오.
 
-1. From the **az1010301w-lb - Inbound NAT rules** blade, add the first inbound NAT rule with the following settings:
+   > **참고**: NAT 기능은 상태 프로브에 의존하지 않습니다.
 
-    - Name: **az1010301w-vm0-RDP**
+1. **az1010301w-lb - 인바운드 NAT 규칙** 블레이드에서다음 설정으로 첫 번째 인바운드 NAT 규칙을 추가합니다:
 
-    - Frontend IP address: **LoadBalancerFrontEnd**
+    - 이름: **az1010301w-vm0-RDP**
 
-    - IP Version: **IPv4**
+    - 프론트 엔드 IP 주소: **LoadBalancerFrontEnd**
 
-    - Service: **Custom**
+    - IP 버전: **IPv4**
 
-    - Protocol: **TCP**
+    - 서비스: **사용자 지정**
 
-    - Port: **33890**
+    - 프로토콜: **TCP**
 
-    - Target virtual machine: **az1010301w-vm0**
+    - 포트: **33890**
 
-    - Network IP configuration: **ipconfig1 (10.101.31.4)** or **ipconfig1 (10.101.31.5)**
+    - 대상 가상 컴퓨터: **az1010301w-vm0**
 
-    - Port mapping: **Custom**
+    - 네트워크 IP 구성: **ipconfig1 (10.101.31.4)** 또는 **ipconfig1 (10.101.31.5)**
 
-    - Floating IP (direct server return): **Disabled**
+    - 포트 매핑: **사용자 지정**
 
-    - Target port: **3389**
+    - 부동 IP (직접 서버 반환): **비활성화**
 
-    > **Note**: Wait for the operation to complete. This should take less than a minute.
+    - 대상 포트: **3389**
 
-1. From the **az1010301w-lb - Inbound NAT rules** blade, add the second inbound NAT rule with the following settings:
+    > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-    - Name: **az1010301w-vm1-RDP**
+1. **az1010301w-lb - 인바운드 NAT 규칙** 블레이드에서다음 설정으로 두 번째 인바운드 NAT 규칙을 추가합니다:
 
-    - Frontend IP address: **LoadBalancerFrontEnd**
+    - 이름: **az1010301w-vm1-RDP**
 
-    - IP Version: **IPv4**
+    - 프론트 엔드 IP 주소: **LoadBalancerFrontEnd**
 
-    - Service: **Custom**
+    - IP 버전: **IPv4**
 
-    - Protocol: **TCP**
+    - 서비스: **사용자 지정**
 
-    - Port: **33891**
+    - 프로토콜: **TCP**
 
-    - Target virtual machine: **az1010301w-vm1**
+    - 포트: **33891**
 
-    - Network IP configuration: **ipconfig1 (10.101.31.4)** or **ipconfig1 (10.101.31.5)**
+    - 대상 가상 컴퓨터: **az1010301w-vm1**
 
-    - Port mapping: **Custom**
+    - 네트워크 IP 구성: **ipconfig1 (10.101.31.4)** 또는 **ipconfig1 (10.101.31.5)**
 
-    - Floating IP (direct server return): **Disabled**
+    - 포트 매핑: **사용자 지정**
 
-    - Target port: **3389**
+    - 부동 IP (직접 서버 반환): **비활성화**
 
-    > **Note**: Wait for the operation to complete. This should take less than a minute.
+    - 대상 포트: **3389**
 
+    > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-#### Task 4: Implement Azure NAT rules in the second region
 
-1. In the Azure portal, navigate to the blade of the Azure load balancer **az1010302w-lb**.
+#### 작업 4: 두 번째 리전에서 Azure NAT 규칙 구현
 
-1. From the **az1010302w-lb** blade, display the **az1010302w-lb - Inbound NAT rules** blade.
+1. Azure 포털에서 Azure Load Balancer **az1010302w-lb** 의 블레이드로 이동합니다.
 
-1. From the **az1010302w-lb - Inbound NAT rules** blade, add the first inbound NAT rule with the following settings:
+1. **az1010302w-lb** 블레이드에서 **az1010302w-lb - 인바운드 NAT 룰 블레이드를** 표시하십시오.
 
-    - Name: **az1010302w-vm0-RDP**
+1. **az1010302w-lb - 인바운드 NAT 규칙** 블레이드에서다음 설정으로 첫 번째 인바운드 NAT 규칙을 추가합니다:
 
-    - Frontend IP address: **LoadBalancedFrontEnd**
+    - 이름: **az1010302w-vm0-RDP**
 
-    - IP Version: **IPv4**
+    - 프론트 엔드 IP 주소: **LoadBalancedFrontEnd**
 
-    - Service: **Custom**
+    - IP 버전: **IPv4**
 
-    - Protocol: **TCP**
+    - 서비스: **사용자 지정**
 
-    - Port: **33890**
+    - 프로토콜: **TCP**
 
-    - Target virtual machine: **az1010302w-vm0**
+    - 포트: **33890**
 
-    - Network IP configuration: **ipconfig1 (10.101.32.4)** or **ipconfig1 (10.101.32.5)**
+    - 대상 가상 컴퓨터: **az1010302w-vm0**
 
-    - Port mapping: **Custom**
+    - 네트워크 IP 구성: **ipconfig1 (10.101.32.4)** 또는 **ipconfig1 (10.101.32.5)**
 
-    - Floating IP (direct server return): **Disabled**
+    - 포트 매핑: **사용자 지정**
 
-    - Target port: **3389**
+    - 부동 IP (직접 서버 반환): **비활성화**
 
-    > **Note**: Wait for the operation to complete. This should take less than a minute.
+    - 대상 포트: **3389**
 
-1. From the **az1010302w-lb - Inbound NAT rules** blade, add the second inbound NAT rule with the following settings:
+    > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-    - Name: **az1010302w-vm1-RDP**
+1. **az1010302w-lb - 인바운드 NAT 규칙** 블레이드에서다음 설정으로 두 번째 인바운드 NAT 규칙을 추가합니다:
 
-    - Frontend IP address: **LoadBalancedFrontEnd**
+    - 이름: **az1010302w-vm1-RDP**
 
-    - IP Version: **IPv4**
+    - 프론트 엔드 IP 주소: **LoadBalancedFrontEnd**
 
-    - Service: **Custom**
+    - IP 버전: **IPv4**
 
-    - Protocol: **TCP**
+    - 서비스: **사용자 지정**
 
-    - Port: **33891**
+    - 프로토콜: **TCP**
 
-    - Target virtual machine: **az1010302w-vm1**
+    - 포트: **33891**
 
-    - Network IP configuration: **ipconfig1 (10.101.32.4)** or **ipconfig1 (10.101.32.5)**
+    - 대상 가상 컴퓨터: **az1010302w-vm1**
 
-    - Port mapping: **Custom**
+    - 네트워크 IP 구성: **ipconfig1 (10.101.32.4)** 또는 **ipconfig1 (10.101.32.5)**
 
-    - Floating IP (direct server return): **Disabled**
+    - 포트 매핑: **사용자 지정**
 
-    - Target port: **3389**
+    - 부동 IP (직접 서버 반환): **비활성화**
 
-    > **Note**: Wait for the operation to complete. This should take less than a minute.
+    - 대상 포트: **3389**
 
+    > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-#### Task 5: Verify Azure load balancing and NAT rules.
 
-1. In the Azure portal, navigate to the blade of the Azure load balancer **az1010301w-lb**.
+#### 작업 5: Azure 로드 분산 및 NAT 규칙을 확인합니다.
 
-1. On the **az1010301w-lb** blade, identify the public IP address assigned to the load balancer frontend.
+1. Azure 포털에서 Azure load balancer **az1010301w-lb** 의 블레이드로 이동합니다.
 
-1. In the Microsoft Edge window, open a new tab and browse to the IP address you identified in the previous step.
+1. **az1010301w-lb** 블레이드에서 로드 밸런서 프런트 엔드에 할당된 공용 IP 주소를 식별합니다.
 
-1. Verify that the tab displays the default Internet Information Services home page.
+1. Microsoft Edge 창에서 새 탭을 열고 이전 단계에서 식별한 IP 주소를 찾아봅니다.
 
-1. Close the browser tab displaying the default Internet Information Services home page.
+1. 탭에 기본 인터넷 정보 서비스 홈 페이지가 표시되는지 확인합니다.
 
-1. In the Azure portal, navigate to the blade of the Azure load balancer **az1010301w-lb**.
+1. 기본 인터넷 정보 서비스 홈 페이지를 표시하는 브라우저 탭을 닫습니다.
 
-1. On the **az1010301w-lb** blade, identify the public IP address assigned to the load balancer frontend.
+1. Azure 포털에서 Azure load balancer **az1010301w-lb** 의 블레이드로 이동합니다.
 
-1. From the lab virtual machine, run the following command, after replacing the &lt;az1010301w-lb_public_IP&lt; placeholder with the IP address you identified in the previous task:
+1. **az1010301w-lb** 블레이드에서 로드 밸런서 프런트 엔드에 할당된 공용 IP 주소를 식별합니다.
+
+1. 랩 가상 컴퓨터에서 &lt;az1010301w-lb_public_IP&amp;자리 표시자를 이전 작업에서 식별한 IP 주소로 대체한 후 다음 명령을 실행합니다:
 
    ```
    mstsc /v:<az1010301w-lb_public_IP>:33890
    ```
 
-   > **Note**: This command initiates a Remote Desktop session to the **az1010301w-vm0** Azure VM by using the **az1010301w-vm0-RDP** NAT rule you created in the previous task.
+   > **참고**: 이 명령은 이전 작업에서 만든 **az1010301w-vm0-RDP NAT** 규칙을 사용하여 **az1010301w-vm0 Azure VM** 에 대한 원격 데스크톱 세션을 시작합니다.
 
-1. When prompted to sign in, provide the following credentials:
+1. 로그인이 시작되면 아래 사항을 입력하십시오:
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-1. Once you sign in, from the command prompt, run the following command:
+1. 로그인하면 명령 프롬프트에서 다음 명령을 실행합니다:
 
    ```
    hostname
    ```
 
-1. Review the output and verify that you are actually connected to the **az1010301w-vm0** Azure VM.
+1. 출력을 검토하고 **az1010301w-vm0** Azure VM에 실제로 연결되어 있는지 확인합니다
 
-   > **Note**: Repeat the same tests for the second region.
+   > **참고**: 다음 지역에서도 같은 테스트를 반복하십시오.
 
-> **Result**: After you completed this exercise, you have implemented and verified load balancing rules and NAT rules of Azure load balancers in both regions.
-
-
-### Exercise 2: Implement Azure Traffic Manager load balancing
-
-The main tasks for this exercise are as follows:
-
-1. Assign DNS names to public IP addresses of Azure load balancers
-
-1. Implement Azure Traffic Manager load balancing
-
-1. Verify Azure Traffic Manager load balancing
+> **결과**: 이 연습을 완료한 후 두 리전에서 Azure Load Balancer 의 로드 분산 규칙 및 NAT 규칙을 구현하고 확인했습니다.
 
 
-#### Task 1: Assign DNS names to public IP addresses of Azure load balancers
+### 연습 2: Azure Traffic Manager 로드 균형 조정 구현
 
-   > **Note**: This task is necessary because each Traffic Manager endpoint must have a DNS name assigned. 
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. In the Azure portal, navigate to the blade of the public IP address resource associated with the Azure load balancer in the first region named **az1010301w-lb-pip**. 
+1. Azure Load Balancer 의 공용 IP 주소에 DNS 이름 할당
 
-1. From the **az1010301w-lb-pip** blade, display its **Configuration** blade. 
+1. Azure Traffic Manager 로드 균형 조정 구현
 
-1. From the **az1010301w-lb-pip - Configuration** blade set the **DNS name label** of the public IP address to a unique value. 
-
-   > **Note**: The green check mark in the **DNS name label (optional)** text box will indicate whether the name you typed in is valid and unique. 
-
-1. Navigate to the blade of the public IP address resource associated with the Azure load balancer in the second region named **az1010302w-lb-pip**. 
-
-1. From the **az1010302w-lb-pip** blade, display its **Configuration** blade. 
-
-1. From the **az1010302w-lb-pip - Configuration** blade set the **DNS name label** of the public IP address to a unique value. 
-
-   > **Note**: The green check mark in the **DNS name label (optional)** text box will indicate whether the name you typed in is valid and unique. 
+1. Azure Traffic Manager 로드 균형 조정 확인
 
 
-#### Task 2: Implement Azure Traffic Manager load balancing
+#### 작업 1: Azure Load Balancer 의 공용 IP 주소에 DNS 이름 할당
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+   > **참고**: 각 Traffic Manager 끝점에는 DNS 이름이 할당되어 있어야 하기 때문에 이 작업이 필요합니다. 
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Traffic Manager profile**.
+1. Azure 포털에서 **az1010301w-lb-pip** 라는 첫 번째 리전에서 Azure Load Balancer 와 연결된 공용 IP 주소 리소스의 블레이드로 이동합니다. 
 
-1. Use the list of search results to navigate to the **Create Traffic Manager profile** blade.
+1. **az1010301w-lb-pip** 블레이드에서 **IP 구성** 블레이드를 표시합니다. 
 
-1. From the **Create Traffic Manager profile** blade, create a new Azure Traffic Manager profile with the following settings:
+1. **az1010301w-lb-pip에서 구성** 블레이드는 공용 IP주소의 **DNS 이름 레이블** 을 고유한 값으로 설정합니다. 
 
-    - Name: a globally unique name in the trafficmanager.net DNS namespace
+   > **참고**: **DNS 이름 레이블(선택 사항)** 텍스트 상자의 녹색 확인란은입력한 이름이 유효하고 고유한지 여부를 나타냅니다. 
 
-    - Routing method: **Weighted**
+1. **az1010302w-lb-pip** 라는 두 번째 영역에서 Azure Load Balancer 와 연결된 공용 IP 주소 리소스의 블레이드로 이동합니다. 
 
-    - Subscription: the name of the subscription you are using in this lab
+1. **az1010302w-lb-pip** 블레이드에서 **IP 구성** 블레이드를 표시합니다. 
 
-    - Resource group: the name of a new resource group **az1010303-RG**
+1. **az1010302w-lb-pip에서 구성** 블레이드는 공용 IP주소의 **DNS 이름 레이블** 을 고유한 값으로 설정합니다. 
 
-    - Location: either of the Azure regions you used earlier in this lab
-
-1. In the Azure portal, navigate to the blade of the newly provisioned Traffic Manager profile.
-
-1. From the Traffic Manager profile blade, display its **Configuration** blade and review the configuration settings.
-
-   > **Note**: The default TTL of the Traffic Manager profile DNS records is 60 seconds
-
-1. From the Traffic Manager profile blade, display its **Endpoints** blade.
-
-1. From the **Endpoints** blade, add the first endpoint with the following settings:
-
-    - Type: **Azure endpoint**
-
-    - Name: **az1010301w-lb-pip**
-
-    - Target resource type: **Public IP address**
-
-    - Target resource: **az1010301w-lb-pip**
-
-    - Weight: **100**
-
-    - Custom Header settings: leave blank
-
-    - Add as disabled: leave blank
-
-1. From the **Endpoints** blade, add the second endpoint with the following settings:
-
-    - Type: **Azure endpoint**
-
-    - Name: **az1010302w-lb-pip**
-
-    - Target resource type: **Public IP address**
-
-    - Target resource: **az1010302w-lb-pip**
-
-    - Weight: **100**
-
-    - Custom Header settings: leave blank
-
-    - Add as disabled: leave blank
-
-1. On the **Endpoints** blade, examine the entries in the **MONITORING STATUS** column for both endpoints. Wait until both are listed as **Online** before you proceed to the next task.
+   > **참고**: **DNS 이름 레이블(선택 사항)** 텍스트 상자의 녹색 확인란은입력한 이름이 유효하고 고유한지 여부를 나타냅니다. 
 
 
-#### Task 3: Verify Azure Traffic Manager load balancing
+#### 작업 2: Azure Traffic Manager 로드 균형 조정 구현
 
-1. From the **Endpoints** blade, switch to the **Overview** section of the Traffic Manager profile blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. Note the DNS name assigned to the Traffic Manager profile (the string following the **http://** prefix). 
+1. **리소스 블레이드 생성에서** Azure 마켓플레이스 에서 **Traffic Manager 프로필을** 검색하십시오.
 
-1. From the Azure Portal, start a PowerShell session in the Cloud Shell pane. 
+1. Traffic Manager를 만들기 **프로필 블레이드로 이동 검색 결과 목록을** 사용합니다.
 
-   > **Note**:  If this is the first time you are launching the Cloud Shell in the current Azure subscription, you will be asked to create an Azure file share to persist Cloud Shell files. If so, accept the defaults, which will result in creation of a storage account in an automatically generated resource group.
+1. 트래픽을 생성 관리자 **프로필 블레이드에서 다음 설정을 사용하여** 새 푸른 교통 관리자 프로파일을 작성 :
 
-1. In the Cloud Shell pane, run the following command, replacing the &lt;TM_DNS_name&lt; placeholder with the value of the DNS name assigned to the Traffic Manager profile you identified in the previous task:
+    - 이름: trafficmanager.net DNS 네임스페이스의 전역고유 이름
 
-   ```
-   nslookup <TM_DNS_name>
-   ```
+    - 라우팅 방법: **가중치 적용**
 
-1. Review the output and note the **Name** entry. This should match the DNS name of the one of the Traffic Manager profile endpoints you created in the previous task.
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-1. Wait for at least 60 seconds and run the same command again:
+    - 리소스 그룹: 새 리소스 그룹 **az1010303-RG** 의 이름
+
+    - 위치: 이 랩의 앞에서 사용한 Azure 지역 중 하나
+
+1. Azure 포털에서 새로 프로비저닝 된 Traffic Manager 프로필 **az1010303-tm** 의 블레이드로 이동합니다.
+
+1. **az1010303-tm** 블레이드에서 **az1010303-tm - 구성** 블레이드를 표시하고구성 설정을 검토합니다.
+
+   > **참고**: Traffic Manager 프로필 DNS 레코드의 기본 TTL은 60초입니다
+
+1. **az1010303-tm 블레이드에서** **az1010303-tm - 엔드포인트** 블레이드를표시합니다.
+
+1. **az1010303-tm - 끝점** 블레이드에서다음 설정으로 첫 번째 끝점을 추가합니다.
+
+    - 입력: **Azure 끝점**
+
+    - 이름: **az1010301w-lb-pip**
+
+    - 대상 리소스 타입: **공용 IP 주소**
+
+    - 대상 자원: **az1010301w-lb-pip**
+
+    - 두께: **100**
+
+    - 사용자 지정 헤더 설정: 비워 둡니다
+
+    - 사용 안 함으로 추가: 비워 둡니다
+
+1. **az1010303-tm - 끝점 블레이드에서** 다음 설정으로 두 번째 끝점을 추가합니다:
+
+    - 입력: **Azure 끝점**
+
+    - 이름: **az1010302w-lb-pip**
+
+    - 대상 리소스 타입: **공용 IP 주소**
+
+    - 대상 자원: **az1010302w-lb-pip**
+
+    - 두께: **100**
+
+    - 사용자 지정 헤더 설정: 비워 둡니다
+
+    - 사용 안 함으로 추가: 비워 둡니다
+
+1. **az1010303-tm - 끝점** 블레이드에서 두 끝점에 대한 **모니터링 상태** 열의 항목을 검사합니다. 다음 작업을 진행하기 전에 둘 다 **온라인** 으로 나열될 때까지 기다립니다.
+
+
+#### 작업 3: Azure Traffic Manager 로드 균형 조정 확인
+
+1. **az1010303-tm - 엔드포인트** 블레이드에서 **az1010303-tm** 블레이드로 전환하여 **개요** 섹션을 표시합니다.
+
+1. Traffic Manager 프로필에 할당된 DNS 이름 (**http://** 접두사 다음의 문자열)을 기록합니다. 
+
+1. Azure 포털에서 Cloud Shell 창에서 PowerShell 세션을 시작하십시오. 
+
+   > **참고**:  현재 Azure 구독에서 클라우드 셸을 처음 시작하는 경우 클라우드 셸 파일을 유지하도록 Azure 파일 공유를 만들라는 메시지가 표시됩니다. 이 경우 기본값을 허용하면 자동으로 생성된 리소스 그룹에서 저장소 계정이 생성됩니다.
+
+1. Cloud Shell 창에서 다음 명령을 실행하여 &lt;TM_DNS_name&amp;lt; 자리 표시자를 이전 작업에서 식별한 Traffic Manager 프로필에 할당된 DNS 이름 값으로 바꿉니다.
 
    ```
    nslookup <TM_DNS_name>
    ```
-1. Review the output and note the **Name** entry. This time, the entry should match the DNS name of the other Traffic Manager profile endpoint you created in the previous task.
 
-> **Result**: After you completed this exercise, you have implemented and verified Azure Traffic Manager load balancing
+1. 출력을 검토하고 **이름** 항목을 기록합니다. 이전 작업에서 만든 Traffic Manager 프로필 끝점 중 하나의 DNS 이름과 일치해야 합니다.
+
+1. 60초 이상 기다렸다가 동일한 명령을 다시 실행합니다:
+
+   ```
+   nslookup <TM_DNS_name>
+   ```
+1. 출력을 검토하고 **이름** 항목을 기록합니다. 이번에는 항목이 이전 작업에서 만든 다른 Traffic Manager 프로필 끝점의 DNS 이름과 일치해야 합니다.
+
+> **결과**: 이 연습을 완료한 후 Azure Traffic Manager 로드 분산을 구현하고 확인했습니다

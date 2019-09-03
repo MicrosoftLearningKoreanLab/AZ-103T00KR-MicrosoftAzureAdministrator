@@ -1,377 +1,334 @@
+﻿---
+랩:
+    제목: '스토리지 구현 및 관리'
+    모듈: '스토리지 구현 및 관리'
 ---
-lab:
-    title: 'Implement and Manage Storage'
-    module: 'Module 03 - Azure Storage'
----
 
-# Lab: Implement and Manage Storage
+# 랩: 스토리지 구현 및 관리
 
-All tasks in this lab are performed from the Azure portal (including a PowerShell Cloud Shell session) except for Exercise 2 Task 2, which includes steps performed from a Remote Desktop session to an Azure VM
+이 랩의 모든 작업은 원격 데스크톱 세션에서 Azure VM에 수행된 단계를 포함하는 작업 2를 제외한 Azure 포털(PowerShell Cloud Shell 세션 포함)에서 수행됩니다.
 
-   > **Note**: When not using Cloud Shell, the lab virtual machine must have the Azure PowerShell 1.2.0 module (or newer) installed [https://docs.microsoft.com/en-us/powershell/azure/install-az-ps](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps)
+   > **참고**: Cloud Shell을 사용하지 않는 경우 랩 가상 시스템에 Azure PowerShell 1.2.0 모듈(또는 최신 모듈)이 설치되어 있어야 합니다.[https://docs.microsoft.com/ko-kr/powershell/azure/install-az-ps?view=azps-1.2.0](https://docs.microsoft.com/ko-kr/powershell/azure/install-az-ps?view=azps-1.2.0)
 
-Lab files: 
+랩 파일: 
 
--  **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.json**
+-  **Labfiles\\AZ100\\Mod02\\az-100-02_azuredeploy.json**
 
--  **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.parameters.json**
+-  **Labfiles\\AZ100\\Mod02\\az-100-02_azuredeploy.parameters.json**
 
-### Scenario
+### 시나리오
   
-Adatum Corporation wants to leverage Azure Storage for hosting its data
+Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 활용하려고 합니다
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
--  Deploy an Azure VM by using an Azure Resource Manager template
+-  Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
--  Implement and use Azure Blob Storage
+-  Azure Blob 저장소 구현 및 사용
 
--  Implement and use Azure File Storage
+-  Azure 파일 저장소 구현 및 사용
 
 
-### Exercise 0: Prepare the lab environment
+### 연습 0: 랩 환경 준비
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Deploy an Azure VM by using an Azure Resource Manager template
+1. Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
 
-#### Task 1: Deploy an Azure VM by using an Azure Resource Manager template
+#### 작업 1: Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the Azure subscription you intend to use in this lab.
+1. 랩 가상 컴퓨터에서 Microsoft Edge를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 이 랩에서 사용하려는 Azure 구독에서 소유자 역할이 있는 Microsoft 계정을 사용하여 로그인합니다.
 
-1. In the Azure portal, navigate to the **Subscriptions** blade.
+1. Azure 포털에서 **구독** 블레이드로이동합니다.
 
-1. From the **Subscriptions** blade, navigate to the blade displaying properties of your Azure subscription.
+1. **구독** 블레이드에서Azure 구독의 속성을 표시하는 블레이드로 이동합니다.
 
-1. From the blade displaying the properties of your subscription, navigate to its **Resource providers** blade.
+1. 구독 속성을 표시하는 블레이드에서 자원 공급자 **블레이드로** 이동합니다.
 
-1. On the **Resource providers** blade, register the following resource providers (if these resource providers have not been yet registered):
+1. **리소스 공급자** 블레이드에서 다음 리소스 공급자를 등록합니다(이러한 리소스 공급자가 아직 등록되지 않은 경우).
 - Microsoft.Network
 - Microsoft.Compute
 - Microsoft.Storage
 
-**Note:** This step registers the Azure Resource Manager Microsoft.Network, Microsoft.Compute, and Microsoft.Storage resource providers. This is a one-time operation (per subscription) required when using Azure Resource Manager templates to deploy resources managed by these resource providers (if these resource providers have not been yet registered).
+**참고:** 이 단계에서는 Azure Resource Manager Microsoft.Network, Microsoft.Compute 및 Microsoft.Storage 리소스 공급자를 등록합니다. Azure Resource Manager 템플릿을 사용하여 이러한 리소스 공급자가 관리하는 리소스를 배포하는 데 필요한 일회성 작업(구독당)입니다(이러한 리소스 공급자가 아직 등록되지 않은 경우).
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Template deployment**, and select **Template deployment (deploy using custom templates)**
+1. **리소스 만들기** 블레이드에서 Azure 마켓플레이스에서 **템플릿 배포** 를 검색합니다.
 
-1. Click **Create**.
+1. 검색 결과 목록을 사용하여 **사용자 지정 템플릿** 블레이드 배포로 이동합니다.
 
-1. On the **Custom deployment** blade, click the **Build your own template in the editor** link. If you do not see this link, click **Edit template** instead.
+1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿 빌드** 를 선택합니다.
 
-1. From the **Edit template** blade, load the template file **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.json**. 
+1. **편집 템플릿** 블레이드에서 템플릿 파일 **Labfiles\\AZ100\\Mod02\\az-100-02_azuredeploy.json** 을 로드합니다. 
 
-   > **Note**: Review the content of the template and note that it defines deployment of an Azure VM hosting Windows Server 2016 Datacenter.
+   > **참고**: 템플릿의 내용을 검토하고 Windows Server 2016 데이터 센터를 호스팅하는 Azure VM의 배포를 정의합니다.
 
-1. Save the template and return to the **Custom deployment** blade. 
+1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, navigate to the **Edit parameters** blade.
+1. **사용자 지정 배포** 블레이드에서 **매개 변수 편집** 블레이드로 이동합니다.
 
-1. From the **Edit parameters** blade, load the parameters file **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.parameters.json**. 
+1. **편집 매개 변수** 블레이드에서 매개 변수 파일 **Labfiles\\AZ100\\Mod02\\az-100-02_azuredeploy.parameters.json** 을 로드합니다. 
 
-1. Save the parameters and return to the **Custom deployment** blade. 
+1. 매개 변수를 저장하고 **사용자** 지정 배포 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, initiate a template deployment with the following settings:
+1. **사용자 지정 배포** 블레이드에서 다음 설정을 사용하고 템플릿 배포를 시작합니다.
 
-    - Subscription: the name of the subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: the name of a new resource group **az1000201-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1000201-RG** 의 이름
 
-    - Location: the name of the Azure region which is closest to the lab location and where you can provision Azure VMs
+    - 위치: 랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 위치
 
-    - Vm Size: **Standard_DS2_v2**
+    - Vm 크기: **Standard_DS1_v2**
 
-    - Vm Name: **az1000201-vm1**
+    - Vm 이름: **az1000201-vm1**
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Virtual Network Name: **az1000201-vnet1**
+    - 가상 네트워크 이름: **az1000201-vnet1**
 
-   > **Note**: To identify Azure regions where you can provision Azure VMs, refer to [**https://azure.microsoft.com/en-us/regions/offers/**](https://azure.microsoft.com/en-us/regions/offers/)
+   > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 
-   > **Note**: Do not wait for the deployment to complete but proceed to the next exercise. You will use the virtual machine **az1000201-vm1** in the second exercise of this lab.
+   > **참고**: 배포가 완료될 때까지 기다리지 말고 다음 연습으로 진행합니다. 이 실습의 두 번째 실습에서 가상 시스템 **az1000201-vm1** 을 사용합니다.
 
-> **Result**: After you completed this exercise, you have initiated template deployment of an Azure VM **az1000201-vm1** that you will use in the second exercise of this lab.
-
-
-### Exercise 1: Implement and use Azure Blob Storage
-
-The main tasks for this exercise are as follows:
-
-1. Create Azure Storage accounts
-
-1. Review configuration settings of Azure Storage accounts
-
-1. Manage Azure Storage Blob Service
-
-1. Copy a container and blobs between Azure Storage accounts
-
-1. Use a Shared Access Signature (SAS) key to access a blob
+> **결과**: 이 실습을 마친 후에는 이 실습의 두 번째 실습에서 사용할 Azure VM **az1000201-vm1** 의 템플릿 배포를 시작했습니다.
 
 
-#### Task 1: Create Azure Storage accounts
+### 연습 1: Azure Blob 저장소 구현 및 사용
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Storage account**.
+1. Azure Storage 계정 만들기
 
-1. Use the list of search results to navigate to the **Create storage account** blade.
+1. Azure Storage 계정의 구성 설정 검토
 
-1. From the **Create storage account** blade, create a new storage account with the following settings: 
+1. Azure Storage Blob 서비스 관리
 
-    - Subscription: the same subscription you selected in the previous task
+1. Azure Storage 계정 간에 컨테이너 및 Blob 복사
 
-    - Resource group: the name of a new resource group **az1000202-RG**
-
-    - Storage account name: any valid, unique name between 3 and 24 characters consisting of lowercase letters and digits
-
-    - Location: the name of the Azure region which you selected in the previous task
-
-    - Performance: **Standard**
-
-    - Account kind: **Storage (general purpose v1)**
-
-    - Replication: **Locally-redundant storage (LRS)**
-
-1. Click **Review + create**, and then click **Create**.
-
-1. Do not wait for the storage account to be provisioned but proceed to the next step.
-
-1. In the Azure portal, navigate to the **Create a resource** blade.
-
-1. From the **Create a resource** blade, search Azure Marketplace for **Storage account**.
-
-1. Use the list of search results to navigate to the **Create storage account** blade.
-
-1. From the **Create storage account** blade, create a new storage account with the following settings: 
-
-    - Subscription: the same subscription you selected in the previous task
-
-    - Resource group: the name of a new resource group **az1000203-RG**
-
-    - Storage account name: any valid, unique name between 3 and 24 characters consisting of lowercase letters and digits
-
-    - Location: the name of an Azure region different from the one you chose when creating the first storage account
-
-    - Performance: **Standard**
-
-    - Account kind: **StorageV2 (general purpose v2)**
-
-    - Access tier: **Hot**
-
-    - Replication: **Geo-redundant storage (GRS)**
-
-1. Click **Review + create**, then click **Create**.
-
-1. Wait for the storage account to be provisioned. This should take less than a minute.
+1. SAS(공유 액세스 서명) 키를 사용하여 Blob에 액세스
 
 
-#### Task 2: Review configuration settings of Azure Storage accounts
+#### 작업 1: Azure Storage 계정 만들기
+
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
+
+1. **리소스 생성** 블레이드에서 **스토리지 계정** 을 위한 Azure 마켓 플레이스를 검색하십시오.
+
+1. 검색 결과 목록을 사용하여 **저장소 계정 만들기** 블레이드로 이동합니다.
+
+1. **스토리지 계정 만들기** 블레이드에서 다음 설정으로 새 스토리지 계정을 만듭니다: 
+
+    - 구독 : 이전 작업에서 선택한 동일한 구독
+
+    - 리소스 그룹: 새 리소스 그룹 **az1000202-RG** 의 이름
+
+    - 저장소 계정 이름: 소문자와 숫자로 구성된 3~24자 사이의 유효하고 고유한 이름
+
+    - 위치: 이전 작업에서 선택한 Azure 지역의 이름
+
+    - 성능: **표준**
+
+    - 계정 종류: **보관 (범용 v1)**
+
+    - 복제: **로컬 중복 스토리지 (LRS)**
+
+    - 보안 전송 필요: **비활성화**
+
+    - 다음 에서 액세스 허용: **모든 네트워크**
+
+    - **데이터 레이크 스토리지 Gen2** 계층적 네임스페이스: **비활성화**
+
+1. 스토리지 계정이 프로비저닝 될 때까지 기다리지 말고 다음 단계로 진행하십시오.
+
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
+
+1. **리소스 생성** 블레이드에서 **스토리지 계정** 을 위한 Azure 마켓 플레이스를 검색하십시오.
+
+1. 검색 결과 목록을 사용하여 **저장소 계정 만들기** 블레이드로 이동합니다.
+
+1. **스토리지 계정 만들기** 블레이드에서 다음 설정으로 새 스토리지 계정을 만듭니다: 
+
+    - 구독 : 이전 작업에서 선택한 동일한 구독
+
+    - 리소스 그룹: 새 리소스 그룹 **az1000203-RG** 의 이름
+
+    - 저장소 계정 이름: 소문자와 숫자로 구성된 3~24자 사이의 유효하고 고유한 이름
+
+    - 위치: 첫 번째 저장소 계정을 만들 때 선택한 것과 다른 Azure 영역의 이름
+
+    - 성능: **표준**
+
+    - 계정 종류: **보관 (범용 v2)**
+
+    - 액세스 계층: **뜨거운**
+
+    - 복제: **지리적 중복 저장 장치 (GRS)**
+
+    - 보안 전송 필요: **비활성화**
+
+    - 다음 에서 액세스 허용: **모든 네트워크**
+    
+    - **데이터 레이크 스토리지 Gen2** 계층적 네임스페이스: **비활성화**
+
+1. 저장소 계정이 프로비전될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
+
+
+#### 작업 2: Azure Storage 계정의 구성 설정 검토
   
-1. In Azure Portal, navigate to the blade of the first storage account you created. 
+1. Azure Portal에서 만든 첫 번째 저장소 계정의 블레이드로 이동합니다. 
 
-1. With your storage account blade open, review the storage account configuration in the **Overview** section, including the performance, replication, and account kind settings.
+1. 저장소 계정 블레이드를 열면 성능, 복제 및 계정 종류 설정을 포함하여 **개요** 섹션의 저장소 계정 구성을 검토합니다.
 
-1. Display the **Access keys** blade. Note that you have the option of copying the values of storage account name, as well as the values of key1 and key2. You also have the option to regenerate each of the keys.
+1. 액세스 **키** 블레이드를 표시합니다. 저장소 계정 이름 값과 key1 및 key2 값을 복사할 수 있습니다. 각 키를 다시 생성할 수도 있습니다.
 
-1. Display the **Configuration** blade of the storage account.
+1. 저장소 **계정의 구성** 블레이드를 표시합니다.
 
-1. On the **Configuration** blade, note that you have the option of performing an upgrade to **General Purpose v2** account, enforcing secure transfer, and changing the replication settings to either **Geo-redundant storage (GRS)** or **Read-access geo-redundant storage (RA-GRS)**. However, you cannot change the performance setting (this setting can only be assigned when the storage account is created).
+1. **구성** 블레이드에서 **범용 v2** 계정으로 업그레이드를 수행하고, 보안 전송을 적용하고, 복제 설정을 **GRS(지리적 중복 저장소)** 또는 **읽기 액세스 지리적 중복 저장소(RA-GRS)**. 그러나 성능 설정을 변경할 수 없습니다(이 설정은 저장소 계정을 만들 때만 할당할 수 있음).
 
-1. Display the **Encryption** blade of the storage account. Note that encryption is enabled by default and that you have the option of using your own key.
+1. 저장소 **계정의 암호화** 블레이드를 표시합니다. 암호화는 기본적으로 활성화되어 있으며 사용자 고유의 키를 사용할 수 있습니다.
 
-   > **Note**: Do not change the configuration of the storage account. 
+   > **참고**: 저장소 계정의 구성을 변경하지 마십시오. 
 
-1. In Azure Portal, navigate to the blade of the second storage account you created. 
+1. Azure Portal에서 만든 두 번째 저장소 계정의 블레이드로 이동합니다. 
 
-1. With your storage account blade open, review the storage account configuration in the **Overview** section, including the performance, replication, and account kind settings.
+1. 저장소 계정 블레이드를 열면 성능, 복제 및 계정 종류 설정을 포함하여 **개요** 섹션의 저장소 계정 구성을 검토합니다.
 
-1. Display the **Configuration** blade of the storage account.
+1. 저장소 **계정의 구성** 블레이드를 표시합니다.
 
-1. On the **Configuration** blade, note that you have the option of disabling the secure transfer requirement, setting the default access tier to **Cool**, and changing the replication settings to either **Locally-redundant storage (LRS)** or **Read-access geo-redundant storage (RA-GRS)**. In this case, you also cannot change the performance setting.
+1. **구성** 블레이드에서 보안 전송 요구 사항을 사용하지 않도록 설정하고, 기본 액세스 계층을 **Cool** 으로 설정하고, 복제 설정을 로컬 중복 **저장소(LRS)** 또는 **읽기 액세스 지리적 중복 저장소(RA-GRS)**. 이 경우 성능 설정도 변경할 수 없습니다.
 
-1. Display the **Encryption** blade of the storage account. Note that in this case encryption is also enabled by default and that you have the option of using your own key.
-
-
-#### Task 3: Manage Azure Storage Blob Service
-
-1. In the Azure portal, navigate to the **Blobs** blade of the first storage account you created. 
-
-1. From the **Blobs** blade of the first storage account, create a new container named **az1000202-container** with the **Public access level** set to **Private (no anonymous access)**. 
-
-1. From the **az1000202-container** blade, upload **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.json** and **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.parameters.json** into the container.
+1. 저장소 **계정의 암호화** 블레이드를 표시합니다. 이 경우 암호화도 기본적으로 활성화되어 있으며 사용자 고유의 키를 사용할 수 있습니다.
 
 
-#### Task 4: Copy a container and blobs between Azure Storage accounts
+#### 작업 3: Azure Storage Blob 서비스 관리
 
-1. From the Azure Portal, start a PowerShell session in the Cloud Shell pane. 
+1. Azure 포털에서 첫 번째 저장소 계정의 **Blobs** 블레이드로 이동합니다. 
 
-   > **Note**: If this is the first time you are launching the Cloud Shell in the current Azure subscription, you will be asked to create an Azure file share to persist Cloud Shell files. If so, accept the defaults, which will result in creation of a storage account in an automatically generated resource group.
+1. 첫 번째 저장소 계정의 **Blobs** 블레이드에서 **공용 액세스 수준** 이 **개인(익명 액세스없음)** 으로 설정된 **az1000202-컨테이너** 라는 새 컨테이너를 만듭니다. 
 
-1. In the Cloud Shell pane, run the following commands:
+1. **az1000202-컨테이너** 블레이드에서 **Labfiles\\AZ100\Mod02\az-100-json** 및 **Labfiles\AZ100\\Mod02\\az-100-02_azuredeploy.json** 을 컨테이너에 업로드합니다.
 
-   ```pwsh
-   $containerName = 'az1000202-container'
+
+#### 작업 4: Azure Storage 계정 간에 컨테이너 및 Blob 복사
+
+1. Azure 포털에서 Cloud Shell 창에서 PowerShell 세션을 시작하십시오. 
+
+   > **참고**: 현재 Azure 구독에서 클라우드 셸을 처음 시작하는 경우 클라우드 셸 파일을 유지하도록 Azure 파일 공유를 만들라는 메시지가 표시됩니다. 이 경우 기본값을 허용하면 자동으로 생성된 리소스 그룹에서 저장소 계정이 생성됩니다.
+
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
+
+   ```
    $storageAccount1Name = (Get-AzStorageAccount -ResourceGroupName 'az1000202-RG')[0].StorageAccountName
    $storageAccount2Name = (Get-AzStorageAccount -ResourceGroupName 'az1000203-RG')[0].StorageAccountName
    $storageAccount1Key1 = (Get-AzStorageAccountKey -ResourceGroupName 'az1000202-RG' -StorageAccountName $storageAccount1Name)[0].Value
    $storageAccount2Key1 = (Get-AzStorageAccountKey -ResourceGroupName 'az1000203-RG' -StorageAccountName $storageAccount2Name)[0].Value
-   $context1 = New-AzStorageContext -StorageAccountName $storageAccount1Name -StorageAccountKey $storageAccount1Key1
-   $context2 = New-AzStorageContext -StorageAccountName $storageAccount2Name -StorageAccountKey $storageAccount2Key1
-   ```
-   > **Note**: These commands set the values of variables representing the names of the blob container containing the blobs you uploaded in the previous task, the two storage accounts, their corresponding keys, and the corresponding security context for each. You will use these values to generate a SAS token to copy blobs between storage accounts by using the AZCopy command line utility.
-
-1. In the Cloud Shell pane, run the following command:
-
-   ```pwsh
-   New-AzStorageContainer -Name $containerName -Context $context2 -Permission Off
-   ```
-   > **Note**: This command creates a new container with the matching name in the second storage account
-   
-1. In the Cloud Shell pane, run the following commands:
-
-   ```pwsh
-   $containerToken1 = New-AzStorageContainerSASToken -Context $context1 -ExpiryTime(get-date).AddHours(24) -FullUri -Name $containerName -Permission rwdl
-   $containerToken2 = New-AzStorageContainerSASToken -Context $context2 -ExpiryTime(get-date).AddHours(24) -FullUri -Name $containerName -Permission rwdl
-   ```
-   > **Note**: These commands generate SAS keys that you will use in the next step to copy blobs between two containers.
-   
-1. In the Cloud Shell pane, run the following command:
-
-   ```pwsh
-   azcopy cp $containerToken1 $containerToken2 --recursive=true
    ```
 
-   > **Note**: This command uses the AzCopy utility to copy the content of the container between the two storage accounts. 
+   > **참고**: 이러한 명령은 각 저장소 계정의 이름과 해당 키를 나타내는 변수의 값을 설정합니다. 다음 단계에서 AZCopy 명령줄 유틸리티를 사용하여 저장소 계정 간에 Blob을 복사하려면 이러한 값을 사용합니다.
 
-1. Verify that the command returned the results confirming that the two files were transferred. 
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
 
-1. Navigate to the **Blobs** blade of the second storage account and verify that it includes the entry representing the newly created **az1000202-container** and that the container includes two copied blobs.
+   ```
+   azcopy --source https://$storageAccount1Name.blob.core.windows.net/az1000202-container/ --destination https://$storageAccount2Name.blob.core.windows.net/az1000302-container/ --source-key $storageAccount1Key1 --dest-key $storageAccount2Key1 --include "az" --sync-copy --recursive
+   ```
 
+   > **참고**: 이 명령은 AzCopy 유틸리티를 사용하여 두 저장소 계정 간에 컨테이너의 내용을 복사합니다. 
 
-#### Task 5: Use a Shared Access Signature (SAS) key to access a blob
+1. 명령이 두 파일이 전송되었는지 확인하는 결과를 반환했는지 확인합니다. 
 
-1. From the **Blobs** blade of the second storage account, navigate to the container **az1000202-container**, and then open the **az-100-02_azuredeploy.json** blade.
-
-1. On the **az-100-02_azuredeploy.json** blade, copy the value of the **URL** property.
-
-1. Open another Microsoft Edge window and navigate to the URL you copied in the previous step. 
-
-   > **Note**: The browser will display the **ResourceNotFound**. This is expected since the container has the **Public access level** set to **Private (no anonymous access)**.
-
-1. On the **az-100-02_azuredeploy.json** blade, generate a shared access signature (SAS) and the corresponding URL with the following settings:
-
-    - Permissions: **Read**
-
-    - Start date/time: specify the current date/time in your current time zone
-
-    - Expiry date/time: specify the date/time 24 hours ahead of the current time
-
-    - Allowed IP addresses: leave blank
-
-    - Allowed protocols: **HTTP**
-
-    - Signing key: **Key 1**
-
-1. On the **az-100-02_azuredeploy.json** blade, copy **Blob SAS URL**.
-
-1. From the previously opened Microsoft Edge window, navigate to the URL you copied in the previous step. 
-
-   > **Note**: This time, you will be prompted whether you want to open or save **az-100-02_azuredeploy.json**. This is expected as well, since this time you are no longer accessing the container anonymously, but instead you are using the newly generated SAS key, which is valid for the next 24 hours.
-
-1. Close the Microsoft Edge window displaying the prompt. 
-
-> **Result**: After you completed this exercise, you have created two Azure Storage accounts, reviewed their configuration settings, created a blob container, uploaded blobs into the container, copied the container and blobs between the storage accounts, and used a SAS key to access one of the blobs. 
+1. 두 번째 저장소 계정의 **Blobs** 블레이드로 이동하여 새로 만든 **az1000202-컨테이너** 를 나타내는 항목이 포함되어있고 컨테이너에 복사된 Blob 두 개가 포함되어 있는지 확인합니다.
 
 
-### Exercise 2: Implement and use Azure File Storage
+#### 작업 5: SAS(공유 액세스 서명) 키를 사용하여 Blob에 액세스
 
-The main tasks for this exercise are as follows:
+1. 두 번째 저장소 계정의 **Blobs** 블레이드에서 컨테이너 **az1000202-컨테이너** 로 이동한다음 **az-100-02_azuredeploy.json** 블레이드를 엽니다.
 
-1. Create an Azure File Service share
+1. **az-100-02_azuredeploy.json** 블레이드에서 **URL** 속성의 값을 복사합니다.
 
-1. Map a drive to the Azure File Service share from an Azure VM
+1. 다른 Microsoft Edge 창을 열고 이전 단계에서 복사한 URL로 이동합니다. 
+
+   > **참고**: 브라우저에 **ResourceNotFound** 가 표시됩니다. 컨테이너에 **공용 액세스 수준이** **Private(익명 액세스 없음)으로** 설정되어 있기 때문에 이 권한이 예상됩니다.
+
+1. **az-100-02_azuredeploy.json** 블레이드에서다음 설정을 통해 공유 액세스 서명(SAS) 및 해당 URL을 생성합니다:
+
+    - 사용 권한: **읽기**
+
+    - 시작 날짜/시간: 현재 표준 시간대의 현재 날짜/시간 지정
+
+    - 만료 날짜/시간: 현재 시간보다 24시간 앞선 날짜/시간 지정
+
+    - 허용된 IP 주소: 비워 둡니다
+
+    - 허용된 프로토콜: **HTTP**
+
+    - 서명 키: **키 1**
+
+1. **az-100-02_azuredeploy.json** 블레이드에서 **Blob SAS URL** 을 복사합니다.
+
+1. 이전에 열려 있는 Microsoft Edge 창에서 이전 단계에서 복사한 URL로 이동합니다. 
+
+   > **참고**: 이번에는 **az-100-02_azuredeploy.json** 을 열거나 저장할지 묻는 메시지가 표시됩니다. 이 시간 동안 컨테이너에 익명으로 더 이상 액세스하지 않고 다음 24시간 동안 유효한 새로 생성된 SAS 키를 사용하기 때문에 이 시간도 예상됩니다.
+
+1. 프롬프트가 표시되는 Microsoft Edge 창을 닫습니다. 
+
+> **결과**: 이 연습을 완료한 후 두 개의 Azure Storage 계정을 만들고, 구성 설정을 검토하고, Blob 컨테이너를 만들고, 컨테이너에 Blob을 업로드하고, 저장소 계정 간에 컨테이너 및 Blob을 복사하고, SAS 키를 사용하여 Blob 중 하나에 액세스할 수 있습니다. 
 
 
-#### Task 1: Create an Azure File Service share
+### 연습 2: Azure 파일 저장소 구현 및 사용
+
+이 연습의 주요 작업은 다음과 같습니다:
+
+1. Azure 파일 서비스 공유 만들기
+
+1. Azure VM에서 드라이브를 Azure 파일 서비스 공유로 매핑
+
+
+#### 작업 1: Azure 파일 서비스 공유 만들기
   
-1. In the Azure portal, navigate to the blade displaying the properties of the second storage account you created in the previous exercise.
+1. Azure 포털에서 이전 연습에서 만든 두 번째 저장소 계정의 속성을 표시하는 블레이드로 이동합니다.
 
-1. From the storage account blade, display the properties of its File Service.
+1. 저장소 계정 블레이드에서 파일 서비스의 속성을 표시합니다.
 
-1. From the storage account **Files** blade, create a new file share with the following settings:
+1. 저장소 계정 **파일** 블레이드에서다음 설정으로 새 파일 공유를 만듭니다:
 
-    - Name: **az10002share1**
+    - 이름: **az10002share1**
 
-    - Quota: **5 GB**
+    - 문자열에: **5 GB**
 
 
-#### Task 2: Map a drive to the Azure File Service share from an Azure VM
+#### 작업 2: Azure VM에서 드라이브를 Azure 파일 서비스 공유로 매핑
 
-   > **Note**: Before you start this task, ensure that the template deployment you started in Exercise 0 has completed. 
+   > **참고**: 이 작업을 시작하기 전에 연습 0에서 시작한 템플릿 배포가 완료되었는지 확인합니다. 
 
-1. Navigate to the **az10002share1** blade and display the **Connect** blade.
+1. **az10002share1** 블레이드로 **이동하여** 연결 블레이드를 표시합니다.
 
-1. From the **Connect** blade, copy into Clipboard the PowerShell commands that connect to the file share from a Windows computer.
+1. **연결** 블레이드에서 Windows 컴퓨터의 파일 공유에 연결하는 PowerShell 명령을 클립보드에 복사합니다.
 
-1. In the Azure portal, navigate to the **az1000201-vm1** blade.
+1. Azure 포털에서 **az1000201-vm1** 블레이드로이동합니다.
 
-1. From the **az1000201-vm1** blade, connect to the Azure VM via the RDP protocol and, when prompted to sign in, provide the following credentials:
+1. **az1000201-vm1** 블레이드에서 RDP 프로토콜을 통해 Azure VM에 연결하고 로그인하라는 메시지가 표시되면 다음 자격 증명을 제공합니다:
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-1. Within the RDP session, start a Windows PowerShell ISE session. 
+1. RDP 세션 내에서 Windows PowerShell ISE 세션을 시작합니다. 
 
-1. From the Windows PowerShell ISE session, open the script pane and paste into it the content of your local Clipboard.
+1. Windows PowerShell ISE 세션에서 스크립트 창을 열고 로컬 클립보드의 내용을 붙여넣습니다.
 
-1. Paste the script into the PowerShell ISE session, add `` -Persist `` at the end of the script, execute the script, and verify that its output confirms successful mapping of the Z: drive to the Azure Storage File Service share.
+1. 스크립트를 실행하고 출력이 Z: 드라이브를 Azure 저장소 파일 서비스 공유로 성공적으로 매핑했는지 확인합니다.
 
-1. Start File Explorer, navigate to the Z: drive and create a folder named **Folder1**.
+1. 파일 탐색기를 시작하고 Z로 이동합니다. **Folder1** 이란 이름의 폴더를 만듭니다.
 
-1. In the File Explorer window, navigate to **Folder1** and create a text document named **File1.txt**. 
+1. 파일 탐색기 창에서 **Folder1** 로 이동하여 **File1.txt** 라는 텍스트 문서를 만듭니다. 
 
-   > **Note**: Make sure that you take into account the default configuration of File Explorer that does not display known file extensions in order to avoid creating a file named **File1.txt.txt**.
+   > **참고**: **File1.txt.txt** 라는 파일을 만들지 않도록 알려진 파일 확장명이 표시되지 않는 파일 탐색기의 기본 구성을 고려해야 합니다.
 
-1. From the PowerShell prompt, enter **Z:** to change the directory context to the mapped drive. 
-
-1. From the PowerShell prompt, enter **dir** to list the contents of the drive. You should see the directory that you created from File Explorer.
-
-1. From the PowerShell prompt, enter **cd Folder1** to change directories to the folder. Run the **dir** command again to list the file contents.
-
-> **Result**: After you completed this exercise, you have created an Azure File Service share, mapped a drive to the file share from an Azure VM, and used File Explorer from the Azure VM to create a folder and a file in the file share.
-
-## Exercise 3: Remove lab resources
-
-#### Task 1: Open Cloud Shell
-
-1. At the top of the portal, click the **Cloud Shell** icon to open the Cloud Shell pane.
-
-1. At the Cloud Shell interface, select **Bash**.
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to list all resource groups you created in this lab:
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv
-   ```
-
-1. Verify that the output contains only the resource groups you created in this lab. These groups will be deleted in the next task.
-
-#### Task 2: Delete resource groups
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to delete the resource groups you created in this lab
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
-   ```
-
-1. Close the **Cloud Shell** prompt at the bottom of the portal.
-
-> **Result**: In this exercise, you removed the resources used in this lab.
+> **결과**: 이 연습을 완료한 후 Azure 파일 서비스 공유를 만들고, Azure VM에서 파일 공유에 드라이브를 매핑하고, Azure VM의 파일 탐색기를 사용하여 파일 공유에 폴더와 파일을 만들었습니다.

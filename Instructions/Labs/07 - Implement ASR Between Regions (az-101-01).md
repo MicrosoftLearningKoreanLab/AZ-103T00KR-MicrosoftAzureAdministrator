@@ -1,220 +1,184 @@
+﻿---
+랩:
+    제목: 'Azure 지역 간에 Azure 사이트 복구 구현'
+    모듈: ‘서버 마이그레이션'
 ---
-lab:
-    title: 'Azure Site Recovery between Azure regions'
-    module: 'Module 07 - Data Protection '
----
 
-# Lab: Implement Azure Site Recovery between Azure regions
+# 랩: Azure 지역 간에 Azure 사이트 복구 구현
 
-All tasks in this lab are performed from the Azure portal
+이 랩의 모든 작업은 Azure 포털에서 수행됩니다
 
-Lab files: 
+랩 파일: 
 
--  **Labfiles\\Module_07\\Azure_Site_Recovery_Between_Regions\\az-101-01_azuredeploy.json**
+-  **Labfiles\\AZ101\\Mod01\\az-101-01_azuredeploy.json**
 
--  **Labfiles\\Module_07\\Azure_Site_Recovery_Between_Regions\\az-101-01_azuredeploy.parameters.json**
+-  **Labfiles\\AZ101\\Mod01\\az-101-01_azuredeploy.parameters.json**
 
-### Scenario
+### 시나리오
   
-Adatum Corporation wants to implement Azure Site Recovery to facilitate migration and protection of Azure VMs between regions
+Adatum Corporation은 Azure 사이트 복구를 구현하여 지역간 Azure VM 마이그레이션 및 보호를 용이하게 합니다.
 
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
--  Implement Azure Site Recovery Vault
+-  Azure 사이트 복구 볼트 구현
 
--  Configure replication of Azure VMs between Azure regions by using Azure Site Recovery
+-  Azure 사이트 복구를 사용하여 Azure 영역 간의 Azure VM 복제 구성
 
 
-### Exercise 1: Implement prerequisites for migration of Azure VMs by using Azure Site Recovery 
+### 연습 1: Azure 사이트 복구를 사용하여 Azure VM 마이그레이션을 위한 사전 요구 사항 구현 
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Deploy an Azure VM to be migrated by using an Azure Resource Manager template
+1. Azure Resource Manager 템플릿을 사용하여 마이그레이션 할 Azure VM 배포
 
-1. Create an Azure Recovery Services vault
+1. Azure 복구 서비스 자격 증명 모음 만들기
   
 
-#### Task 1: Deploy an Azure VM to be migrated by using an Azure Resource Manager template
+#### 작업 1: Azure Resource Manager 템플릿을 사용하여 마이그레이션 할 Azure VM 배포
 
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the Azure subscription you intend to use in this lab.
+1. 랩 가상 머신에서 Microsoft Edge를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 이 랩에서 사용하려는 Azure 구독에서 소유자 역할이 있는 Microsoft 계정을 사용하여 로그인합니다.
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Template deployment**.
+1. **리소스 만들기** 블레이드에서 Azure 마켓플레이스에서 **템플릿 배포** 를 검색합니다.
 
-1. Use the list of search results to navigate to the **Deploy a custom template** blade.
+1. 검색 결과 목록을 사용하여 **사용자 지정 템플릿** 블레이드 배포로 이동합니다.
 
-1. On the **Custom deployment** blade, click the **Build your own template in the editor** link. If you do not see this link, click **Edit template** instead.
+1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿 빌드** 를 선택합니다.
 
-1. From the **Edit template** blade, load the template file **Labfiles\\Module_07\\Azure_Site_Recovery_Between_Regions\\az-101-01_azuredeploy.json**. 
+1. **편집 템플릿** 블레이드에서 템플릿 파일 **Labfiles\\AZ101\\Mod01\\az-101-01_azuredeploy.json** 을 로드합니다. 
 
-   > **Note**: Review the content of the template and note that it defines deployment of an Azure VM hosting Windows Server 2016 Datacenter.
+   > **참고**: 템플릿의 내용을 검토하고 Windows Server 2016 데이터 센터를 호스팅하는 Azure VM의 배포를 정의합니다.
 
-1. Save the template and return to the **Custom deployment** blade. 
+1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, navigate to the **Edit parameters** blade.
+1. **사용자 지정 배포** 블레이드에서 **매개 변수 편집** 블레이드로 이동합니다.
 
-1. From the **Edit parameters** blade, load the parameters file **Labfiles\\Module_07\\Azure_Site_Recovery_Between_Regions\\az-101-01_azuredeploy.parameters.json**. 
+1. **편집 매개 변수** 블레이드에서 매개 변수 파일 **Labfiles\\AZ101\\Mod01\\az-101-01_azuredeploy.parameters.json** 을 로드합니다. 
 
-1. Save the parameters and return to the **Custom deployment** blade. 
+1. 매개 변수를 저장하고 **사용자** 지정 배포 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, initiate a template deployment with the following settings:
+1. **사용자 지정 배포** 블레이드에서 다음 설정을 사용하고 템플릿 배포를 시작합니다.
 
-    - Subscription: the name of the subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: the name of a new resource group **az1010101-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1010101-RG** 의 이름
 
-    - Location: the name of the Azure region which is closest to the lab location and where you can provision Azure VMs
+    - 위치: 랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 위치
 
-    - Vm Name: **az1010101-vm**
+    - Vm 이름: **az1010101-vm**
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Image Publisher: **MicrosoftWindowsServer**
+    - 이미지 게시자: **MicrosoftWindowsServer**
 
-    - Image Offer: **WindowsServer**
+    - 이미지 제공: **WindowsServer**
 
-    - Image SKU: **2016-Datacenter-Server-Core-smalldisk**
+    - 이미지 SKU: **2016-Datacenter-Server-Core-smalldisk**
 
-    - Vm Size: **Standard_DS1_v2**
+    - Vm 크기: **Standard_DS1_v2**
 
-   > **Note**: To identify Azure regions where you can provision Azure VMs, refer to [**https://azure.microsoft.com/en-us/regions/offers/**](https://azure.microsoft.com/en-us/regions/offers/)
+   > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 
-   > **Note**: Do not wait for the deployment to complete but proceed to the next task. You will use the virtual machine **az1010101-vm** in the second exercise of this lab.
+   > **참고**: 배포가 완료될 때까지 기다리지 말고 다음 작업으로 진행합니다. 이 실습의 두 번째 실습에서 가상 시스템 **az1010101-vm** 을 사용합니다.
 
 
-#### Task 2: Implement an Azure Site Recovery vault
+#### 작업 2: Azure 사이트 복구 자격 증명 모음 구현
  
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Backup and Site Recovery**.
+1. **리소스 만들기** 블레이드에서 Azure Marketplace에서 **백업 및 사이트 복구 (OMS)** 를 검색하십시오.
 
-1. Use the list of search results to navigate to the **Recovery Services vault** blade.
+1. 검색 결과 목록을 사용하여 **복구 서비스 볼트** 블레이드로 이동합니다.
 
-1. Use the **Recovery Services vault** blade, to create a Site Recovery vault with the following settings:
+1.  **복구 서비스 볼트** 블레이드를 사용하여 다음 설정을 사용하여 사이트 복구 볼트를 만듭니다:
 
-    - Name: **vaultaz1010102**
+    - 이름: **vaultaz1010102**
 
-    - Subscription: the same Azure subscription you used in the previous task of this exercise
+    - 구독: 이 연습의 이전 작업에서 사용한 것과 동일한 Azure 구독
 
-    - Resource group: the name of a new resource group **az1010102-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1010102-RG** 의 이름
 
-    - Location: the name of an Azure region that is available in your subscription and which is different from the region you deployed the Azure VM in the previous task of this exercise
+    - 위치: 이 연습의 이전 작업에서 Azure VM을 배포한 지역과 다른 구독에서 사용할 수 있는 Azure 영역의 이름입니다
 
-> **Result**: After you completed this exercise, you have initiated deployment of an Azure VM by using an Azure Resource Manager template and created an Azure Site Recovery vault that will be used to replicate content of the Azure VM disk files. 
-
-
-### Exercise 2: Migrate an Azure VM between Azure regions by using Azure Site Recovery 
-
-The main tasks for this exercise are as follows:
-
-1. Configure Azure VM replication
-
-1. Review Azure VM replication settings 
+> **결과**: 이 연습을 완료한 후 Azure Resource Manager 템플릿을 사용하여 Azure VM 배포를 시작하고 Azure VM 디스크 파일의 콘텐츠를 복제하는 데 사용할 Azure 사이트 복구 자격 증명 모음을 만들었습니다. 
 
 
-#### Task 1: Configure Azure VM replication
+### 연습 2: Azure 사이트 복구를 사용하여 Azure 지역 간에 Azure VM 마이그레이션 
 
-   > **Note**: Before you start this task, ensure that the template deployment you started in the first exercise has completed. 
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. In the Azure portal, navigate to the blade of the newly provisioned Azure Recovery Services vault **vaultaz1010102**.
+1. Azure VM 복제 구성
 
-1. From the **vaultaz1010102** blade, configure the following replication settings:
-
-    - Source: **Azure**
-
-    - Source location: the same Azure region into which you deployed the Azure VM in the previous exercise of this lab
-
-    - Azure virtual machine deployment model: **Resource Manager**
-
-    - Source subscription: the same Azure subscription you used in the previous exercise of this lab
-
-    - Source resource group: **az1010101-RG**
-
-    - Virtual machines: **az1010101-vm**
-
-    - Target location: the name of an Azure region that is available in your subscription and which is different from the region you deployed an Azure VM in the previous task. If possible, use the same Azure region into which you deployed the Azure Site Recovery vault.
-
-    - Target resource group: **(new) az1010101-RG-asr**
-
-    - Target virtual network: **(new) az1010101-vnet-asr**
-
-    - Cache storage account: accept the default setting
-
-    - Replica managed disks: **(new) 1 premium disk(s), 0 standard disk(s)**
-
-    - Target availability sets: **Not Applicable**
-
-    - Replication policy: the name of a new replication policy **12-hour-retention-policy**
-
-    - Recovery point retention: **12 Hours**
-
-    - App consistent snapshot frequency: **6 Hours**
-
-    - Multi-VM consistency: **No**
-
-1. From the **Configure settings** blade, initiate creation of target resources and wait until you are redirected to the **Enable replication** blade.
-
-1. From the **Enable replication** blade, enable the replication.
+1. Azure VM 복제 설정 검토 
 
 
-#### Task 2: Review Azure VM replication settings
+#### 작업 1: Azure VM 복제 구성
 
-1. In the Azure portal, navigate to the **vaultaz1010102 - Replicated items** blade.
+   > **참고**: 이 타스크를 시작하기 전에 첫 번째 실습에서 시작한 템플리트 전개가 완료되었는지 확인하십시오. 
 
-1. On the **vaultaz1010102 - Replicated items** blade, ensure that there is an entry representing the **az1010101-vm** Azure VM and verify that its **REPLICATION HEALTH** is **Healthy** and that its **STATUS** is **Enabling protection**.
+1. Azure 포털에서 새로 제공된 Azure Recovery Services 볼트 **vaultaz1010102** 의 블레이드로 이동합니다.
 
-1. From the **vaultaz1010102 - Replicated items** blade, display the replicated item blade of the **az1010101-vm** Azure VM.
+1. **vaultaz1010102** 블레이드에서 다음 복제 설정을 구성합니다:
 
-1. On the **az1010101-vm** replicated item blade, review the **Health and status**, **Failover readiness**, **Latest recovery points**, and **Infrastructure view** sections. Note the **Failover** and **Test Failover** toolbar icons.
+    - 출처: **Azure**
 
-   > **Note**: The remaining steps of this task are optional and not graded. 
+    - 원본 위치: 이 랩의 이전 연습에서 Azure VM을 배포한 동일한 Azure 지역
 
-1. If time permits, wait until the replication status changes to **100% synchronized**. This might take additional 90 minutes. 
+    - Azure 가상 시스템 배포 모델: **Resource Manager**
 
-1. Examine the values of **RPO**, as well as **Crash-consistent** and **App-consistent** recovery points. 
+    - 소스 구독 :이 실습의 이전 실습에서 사용한 것과 동일한 Azure 구독
 
-1. Perform a test failover to the **az1010101-vnet-asr** virtual network.
+    - 소스 리소스 그룹: **az1010101-RG**
 
-> **Result**: After you completed this exercise, you have configured replication of an Azure VM and reviewed Azure VM replication settings.
+    - 가상 기기: **az1010101-vm**
 
-## Exercise 3: Remove lab resources
+    - 대상 위치: 구독에서 사용할 수 있고 이전 작업에서 Azure VM을 배포한 지역과 다른 Azure 영역의 이름입니다. 가능하면 Azure 사이트 복구 자격 증명 모음을 배포한 것과 동일한 Azure 지역을 사용합니다.
 
-#### Task 1: Open Cloud Shell
+    - 대상 자원 그룹: **(신규) az1010101-RG-asr**
 
-1. At the top of the portal, click the **Cloud Shell** icon to open the Cloud Shell pane.
+    - 사용하는 거군요: **(신규) az1010101-vnet-asr**
 
-1. At the Cloud Shell interface, select **Bash**.
+    - 캐시 저장소 계정: 기본 설정 수락
 
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to list all resource groups you created in this lab:
+    - 복제관리 디스크: **(신규) 프리미엄 디스크 1개, 표준 디스크 0개**
 
-   ```sh
-   az group list --query "[?starts_with(name,'az10101')].name" --output tsv
-   ```
+    - 대상 가용성 집합: **해당 없음**
 
-1. Verify that the output contains only the resource groups you created in this lab. These groups will be deleted in the next task.
+    - 복제 정책: 새 복제 정책의 이름 **12시간 보존 정책**
 
-#### Task 2: Delete resource groups
+    - 복구 지점 보존: **12 시간**
 
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to delete the resource groups you created in this lab
+    - 앱 일관된 스냅샷 빈도: **6 시간**
 
-   ```sh
-   az group list --query "[?starts_with(name,'az10101')].name" --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
-   ```
-   > **Note**: If you encounter an error similar to "...cannot perform delete operation because following scope(s) are locked..." then you need to run the following steps to remove the lock on the resource that prevents its deletion:
-   > ```sh
-   > lockedresource=$(az resource list --resource-group az1010101-RG-asr --resource-type Microsoft.Compute/disks --query "[?starts_with(name,'az10101')].name" --output tsv)
-   > az disk revoke-access -n $lockedresource --resource-group az1010101-RG-asr
-   > lockid=$(az lock show --name ASR-Lock --resource-group az1010101-RG-asr --resource-type Microsoft.Compute/disks --resource-name $lockedresource --output tsv --query id)
-   > az lock delete --ids $lockid
-   > az group list --query "[?starts_with(name,'az10101')].name" --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
-   >```
+    - 다중 VM 일관성: **아니요**
 
-1. Close the **Cloud Shell** prompt at the bottom of the portal.
+1. **구성 설정** 블레이드에서 대상 리소스 만들기를 시작하고 **복제 활성화** 블레이드로 리디렉션될 때까지 기다립니다.
 
-> **Result**: In this exercise, you removed the resources used in this lab.
+1. **사용 복제** 블레이드에서복제를 사용하도록 설정합니다.
+
+
+#### 작업 2: Azure VM 복제 설정 검토
+
+1. Azure 포털에서 **vaultaz1010102 - 복제 된 항목** 블레이드로이동합니다.
+
+1. **vaultaz1010102 - 복제된 항목** 블레이드에서 **az1010101-vm Azure VM** 을 나타내는 항목이 있는지 확인하고 **복제 상태가** **정상인지** 여부및 해당 **상태** 가 **복제를 사용하도록 설정하는지 확인합니다**.
+
+1. **vaultaz1010102 - 복제 된 항목** 블레이드에서 **az1010101-vm** Azure VM의 복제 된 항목 블레이드를 표시합니다.
+
+1. **az1010101-vm** 복제 항목 블레이드에서 상태 및 **상태**, **장애 조치 준비**, **최신 복구 지점** 및 **인프라 보기** 섹션을 검토합니다. 유의 사항 **장애 조치,** 장애 조치(Failover) 및 **테스트 장애** 조치 도구 모음 아이콘을 기록합니다.
+
+   > **참고**: 이 작업의 나머지 단계는 선택 사항이며 채점되지 않습니다. 
+
+1. 시간이 허용되는 경우 복제 상태가 **100%동기화**될 때까지 기다립니다. 이 경우 90분이 더 걸릴 수 있습니다. 
+
+1. **RPO** 의 값과 **충돌 일관성** 및 **앱 일관된** 복구 지점을 검사합니다. 
+
+1. **az1010101-vnet-asr** 가상 네트워크에 대한 테스트 장애 조치(failover)를 수행합니다.
+
+> **결과**: 이 연습을 완료한 후 Azure VM의 복제를 구성하고 Azure VM 복제 설정을 검토했습니다.

@@ -1,349 +1,349 @@
+﻿---
+랩:
+    제목: ‘셀프 서비스 암호 재설정’
+    모듈: '하이브리드 아이덴티티 구현 및 관리'
 ---
-lab:
-    title: 'Self-Service Password Reset'
-    module: 'Module 10 - Securing Identtities'
----
 
-# Lab: Self-Service Password Reset
+# 랩: 셀프 서비스 암호 재설정
   
-All tasks in this lab are performed from the Azure portal 
+이 랩의 모든 작업은 Azure 포털에서 수행됩니다 
 
-Lab files: none
+랩 파일: 없음
 
-### Scenario
+### 시나리오
   
-Adatum Corporation wants to take advantage of Azure AD Premium features
+Adatum 공사는 Azure AD 프리미엄 기능을 활용하기 원합니다
 
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
-- Manage Azure AD users and groups
+- Azure AD 사용자 및 그룹 관리
 
-- Manage Azure AD-integrated SaaS applications
+- Azure AD 통합 SaaS 응용 프로그램 관리
 
 
-### Exercise 1: Manage Azure AD users and groups
+### 연습 1: Azure AD 사용자 및 그룹 관리
 
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Create a new Azure AD tenant
+1. 새 Azure AD 테넌트 만들기
 
-1. Activate Azure AD Premium v2 trial
+1. Azure AD Premium v2 평가판 활성화
 
-1. Create and configure Azure AD users
+1. Azure AD 사용자 만들기 및 구성
 
-1. Assign Azure AD Premium v2 licenses to Azure AD users
+1. Azure AD Premium v2 라이선스를 Azure AD 사용자에게 할당합니다
 
-1. Manage Azure AD group membership
+1. Azure AD 그룹 구성원 관리
 
-1. Configure self-service password reset functionality
+1. 셀프 서비스 암호 재설정 기능 구성
 
-1. Validate self-service password reset functionality
+1. 셀프 서비스 암호 재설정 기능 검증
 
 
-#### Task 1: Create a new Azure AD tenant
+#### 작업 1: 새 Azure AD 테넌트 만들기
 
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the Azure subscription you intend to use in this lab.
+1. 랩 가상 머신에서 Microsoft Edge를 시작하고 [** http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 이 랩에서 사용하려는 Azure 구독에서 소유자 역할이 있는 Microsoft 계정을 사용하여 로그인합니다.
 
-1. In the Azure portal, navigate to the **New** blade. 
+1. Azure 포털에서 **새** 블레이드로 이동합니다. 
 
-1. From the **New** blade, search Azure Marketplace for **Azure Active Directory**.
+1. **새** 블레이드에서 **Azure Active Directory** 에 대한 Azure 마켓플레이스를 검색합니다.
 
-1. Use the list of search results to navigate to the **Create directory** blade.
+1. 검색 결과 목록을 사용하여 **디렉터리 만들기** 블레이드로 이동합니다.
 
-1. From the **Create directory** blade, create a new Azure AD tenant with the following settings: 
+1. 디렉터리 블레이드 **만들기**에서 다음 설정을 사용하여 새 AzureAD 테넌트를 만듭니다: 
 
-  - Organization name: **AdatumLab100-5b**
+  - 조직 이름: **AdatumLab100-5b**
 
-  - Initial domain name: a unique name consisting of a combination of letters and digits. 
+  - 초기 도메인 이름: 문자와 숫자의 조합으로 구성된 고유한 이름입니다. 
 
-  - Country or region: **United States**
+  - 국가/지역: **미국**
 
-   > **Note**: Take a note of the initial domain name. You will need it later in this lab. 
+   > **참고**: 초기 도메인 이름을 기록해 둡니다. 이 실험실에서 나중에 필요할 것입니다. 
 
 
-#### Task 2: Activate Azure AD Premium v2 trial
+#### 작업 2: Azure AD Premium v2 평가판 활성화
 
-1. In the Azure portal, set the **Directory + subscription** filter to the newly created Azure AD tenant.
+1. Azure 포털에서 **디렉터리 + 구독** 필터를 새로 만든 AzureAD 테넌트에 설정합니다.
 
-   > **Note**: The **Directory + subscription** filter appears to the right of the Cloud Shell icon in the toolbar of the Azure portal 
+   > **참고**: **디렉터리 + 구독** 필터는 Azure 포털의 도구 모음에서 클라우드 셸 아이콘의 오른쪽에 나타납니다. 
 
-   > **Note**: You might need to refresh the browser window if the **AdatumLab100-5b** entry does not appear in the **Directory + subscription** filter list.
+   > **참고**: **AdatumLab100-5b** 항목이 **디렉터리 + 구독 필터** 목록에 나타나지 않으면 브라우저 창을 새로 고쳐야 할 수 있습니다.
 
-1. In the Azure portal, navigate to the **AdatumLab100-5b - Overview** blade.
+1. Azure 포털에서 **AdatumLab100-5b - 개요** 블레이드로 이동합니다.
 
-1. From the **AdatumLab100-5b - Overview** blade, navigate to the **Licenses - Overview** blade.
+1. **AdatumLab100-5b에서 개요** 블레이드에서 **라이센스 - 개요** 블레이드로 이동합니다.
 
-1. From the **Licenses - Overview** blade, navigate to the **Products** blade. 
+1. **라이센스에서 - 개요** 블레이드에서 **제품** 블레이드로 이동합니다. 
 
-1. From the **Products** blade, navigate to the **Activate** blade and activate **Azure AD Premium P2** free trial.
+1. **제품** 블레이드에서 **활성화** 블레이드로 이동하여 **Azure AD 프리미엄 P2** 무료 평가판을 활성화합니다.
 
 
-#### Task 3: Create and configure Azure AD users
+#### 작업 3: Azure AD 사용자 만들기 및 구성
 
-1. In the Azure portal, navigate to the **Users - All users** blade of the AdatumLab100-5b Azure AD tenant.
+1. Azure 포털에서 AdatumLab100-5b Azure AD 테넌트의 **사용자-모든 사용자** 블레이드로 이동합니다.
 
-1. From the **Users - All users** blade, create a new user with the following settings:
+1. **사용자 - 모든 사용자** 블레이드에서 다음 설정을 사용하여 새 사용자를 만듭니다:
 
-    - Name: **aaduser1**
+    - 이름: **aaduser1**
 
-    - User name: **aaduser1@&lt;DNS-domain-name&gt;.onmicrosoft.com** where &lt;DNS-domain-name&gt; represents the initial domain name you specified in the first task of this exercise. 
+    - 사용자 이름: **aaduser1@&lt;DNS 도메인 이름&gt;.** onmicrosoft.com &lt;DNS 도메인 이름>이 연습의 첫 번째 작업에서 지정한 초기 도메인 이름을 나타냅니다. 
 
-   > **Note**: Take a note of this user name. You will need it later in this lab.
+   > **참고**: 이 사용자 이름을 기록해 둡니다. 이 실험실에서 나중에 필요할 것입니다.
 
-    - Profile: 
+    - 프로필: 
 
-        - Department: **Sales**
+        - 부서: **판매**
 
-    - Properties: **Default**
+    - 속성: **기본값**
 
-    - Groups: **0 groups selected**
+    - 그룹: **선택한 그룹 0개**
 
-    - Directory role: **User**
+    - 디렉터리 역할: **사용자**
 
-    - Password: select the checkbox **Show Password** and note the string appearing in the **Password** text box. You will need it later in this lab.
+    - 암호: **암호 표시** 확인란을 선택하고 **암호** 텍스트 상자에 나타나는문자열을 기록합니다. 이 실험실에서 나중에 필요할 것입니다.
 
-1. From the **Users - All users** blade, create a new user with the following settings:
+1. **사용자 - 모든 사용자** 블레이드에서 다음 설정을 사용하여 새 사용자를 만듭니다:
 
-    - Name: **aaduser2**
+    - 이름: **aaduser2**
 
-    - User name: **aaduser2@&lt;DNS-domain-name&gt;.onmicrosoft.com** where &lt;DNS-domain-name&gt; represents the initial domain name you specified in the first task of this exercise. 
+    - 사용자 이름: **aaduser2@&lt;DNS-domain-name&gt;.onmicrosoft.com** &lt;DNS-domain-name&gt; 연습의 첫 번째 작업에서 지정한 초기 도메인 이름을 나타냅니다. 
 
-   > **Note**: Take a note of this user name. You will need it later in this lab.
+   > **참고**: 이 사용자 이름을 기록해 둡니다. 이 실험실에서 나중에 필요할 것입니다.
 
-    - Profile: 
+    - 프로필: 
 
-        - Department: **Finance**
+        - 부서: **재무**
 
-    - Properties: **Default**
+    - 속성: **기본값**
 
-    - Groups: **0 groups selected**
+    - 그룹: **선택한 그룹 0개**
 
-    - Directory role: **User**
+    - 디렉터리 역할: **사용자**
 
-    - Password: select the checkbox **Show Password** and note the string appearing in the **Password** text box. You will need it later in this lab.
+    - 암호: **암호 표시** 확인란을 선택하고 **암호** 텍스트 상자에 나타나는문자열을 기록합니다. 이 실험실에서 나중에 필요할 것입니다.
 
 
-#### Task 4: Assign Azure AD Premium v2 licenses to Azure AD users
+#### 작업 4: Azure AD Premium v2 라이선스를 Azure AD 사용자에게 할당합니다
 
-   > **Note**: In order to assign Azure AD Premium v2 licenses to Azure AD users, you first have to set their location attribute.
+   > **참고**: Azure AD Premium v2 라이선스를 Azure AD 사용자에게 할당하려면 먼저 위치 특성을 설정해야 합니다.
 
-1. From the **Users - All users** blade, navigate to the **aaduser1 - Profile** blade and set the **Usage location** to **United States**.
+1. **사용자 - 모든 사용자** 블레이드에서 **aaduser1로 이동 - 프로필** 블레이드 및 **사용 위치** 를 **미국** 으로 설정합니다.
 
-1. From the **aaduser1 - Profile** blade, navigate to the **aaduser1 - Licenses** blade and assign to the user an Azure Active Directory Premium P2 license with all licensing options enabled.
+1. **aaduser1 - 프로필** 블레이드에서 **aaduser1 - 라이센스** 블레이드로 이동하여모든 라이선스 옵션이 활성화된 Azure Active Directory 프리미엄 P2 라이선스를 사용자에게 할당합니다.
 
-1. Return to the **Users - All users** blade, navigate to the **aaduser2 - Profile** blade, and set the **Usage location** to **United States**.
+1. **사용자- 모든 사용자** 블레이드로 돌아가서, **aaduser2 - 프로필** 블레이드로 이동한 다음 **사용 위치** 를 **미국** 으로 설정합니다.
 
-1. From the **aaduser2 - Profile** blade, navigate to the **aaduser2 - Licenses** blade and assign to the user an Azure Active Directory Premium P2 license with all licensing options enabled.
+1. **aaduser2 - 프로필** 블레이드에서 **aaduser2 - 라이센스** 블레이드로 이동하여모든 라이선스 옵션이 활성화된 Azure Active Directory 프리미엄 P2 라이선스를 사용자에게 할당합니다.
 
-1. Return to the **Users - All users** blade, navigate to the Profile entry of your user account and set the **Usage location** to **United States**.
+1. **사용자- 모든 사용자** 블레이드로 돌아가서, 사용자 계정의 프로필 항목으로 이동한 다음 **사용 위치** 를 **미국** 으로 설정합니다.
 
-1. Navigate to **Licenses** blade of your user account and assign to it an Azure Active Directory Premium P2 license with all licensing options enabled.
+1. 사용자 계정의 **라이선스** 블레이드로 이동하여 모든 라이선스 옵션이활성화된 Azure Active Directory 프리미엄 P2 라이선스를 할당합니다.
 
-1. Sign out from the portal and sign back in using the same account you are using for this lab. 
+1. 포털에서 로그아웃하고 이 실습에 사용하는 것과 동일한 계정을 사용하여 다시 로그인합니다. 
 
-   > **Note**: This step is necessary in order for the license assignment to take effect. 
+   > **참고**: 라이센스 할당이 적용되기 위해서는 이 단계가 필요합니다. 
 
 
-#### Task 5: Manage Azure AD group membership
+#### 작업 5: Azure AD 그룹 구성원 관리
 
-1. In the Azure portal, navigate to the **Groups - All groups** blade. 
+1. Azure 포털에서 **그룹 - 모든 그룹** 블레이드로 이동합니다. 
 
-1. From the **Groups - All groups** blade, navigate to the **Group** blade and create a new group with the following settings:
+1. **그룹에서 - 모든 그룹** 블레이드에서 **그룹** 블레이드로 이동하고 다음 설정을 사용하여 새 그룹을만듭니다.
 
-    - Group type: **Security**
+    - 그룹 유형: **보안**
 
-    - Group name: **Sales**
+    - 그룹 이름: **판매**
 
-    - Group description: **All users in the Sales department**
+    - 그룹 설명: **영업 부서의 모든 사용자**
 
-    - Membership type: **Dynamic User**
+    - 멤버십 유형: **동적 사용자**
 
-    - Dynamic user members: 
+    - 동적 사용자 구성원: 
 
-        - Simple rule
+        - 간단한 규칙
 
-        - Add users where: **department Equals Sales**
+        - 사용자 추가 위치: **부서매출과 동일**
 
-1. From the **Groups - All groups** blade, navigate to the **Group** blade and create a new group with the following settings:
+1. **그룹에서 - 모든 그룹** 블레이드에서 **그룹** 블레이드로 이동하고 다음 설정을 사용하여 새 그룹을만듭니다.
 
-    - Group type: **Security**
+    - 그룹 유형: **보안**
 
-    - Group name: **Sales and Finance**
+    - 그룹 이름: **영업 및 금융**
 
-    - Group description: **All users in the Sales and Finance departments**
+    - 그룹 설명: **영업 및 재무 부서의 모든 사용자**
 
-    - Membership type: **Dynamic User**
+    - 멤버십 유형: **동적 사용자**
 
-    - Dynamic user members: 
+    - 동적 사용자 구성원: 
 
-        - Advanced rule: **(user.department -eq "Sales") -or (user.department -eq "Finance")**
+        - 고급 규칙: **(user.department -eq "판매") -또는 (user.department -eq "재무")**
 
-1. From the **Groups - All groups** blade, navigate to the blades of **Sales** and **Sales and Finance** groups, and note that the group membership evaluation is in progress. Wait until the evalution completes, then navigate to the **Members** blade, and verify that the group membership is correct.
+1. **그룹에서 - 모든 그룹** 블레이드, **판매** 및 **판매 및 재무 그룹** 의 블레이드로 이동, 그룹 구성원 평가가 진행 중임을 유의하십시오. 회피가 완료될 때까지 기다린 다음 **멤버** 블레이드로 이동하여 그룹 구성원이 올바른지 확인합니다.
 
 
-#### Task 6: Configure self-service password reset functionality
+#### 작업 6: 셀프 서비스 암호 재설정 기능 구성
 
-1. In the Azure portal, navigate to the **AdatumLab100-5b - Overview** blade. 
+1. Azure 포털에서 **AdatumLab100-5b - 개요** 블레이드로 이동합니다. 
 
-1. From the **AdatumLab100-5b - Overview** blade, navigate to the **Password reset - Properties** blade. 
+1. **AdatumLab100-5b에서 - 개요** 블레이드에서 **암호 재설정 - 속성** 블레이드로 이동합니다. 
 
-1. On the **Password reset - Properties** blade, configure the following settings:
+1. **암호 재설정 - 속성** 블레이드에서 다음 설정을 구성합니다.
 
-    - Self service password reset enabled: **Selected**
+    - 셀프 서비스 암호 재설정 사용: **선택**
 
-    - Selected group: **Sales**
+    - 그룹을 선택합니다: **판매**
 
-1. From the **Password reset - Properties** blade, navigate to the **Password reset - Auhentication methods** blade and configure the following settings:
+1. **암호 재설정 - 속성** 블레이드에서 **암호 재설정으로 이동 - Auhentication 방법** 블레이드를 탐색하고 다음 설정을 구성합니다:
 
-    - Number of methods required to reset: **1**
+    - 재설정하는 데 필요한 메서드 수: **1**
 
-    - Methods available to users: 
+    - 사용자가 사용할 수 있는 방법: 
 
-        - **Email**
+        - **이메일**
 
-        - **Mobile phone**
+        - **휴대폰**
 
-        - **Office phone**
+        - **사무실 전화**
 
-        - **Security questions**
+        - **보안 질문**
 
-        - Number of security questions required to register: **3**
+        - 등록에 필요한 보안 질문 수: **3**
 
-        - Number of security questions required to reset: **3**
+        - 재설정하는 데 필요한 보안 질문 수: **3**
 
-        - Select security questions: select **Predefined** and add any combination of 5 predefined security questions
+        - 보안 질문을 선택 **미리 정의된** 선택하고 5 개 미리 정의 된 보안 질문의 조합을 추가
 
-1. From the **Password reset - Authentication methods** blade, navigate to the **Password reset - Registration** blade, and ensure that the following settings are configured:
+1. 암호 **재설정 - 인증 방법** 블레이드에서 **암호 재설정 - 등록** 블레이드로 이동하고 다음설정이 구성되었는지 확인합니다:
 
-    - Require users to register when signing in?: **Yes**
+    - 로그인할 때 사용자가 등록하도록 요구하나요?: **예**
 
-    - Number of days before users are asked to re-confirm their authentication information: **180**
+    - 사용자가 인증 정보를 다시 확인하라는 메시지가 표시됩니다: **180**
 
 
-#### Task 7: Validate self-service password reset functionality
+#### 작업 7: 셀프 서비스 암호 재설정 기능 검증
 
-1. Open an InPrivate Microsoft Edge window.
+1. 비공개 Microsoft 가장자리 창을 엽니다.
 
-1. In the new browser window, navigate to the Azure portal and sign in using the **aaduser1** user account. When prompted, change the password to a new value.
+1. 새 브라우저 창에서 Azure 포털로 이동하고 **aaduser1** 사용자 계정을 사용하여 로그인 합니다. 메시지가 표시되면 암호를 새 값으로 변경합니다.
 
-   > **Note**: You will need to provide a fully qualified name of the **aaduser1** user account, including the Azure AD tenant DNS domain name, as noted earlier in this lab.
+   > **참고**: 이 실습의 앞에서 설명한 대로 AzureAD 테넌트 DNS 도메인 이름을 포함하여 **aaduser1** 사용자 계정의 정규화된 이름을 제공해야 합니다.
 
-1. When prompted with the **More information required** message, continue to the **don't lose access to your account** page.
+1. **추가 정보 필수 메시지** 가 표시되면 **계정 페이지에 대한 액세스 권한을 잃지 않도록** 계속하세요.
 
-1. On the **don't lose access to your account** page, note that you need to set up at least one of the following options:
+1. **계정 페이지에 대한 액세스 권한을 잃지 않도록 하려면** 다음 옵션 중 하나 이상을설정해야 합니다:
 
-    - **Office phone**
+    - **사무실 전화**
 
-    - **Authentication Phone**
+    - **인증 전화**
 
-    - **Authentication Email**
+    - **인증 이메일**
 
-    - **Security Questions**
+    - **보안 질문**
 
-1. From the **don't lose access to your account** page, configure answers to 5 security questions you selected in the previous task
+1. **계정 페이지에 대한 액세스 권한을 잃지 않도록** 이전 작업에서 선택한 5가지 보안 질문에 대한 답변을 구성합니다.
 
-1. Verify that you successfully signed in to the Azure portal.
+1. Azure 포털에 성공적으로 로그인했는지 확인합니다.
 
-1. Sign out as **aaduser1** and close the InPrivate browser window.
+1. **aaduser1** 로 로그아웃하고InPrivate 브라우저 창을 닫습니다.
 
-1. Open an InPrivate Microsoft Edge window.
+1. 비공개 Microsoft 가장자리 창을 엽니다.
 
-1. In the new browser window, navigate to the Azure portal and, on the **Pick an account** page, type in the **aaduser1** user account name. 
+1. 새 브라우저 창에서 Azure 포털로 이동 한 다음 **계정 선택** 페이지에서 **aaduser1** 사용자 계정 이름을 입력합니다. 
 
-1. On the **Enter password** page, click the **Forgot my password** link.
+1. **암호 입력** 페이지에서 **내 비밀번호 분실** 링크를 클릭합니다.
 
-1. On the **Get back into your account** page, verify the **User ID**, enter the characters in the picture or the words in the audio, and proceed to the next page.
+1. **계정으로 돌아가기 페이지** 에서 **사용자 ID** 를 확인하고 그림에 있는 문자 또는 오디오의 단어를 입력하고 다음 페이지로 진행합니다.
 
-1. On the next page, provide answers to thre security questions using answers you specified in the previous task.
+1. 다음 페이지에서 이전 작업에서 지정한 답변을 사용하여 thre 보안 질문에 대한 답변을 제공합니다.
 
-1. On the next page, enter twice a new password and complete the password reset process.
+1. 다음 페이지에서 새 암호를 두 번 입력하고 암호 재설정 프로세스를 완료합니다.
 
-1. Verify that you can sign in to the Azure portal by using the newly reset password. 
+1. 새로 재설정된 암호를 사용하여 Azure 포털에 로그인할 수 있는지 확인합니다. 
 
-> **Result**: After you completed this exercise, you have created a new Azure AD tenant, activated Azure AD Premium v2 trial, created and configured Azure AD users, assigned Azure AD Premium v2 licenses to Azure AD users, managed Azure AD group membership, as well as configured and validated self-service password reset functionality
+> **결과**: 이 연습을 완료한 후 새 Azure AD 테넌트, 활성화된 Azure AD Premium v2 평가판을 만들고, Azure AD 사용자를 생성 및 구성하고, Azure AD Premium v2 라이선스를 Azure AD 사용자에게 할당하고, 관리되는 Azure AD 그룹 구성원 자격, 및 구성 및 검증된 셀프 서비스 암호 재설정 기능
 
 
-### Exercise 2: Manage Azure AD-integrated SaaS applications
+### 연습 2: Azure AD 통합 SaaS 응용 프로그램 관리
 
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Add an application from the Azure AD gallery
+1. Azure AD 갤러리에서 응용 프로그램 추가
 
-1. Configure the application for a single sign-on
+1. 단일 사인온에 대한 응용 프로그램 구성
 
-1. Assign users to the application
+1. 응용 프로그램에 사용자 할당
 
-1. Validate single sign-on for the application
+1. 응용 프로그램에 대한 단일 사인온 유효성 검사
 
 
-#### Task 1: Add an application from the Azure AD gallery
+#### 작업 1: Azure AD 갤러리에서 응용 프로그램 추가
 
-1. In the Azure portal, navigate to the **AdatumLab100-5b - Overview** blade. 
+1. Azure 포털에서 **AdatumLab100-5b - 개요** 블레이드로 이동합니다. 
 
-1. From the **AdatumLab100-5b - Overview** blade, navigate to the **Enterprise applications - All applications** blade.
+1. **AdatumLab100-5b - 개요** 블레이드에서 **엔터프라이즈 응용 프로그램 - 모든 응용 프로그램** 블레이드로 이동합니다.
 
-1. From the **Enterprise applications - All applications** blade, navigate to the **Add an application** blade. 
+1. 엔터프라이즈 **응용 프로그램 - 모든 응용 프로그램** 블레이드를 **응용 프로그램 추가** 블레이드로 이동합니다. 
 
-1. On the **Add an application** blade, search the application gallery for the **Microsoft OneDrive**. 
+1. **응용 프로그램 블레이드 추가에서** **Microsoft OneDrive** 에 대한 응용 프로그램 갤러리를 검색합니다. 
 
-1. Use the list of search results to navigate to the **Microsoft OneDrive** add app blade and add the app.
+1. 검색 결과 목록을 사용하여 **Microsoft OneDrive** 로 이동하여 앱 블레이드를 추가하고 앱을 추가합니다.
 
 
-#### Task 2: Configure the application for a single sign-on
+#### 작업 2: 단일 사인온에 대한 응용 프로그램 구성
 
-1. From the **Microsoft OneDrive - Overview** blade, navigate to the **Microsoft OneDrive - Getting started** blade. 
+1. **Mircosoft 원 드라이브에서 - 개요** 블레이드, **Microsoft 원 드라이브로 이동 - 시작하기** 블레이드를 얻기. 
 
-1. On the **Microsoft OneDrive - Getting started** blade, use the **Configure single sign-on (required)** option to navigate to the **Microsoft OneDrive - Single sign-on** blade. 
+1. **Microsoft OneDrive - 시작하기** 블레이드를 위해 **단일 사인온(필수) 구성** 옵션을 사용하여 **Microsoft OneDrive - 단일 사인온** 블레이드로 이동합니다. 
 
-1. On the **Microsoft OneDrive - Single sign-on** blade, select the **Password-based** option and save the configuration.
+1. **Microsoft OneDrive - 단일 사인온** 블레이드에서 **암호 기반** 옵션을 선택하고 구성을 저장합니다.
 
 
-#### Task 3: Assign users to the application
+#### 작업 3: 응용 프로그램에 사용자 할당
 
-1. Navigate back to the **Microsoft OneDrive - Getting started** blade. 
+1. **Microsoft OneDrive-시작하기** 블레이드를시작합니다. 
 
-1. On the **Microsoft OneDrive - Getting started** blade, use the **Assign a user for testing (required)** option to navigate to the **Users and groups** blade for **Microsoft OneDrive**. 
+1. **Microsoft OneDrive** 에서 - 블레이드를 시작하기 위해 **사용자 할당을 사용하여 테스트(필수)** 옵션을 사용하여 **Microsoft OneDrive** 의 **사용자 및 그룹** 블레이드로 이동합니다. 
 
-1. From the **Users and groups** blade for **Microsoft OneDrive**, navigate to the **Add Assignment** blade and add the following assignment:
+1. **Microsoft OneDrive** 의 **사용자 및 그룹** 블레이드에서 할당 추가 블레이드로 이동하여 다음 **할당을 추가**합니다:
 
-    - Users and groups: **Sales and Finance**
+    - 사용자 및 그룹: **영업 및 금융**
 
-    - Select role: **Default access**
+    - 역할 선택: **기본 액세스**
 
-    - Assign Credentials: 
+    - 자격 증명 할당: 
 
-        - Assign credentials to be shared among all group members: **Yes**
+        - 모든 그룹 구성원 간에 공유할 자격 증명을 할당합니다: **예**
 
-        - Email Address: the name of the Microsoft Account you are using for this lab
+        - 전자 메일 주소: 이 랩에 사용 중인 Microsoft 계정의 이름입니다
 
-        - Password: the password of the Microsoft Account you are using for this lab
+        - 암호: 이 랩에 사용 중인 Microsoft 계정의 암호
 
-1. Sign out from the Azure portal and close the Microsoft Edge window.
+1. Azure 포털에서 로그아웃하고 Microsoft Edge 창을 닫습니다.
 
 
-#### Task 4: Validate single sign-on for the application
+#### 작업 4: 응용 프로그램에 대한 단일 사인온 유효성 검사
 
-1. Open a Microsoft Edge window.
+1. 마이크로소프트 에지 창을 엽니다.
 
-1. In the Microsoft Edge window, navigate to the Application Access Panel at [**http://myapps.microsoft.com**](http://myapps.microsoft.com) and sign in by using the **aaduser2** user account. When prompted, change the password to a new value.
+1. Microsoft Edge 창에서 [**http://myapps.microsoft.com** ](http://myapps.microsoft.com)의 응용 프로그램 액세스 패널로 이동하여 **aaduser2** 사용자 계정을 사용하여 로그인합니다. 메시지가 표시되면 암호를 새 값으로 변경합니다.
 
-   > **Note**: You will need to provide a fully qualified name of the **aaduser2** user account, including the Azure AD tenant DNS domain name, as noted earlier in this lab.
+   > **참고**: 이 실습의 앞에서 설명한 대로 AzureAD 테넌트 DNS 도메인 이름을 포함하여 **aaduser2** 사용자 계정의 정규화된 이름을 제공해야 합니다.
 
-1. On the Access Panel Applications page, click the **Microsoft OneDrive** icon.
+1. 액세스 패널 응용 프로그램 페이지에서 **Microsoft OneDrive** 아이콘을 클릭합니다.
 
-1. When prompted, add the My Apps Secure Sign-in Extension and enable it, including the **Allow for InPrivate browsing** option.
+1. 메시지가 표시되면 내 앱 보안 로그인 확장을 추가하고 **InPrivate 브라우징 허용** 옵션을 포함하여 활성화합니다.
 
-1. Navigate again to the Application Access Panel at [**http://myapps.microsoft.com**](http://myapps.microsoft.com) and sign in by using the **aaduser2** user account. 
+1. [**http://myapps.microsoft.com**](http://myapps.microsoft.com)의 응용 프로그램 액세스 패널로 다시 이동하여 **aaduser2**사용자 계정을 사용하여 로그인합니다. 
 
-1. On the Access Panel Applications page, click the **Microsoft OneDrive** icon.
+1. 액세스 패널 응용 프로그램 페이지에서 **Microsoft OneDrive** 아이콘을 클릭합니다.
 
-1. Verify that you have successfully accessed the Microsoft OneDrive application without having to re-authenticate.
+1. 다시 인증할 필요 없이 Microsoft OneDrive 응용 프로그램에 성공적으로 액세스했는지 확인합니다.
 
-1. Sign out from the Application Access Panel and close the Microsoft Edge window.
+1. 응용 프로그램 액세스 패널에서 로그아웃하고 Microsoft Edge 창을 닫습니다.
 
-   > **Note**: Make sure to launch Microsoft Edge again, browse to the Azure portal, sign in by using the Microsoft account that has the Owner role in the Azure subscription you were using in this lab, and use the **Directory + subscription** filter to switch to your default Azure AD tenant once you complete this lab.
+   > **참고**: Microsoft Edge를 다시 시작하고, Azure 포털로 검색하고, 이 랩에서 사용 하 던 Azure 구독에서 소유자 역할을 하는 Microsoft 계정을 사용 하 여 로그인 하고 **디렉터리 + 구독 필터** 를 사용하여 기본 Azure로 전환 해야 합니다.이 랩을 완료하면 AD 테넌트입니다.
 
-> **Result**: After you completed this exercise, you have added an application from the Azure AD gallery, configured the application for a single sign-on, assigned users to the application, and validated single sign-on for the application.
+> **결과**: 이 연습을 완료한 후 Azure AD 갤러리에서 응용 프로그램을 추가하고, 단일 사인온에 대한 응용 프로그램을 구성하고, 응용 프로그램에 사용자를 할당하고, 응용 프로그램에 대한 단일 사인온의 유효성을 검사했습니다.

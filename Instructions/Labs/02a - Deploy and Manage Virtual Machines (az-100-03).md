@@ -1,191 +1,201 @@
+﻿---
+랩:
+    제목: '가상 머신 배포 및 관리'
+    모듈: '가상 머신 배포 및 관리'
 ---
-lab:
-    title: 'Deploy and Manage Virtual Machines'
-    module: 'Module 02 - Azure Virtual Machines'
----
 
-# Lab: Deploy and Manage Virtual Machines
+# 랩: 가상 머신 배포 및 관리
 
-All tasks in this lab are performed from the Azure portal (including a PowerShell Cloud Shell session) except for Excercise 2 Task 2 and Exercise 2 Task 3, which include steps performed from a Remote Desktop session to an Azure VM
+이 랩의 모든 작업은 원격 데스크톱 세션에서 Azure VM에 수행된 단계를 포함하는 Excerce 2 태스크 2 및 작업 2 작업 3을 제외한 Azure 포털(PowerShell Cloud Shell 세션 포함)에서 수행됩니다.
 
-   > **Note**: When not using Cloud Shell, the lab virtual machine must have Azure PowerShell module installed [**https://docs.microsoft.com/en-us/powershell/azure/install-Az-ps**](https://docs.microsoft.com/en-us/powershell/azure/install-Az-ps)
+   > **참고**: Cloud Shell을 사용하지 않는 경우 랩 가상 머신에 Azure PowerShell 모듈이 설치되어 있어야 합니다. [**https://docs.microsoft.com/ko-kr/powershell/azure/azurerm/install-azurerm-ps**](https://docs.microsoft.com/ko-kr/powershell/azure/azurerm/install-azurerm-ps)
 
-Lab files: 
+랩 파일: 
 
--  **Labfiles\\Module_02\\Deploy_and_Manage_Virtual_Machines\\az-100-03_azuredeploy.json**
+-  **Labfiles\\AZ100\\Mod03\\az-100-03_deploy_azure_vm.ps1**
 
--  **Labfiles\\Module_02\\Deploy_and_Manage_Virtual_Machines\\az-100-03_azuredeploy.parameters.json**
+-  **Labfiles\\AZ100\\Mod03\\az-100-03_azuredeploy.json**
 
--  **Labfiles\\Module_02\\Deploy_and_Manage_Virtual_Machines\\az-100-03_install_iis_vmss.zip**
+-  **Labfiles\\AZ100\\Mod03\\az-100-03_azuredeploy.parameters.json**
 
-### Scenario
+-  **Labfiles\\AZ100\\Mod03\\az-100-03_install_iis_vmss.zip**
+
+### 시나리오
   
-Adatum Corporation wants to implement its workloads by using Azure virtual machines (VMs) and Azure VM scale sets
+Adatum Corporation은 Azure 가상 시스템(VM) 및 Azure VM 스케일 집합을 사용하여 워크로드를 구현하려고 합니다.
 
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
--  Deploy Azure VMs by using the Azure portal, Azure PowerShell, and Azure Resource Manager templates
+-  Azure 포털, Azure PowerShell 및 Azure 리소스 관리자 템플릿을 사용하여 Azure VM 배포
 
--  Configure networking settings of Azure VMs running Windows and Linux operating systems
+-  Windows 및 Linux 운영 체제를 실행하는 Azure VM의 네트워킹 설정 구성
 
--  Deploy and configure Azure VM scale sets
+-  Azure VM 스케일 세트 배포 및 구성
 
 
-### Exercise 1: Deploy Azure VMs by using the Azure portal, Azure PowerShell, and Azure Resource Manager templates
+### 연습 1: Azure 포털, Azure PowerShell 및 Azure 리소스 관리자 템플릿을 사용하여 Azure VM 배포
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Deploy an Azure VM running Windows Server 2016 Datacenter into an availability set by using the Azure portal
+1. Windows Server 2016 데이터 센터를 실행하는 Azure VM을 Azure 포털을 사용하여 가용성 집합에 배포합니다
 
-1. Deploy an Azure VM running Windows Server 2016 Datacenter into the existing availability set by using Azure PowerShell
+1. Azure PowerShell을 사용하여 Windows Server 2016 데이터 센터를 실행하는 Azure VM을 기존 가용성 집합에 배포합니다
 
-1. Deploy two Azure VMs running Linux into an availability set by using an Azure Resource Manager template
-
-
-#### Task 1: Deploy an Azure VM running Windows Server 2016 Datacenter into an availability set by using the Azure portal
-
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the Azure subscription you intend to use in this lab.
-
-1. In the Azure portal, navigate to the **Create a resource** blade.
-
-1. From the **Create a resource** blade, search Azure Marketplace for **Windows Server**. Select **Windows Server** from the search results list.
-
-1. On the Windows Server page, use the drop-down menu to select **[smalldisk] Windows Server 2016 Datacenter**, and then click **Create**.
-
-1. Use the **Create a virtual machine** blade to deploy a virtual machine with the following settings:
-
-    - Subscription: the name of the subscription you are using in this lab
-
-    - Resource group: the name of a new resource group **az1000301-RG**
-
-    - Virtual machine name: **az1000301-vm0**
-
-    - Region: **(US) East US** (or a region closer to you)
-
-      > **Note**: To identify Azure regions where you can provision Azure VMs, refer to [**https://azure.microsoft.com/en-us/regions/offers/**](https://azure.microsoft.com/en-us/regions/offers/)
-
-    - Availability options: **Availability set**
-
-    - Availability set: Click **Create New**, and name the new availability set **az1000301-avset0** with **2** fault domains and **5** update domains. Click **OK**.
-
-    - Image: **[smalldisk] Windows Server 2016 Datacenter**
-
-    - Size: **Standard DS2_v2**
-
-    - Username: **Student**
-
-    - Password: **Pa55w.rd1234**
-
-    - Public inbound ports: **None**
-
-    - Already have a Windows license?: **No**
-
-1. Click **Next: Disks >**.    
-
-    - OS disk type: **Standard HDD**
-
-1. Click **Next: Networking >**.
-
-1. On the Networking tab, click **Create new** under Virtual Network. Use the virtual network name already assigned by default and specify the following:
-
-    - Virtual network address range: **10.103.0.0/16**
-
-    - Subnet name: **subnet0**
-
-    - Subnet address range: **10.103.0.0/24**
-
-1. Click **OK**.
-
-1. Leave all other default values, and click **Review + create**.
-
-1. Click **Create**.
-
-   > **Note**: You will configure the network security group you create in this task in the second exercise of this lab
-
-   > **Note**: Wait for the deployment to complete before you proceed to the next task. This should take about 5 minutes.
+1. Azure 리소스 관리자 템플릿을 사용하여 Linux를 실행하는 두 개의 Azure VM을 가용성 집합에 배포합니다
 
 
-#### Task 2: Deploy an Azure VM running Windows Server 2016 Datacenter into the existing availability set by using Azure PowerShell
+#### 작업 1: Windows Server 2016 데이터 센터를 실행하는 Azure VM을 Azure 포털을 사용하여 가용성 집합에 배포합니다
 
-1. From the Azure Portal, start a PowerShell session in the Cloud Shell pane. 
+1. 랩 가상 머신에서 Microsoft Edge를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 이 랩에서 사용하려는 Azure 구독에서 소유자 역할이 있는 Microsoft 계정을 사용하여 로그인합니다.
 
-   > **Note**: If this is the first time you are launching the Cloud Shell in the current Azure subscription, you will be asked to create an Azure file share to persist Cloud Shell files. If so, accept the defaults, which will result in creation of a storage account in an automatically generated resource group.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. In the Cloud Shell pane, run the following command:
+1. **리소스 블레이드 만들기에서** Windows Server **2016 데이터 센터에** 대한 Azure 마켓플레이스를 검색합니다.
 
-   ```pwsh
+1. 검색 결과 목록을 사용하여 Windows Server 2016 데이터 센터 Azure Marketplace 이미지를 배포하기 위한 **가상 머신 블레이드 만들기** 로 이동합니다.
+
+1. **가상 머신 블레이드 만들기** 를 사용하여 다음 설정을 사용하여 가상 머신를 배포합니다.
+
+    - 구독: 이 랩에서 사용 중인 구독의 이름
+
+    - 리소스 그룹: 새 리소스 그룹 **az1000301-RG** 의 이름
+
+    - 가상 머신 이름: **az1000301-vm0**
+
+    - 지역: 랩 위치에 가장 가깝고 Azure VM을 프로비전할 수 있는 Azure 지역의 이름입니다.
+
+    - 가용성 옵션: **가용성 집합**
+
+    - 가용성 집합: **2** 개의 오류 도메인과 5개의 업데이트 도메인이 있는 새 가용성 집합 **az1000301-avset0** **5** 이름입니다.
+
+    - 이미지: **Windows Server 2016 Datacenter**
+
+    - 크기: **스탠다드 DS1 V2**
+
+    - 사용자 이름: **학생**
+
+    - 암호: **Pa55w.rd1234**
+
+    - 공용 인바운드 포트: **없음**
+
+    - 이미 윈도우 라이센스가 있습니까?: **아니요**
+
+    - OS 디스크 유형: **표준 HDD**
+
+    - 가상 네트워크: 다음 설정이 있는 새 가상 네트워크 **az1000301-vnet0의** 이름:
+
+        - 주소 공간: **10.103.0.0/16**
+
+        - 서브넷 이름: **서브넷0**
+
+        - 서브넷 주소 범위: **10.103.0.0/24**
+
+    - 공용 IP: 새 공용 IP 주소 **az1000301-vm0-ip** 의 이름
+
+    - 네트워크 보안 그룹: **기본**
+
+    - 공용 인바운드 포트: **없음**
+
+    - 빠른 네트워킹: **꺼짐**
+
+    - 부팅 진단: **꺼짐**
+
+    - OS 게스트 진단: **꺼짐**
+
+    - 시스템 할당 관리 ID: **꺼짐**
+
+    - 자동 종료 사용 설정: **꺼짐**
+
+    - 백업 사용: **꺼짐**
+
+   > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
+
+   > **참고**: 이 랩의 두 번째 연습에서는 이 작업에서 만든 네트워크 보안 그룹을 구성합니다.
+
+   > **참고**: 다음 작업을 진행하기 전에 배포가 완료될 때까지 기다립니다. 약 5 분이 소요됩니다.
+
+
+#### 작업 2: Azure PowerShell을 사용하여 Windows Server 2016 데이터 센터를 실행하는 Azure VM을 기존 가용성 집합에 배포합니다
+
+1. Azure 포털에서 Cloud Shell 창에서 PowerShell 세션을 시작하십시오. 
+
+   > **참고**: 현재 Azure 구독에서 클라우드 셸을 처음 시작하는 경우 클라우드 셸 파일을 유지하도록 Azure 파일 공유를 만들라는 메시지가 표시됩니다. 이 경우 기본값을 허용하면 자동으로 생성된 리소스 그룹에서 저장소 계정이 생성됩니다.
+
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
+
+   ```
    $vmName = 'az1000301-vm1'
-   $vmSize = 'Standard_DS2_v2'
+   $vmSize = 'Standard_DS1_v2'
    ```
 
-   > **Note**: This sets the values of variables designating the Azure VM name and its size
+   > **참고**: 이렇게 하면 Azure VM 이름과 크기를 지정하는 변수의 값이 설정됩니다.
 
-1. In the Cloud Shell pane, run the following commands:
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
+   ```
    $resourceGroup = Get-AzResourceGroup -Name 'az1000301-RG'
    $location = $resourceGroup.Location
    ```
 
-   > **Note**: These commands set the values of variables designating the target resource group and its location
+   > **참고**: 이러한 명령은 대상 리소스 그룹과 해당 위치를 지정하는 변수의 값을 설정합니다.
 
-1. In the Cloud Shell pane, run the following commands:
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
 
-   ```pswh
+   ```
    $availabilitySet = Get-AzAvailabilitySet -ResourceGroupName $resourceGroup.ResourceGroupName -Name 'az1000301-avset0'
-   $vnet = Get-AzVirtualNetwork -Name 'az1000301-RG-vnet' -ResourceGroupName $resourceGroup.ResourceGroupName
+   $vnet = Get-AzVirtualNetwork -Name 'az1000301-vnet0' -ResourceGroupName $resourceGroup.ResourceGroupName
    $subnetid = (Get-AzVirtualNetworkSubnetConfig -Name 'subnet0' -VirtualNetwork $vnet).Id
    ```
 
-   > **Note**: These commands set the values of variables designating the availability set, virtual network, and subnet into which you will deploy the new Azure VM
+   > **참고**: 이러한 명령은 새 Azure VM을 배포할 가용성 집합, 가상 네트워크 및 서브넷을 지정하는 변수값을 설정합니다.
 
-1. In the Cloud Shell pane, run the following commands:
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
+   ```
    $nsg = New-AzNetworkSecurityGroup -ResourceGroupName $resourceGroup.ResourceGroupName -Location $location -Name "$vmName-nsg"
    $pip = New-AzPublicIpAddress -Name "$vmName-ip" -ResourceGroupName $resourceGroup.ResourceGroupName -Location $location -AllocationMethod Dynamic 
    $nic = New-AzNetworkInterface -Name "$($vmName)$(Get-Random)" -ResourceGroupName $resourceGroup.ResourceGroupName -Location $location -SubnetId $subnetid -PublicIpAddressId $pip.Id -NetworkSecurityGroupId $nsg.Id
    ```
 
-   > **Note**: These commands create a new network security group, public IP address, and network interface that will be used by the new Azure VM
+   > **참고**: 이러한 명령은 새 Azure VM에서 사용할 새 네트워크 보안 그룹, 공용 IP 주소 및 네트워크 인터페이스를 만듭니다
 
-   > **Note**: You will configure the network security group you create in this task in the second exercise of this lab
+   > **참고**: 이 랩의 두 번째 연습에서는 이 작업에서 만든 네트워크 보안 그룹을 구성합니다.
 
-1. In the Cloud Shell pane, run the following commands:
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
+   ```
    $adminUsername = 'Student'
    $adminPassword = 'Pa55w.rd1234'
    $adminCreds = New-Object PSCredential $adminUsername, ($adminPassword | ConvertTo-SecureString -AsPlainText -Force)
    ```
 
-   > **Note**: These commands set the values of variables designating credentials of the local Administrator account of the new Azure VM
+   > **참고**: 이러한 명령은 새 Azure VM의 로컬 관리자 계정의 자격 증명을 지정하는 변수의 값을 설정합니다.
 
-1. In the Cloud Shell pane, run the following commands:
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
+   ```
    $publisherName = 'MicrosoftWindowsServer'
    $offerName = 'WindowsServer'
    $skuName = '2016-Datacenter'
    ```
 
-   > **Note**: These commands set the values of variables designating the properties of the Azure Marketplace image that will be used to provision the new Azure VM
+   > **참고**: 이러한 명령은 새 Azure VM을 프로비전하는 데 사용할 Azure Marketplace 이미지의 속성을 지정하는 변수값을 설정합니다.
 
-1. In the Cloud Shell pane, run the following command:
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
-   $osDiskType = (Get-AzDisk -ResourceGroupName $resourceGroup.ResourceGroupName)[0].Sku.Name
+   ```
+   $osDiskType = (Get-AzResource -ResourceGroupName $resourceGroup.ResourceGroupName -ResourceType Microsoft.Compute/disks)[0].Sku.name
    ```
 
-   > **Note**: This command sets the values of a variable designating the operating system disk type of the new Azure VM
+   > **참고**: 이 명령은 새 Azure VM의 운영 체제 디스크 유형을 지정하는 변수의 값을 설정합니다.
 
-1. In the Cloud Shell pane, run the following commands:
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
-   $vmConfig = New-AzVMConfig -VMName $vmName -VMSize $vmSize -AvailabilitySetId $availabilitySet.Id
+   ```
+   vmConfig = New-AzVMConfig -VMName $vmName -VMSize $vmSize -AvailabilitySetId $availabilitySet.Id
    Add-AzVMNetworkInterface -VM $vmConfig -Id $nic.Id
    Set-AzVMOperatingSystem -VM $vmConfig -Windows -ComputerName $vmName -Credential $adminCreds 
    Set-AzVMSourceImage -VM $vmConfig -PublisherName $publisherName -Offer $offerName -Skus $skuName -Version 'latest'
@@ -193,342 +203,307 @@ The main tasks for this exercise are as follows:
    Set-AzVMBootDiagnostic -VM $vmConfig -Disable
    ```
 
-   > **Note**: These commands set up the properties of the Azure VM configuration object that will be used to provision the new Azure VM, including the VM size, its availability set, network interface, computer name, local Administrator credentials, the source image, the operating system disk, and boot diagnostics settings.
+   > **참고**: 이들 명령은 VM 크기, VM의 가용성 집합, 네트워크 인터페이스, 컴퓨터 이름, 로컬 관리자 자격 증명, 원본 이미지, 운영 체제 디스크, 부팅 진단 설정 등, 새 Azure VM을 프로비전하는 데 사용되는 Azure VM 구성 개체의 속성을 설정합니다.
 
-1. In the Cloud Shell pane, run the following command:
+1. 클라우드 셸 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
+   ```
    New-AzVM -ResourceGroupName $resourceGroup.ResourceGroupName -Location $location -VM $vmConfig
    ```
 
-   > **Note**: This command initiates deployment of the new Azure VM
+   > **참고**: 이 명령은 새 Azure VM의 배포를 시작합니다.
 
-   > **Note**: Do not wait for the deployment to complete but instead proceed to the next task.
+   > **참고**: 배포가 완료될 때까지 기다리지 말고 다음 작업으로 진행합니다.
 
 
-#### Task 3: Deploy two Azure VMs running Linux into an availability set by using an Azure Resource Manager template
+#### 작업 3: Azure 리소스 관리자 템플릿을 사용하여 Linux를 실행하는 두 개의 Azure VM을 가용성 집합에 배포합니다
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **Template deployment**, and select **Template deployment (deploy using custom templates)**.
+1. **리소스 만들기** 블레이드에서 Azure 마켓플레이스에서 **템플릿 배포** 를 검색합니다.
 
-1. Click **Create**.
-
-1. On the **Custom deployment** blade, click the **Build your own template in the editor** link. If you do not see this link, click **Edit template** instead.
-
-1. From the **Edit template** blade, load the template file **Labfiles\\Module_02\\Deploy_and_Manage_Virtual_Machines\\az-100-03_azuredeploy.json**. 
-
-   > **Note**: Review the content of the template and note that it defines deployment of two Azure VMs hosting Linux Ubuntu into an availability set and into the existing virtual network **az1000301-vnet0**. This virtual network does not exist in your deployment. You will be changing the virtual network name in the parameters below.
-
-1. Save the template and return to the **Custom deployment** blade. 
-
-1. From the **Custom deployment** blade, navigate to the **Edit parameters** blade.
-
-1. From the **Edit parameters** blade, load the parameters file **Labfiles\\Module_02\\Deploy_and_Manage_Virtual_Machines\\az-100-03_azuredeploy.parameters.json**. 
-
-1. Save the parameters and return to the **Custom deployment** blade. 
-
-1. From the **Custom deployment** blade, initiate a template deployment with the following settings:
-
-    - Subscription: the name of the subscription you are using in this lab
-
-    - Resource group: the name of a new resource group **az1000302-RG**
-
-    - Location: the same Azure region you chose earlier in this exercise
-
-    - Vm Name Prefix: **az1000302-vm**
-
-    - Nic Name Prefix: **az1000302-nic**
-
-    - Pip Name Prefix: **az1000302-ip**
-
-    - Admin Username: **Student**
-
-    - Admin Password: **Pa55w.rd1234**
-
-    - Virtual Network Name: **az1000301-RG-vnet** _(change this value from the template default)_
-
-    - Image Publisher: **Canonical**
-
-    - Image Offer: **UbuntuServer**
-
-    - Image SKU: **16.04.0-LTS**
-
-    - Vm Size: **Standard_DS2_v2**
-
-   > **Note**: Wait for the deployment to complete before you proceed to the next task. This should take about 5 minutes.
-
-> **Result**: After you completed this exercise, you have deployed an Azure VM running Windows Server 2016 Datacenter into an availability set by using the Azure portal, deployed another Azure VM running Windows Server 2016 Datacenter into the same availability set by using Azure PowerShell, and deployed two Azure VMs running Linux Ubuntu into an availability set by using an Azure Resource Manager template.
-
-   > **Note**: You could certainly use a template to deploy two Azure VMs hosting Windows Server 2016 datacenter in a single task (just as this was done with two Azure VMs hosting Linux Ubuntu server). The reason for deploying these Azure VMs in two separate tasks was to give you the opportunity to become familiar with both the Azure portal and Azure PowerShell-based deployments.
-
-
-### Exercise 2: Configure networking settings of Azure VMs running Windows and Linux operating systems
-  
-The main tasks for this exercise are as follows:
-
-1. Configure static private and public IP addresses of Azure VMs
-
-1. Connect to an Azure VM running Windows Server 2016 Datacenter via a public IP address
-
-1. Connect to an Azure VM running Linux Ubuntu Server via a private IP address
-
-
-#### Task 1: Configure static private and public IP addresses of Azure VMs
-
-1. In the Azure portal, navigate to the **az1000301-vm0** blade.
-
-1. From the **az1000301-vm0** blade, navigate to the **Networking** blade, displaying the configuration of the public IP address **az1000301-vm0-ip**, assigned to its network interface.
-
-1. From the **Networking** blade, click the link representing the public IP address.
-
-1. On the az1000301-vm0-ip blade, click **Configuration**.
-
-1. Change the assignment of the public IP address to **Static**, and then click **Save**.
-
-   > **Note**: Take a note of the public IP address assigned to the network interface of **az1000301-vm0**. You will need it later in this exercise.
-
-1. In the Azure portal, navigate to the **az1000302-vm0** blade.
-
-1. From the **az1000302-vm0** blade, display the **Networking** blade.
-
-1. From the **az1000302-vm0 - Networking** blade, click the link representing the network interface.
-
-1. From the blade displaying the properties of the network interface of **az1000302-vm0**, navigate to its **IP configurations** blade.
-
-1. On the **IP configurations** blade, configure the **ipconfig1** private IP address to be static and set it to **10.103.0.100**, and then click **Save**.
-
-   > **Note**: Changing the private IP address assignment requires restarting the Azure VM.
-
-   > **Note**: It is possible to connect to Azure VMs via either statically or dynamically assigned public and private IP addresses. Choosing static IP assignment is commonly done in scenarios where these IP addresses are used in combination with IP filtering, routing, or if they are assigned to network interfaces of Azure VMs that function as DNS servers.
-
-
-#### Task 2: Connect to an Azure VM running Windows Server 2016 Datacenter via a public IP address
-
-1. In the Azure portal, navigate to the **az1000301-vm0** blade.
-
-1. From the **az1000301-vm0** blade, navigate to the **Networking** blade.
-
-1. On the **az1000301-vm0 - Networking** blade, review the inbound port rules of the network security group assigned to the network interface of **az1000301-vm0**.
-
-   > **Note**: The default configuration consisting of built-in rules block inbound connections from the internet (including connections via the RDP port TCP 3389)
-
-1. Add an inbound security rule to the existing network security group with the following settings:
-
-    - Source: **Any**
-
-    - Source port ranges: **\***
-
-    - Destination: **Any**
-
-    - Destination port ranges: **3389**
-
-    - Protocol: **TCP**
-
-    - Action: **Allow**
-
-    - Priority: **100**
-
-    - Name: **AllowInternetRDPInBound**
-
-1. In the Azure portal, display the **Overview** pane of the **az1000301-vm0** blade. 
-
-1. From the **Overview** pane of the **az1000301-vm0** blade, click **Connect** and generate an RDP file and use it to connect to **az1000301-vm0**.
-
-1. When prompted, authenticate by specifying the following credentials:
-
-    - User name: **Student**
-
-    - Password: **Pa55w.rd1234**
-
-
-#### Task 3: Connect to an Azure VM running Linux Ubuntu Server via a private IP address
+1. 검색 결과 목록을 사용하여 **사용자 지정 템플릿 배포** 블레이드로 이동합니다.
  
-1. Within the RDP session to **az1000301-vm0**, start **Command Prompt**.
+1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿 빌드** 를 선택합니다.
 
-1. From the Command Prompt, run the following:
+1. **편집 템플릿** 블레이드에서 템플릿 파일 **Labfiles\\AZ100\\Mod03\\az-100-03_azuredeploy.json** 을 로드합니다. 
+
+   > **참고**: 템플릿의 내용을 검토하고 Linux Ubuntu를 호스팅하는 두 개의 Azure VM을 가용성 집합으로 기존 가상 네트워크 **az1000301-vnet0** 에 배포하도록 정의합니다.
+
+1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
+
+1. **사용자 지정 배포** 블레이드에서 **매개 변수 편집** 블레이드로 이동합니다.
+
+1. **편집 매개 변수** 블레이드에서 매개 변수 파일 **Labfiles\\AZ100\\Mod03\\az-100-03_azuredeploy.parameters.json을 로드합니다.** 
+
+1. 매개 변수를 저장하고 **사용자** 지정 배포 블레이드로 돌아갑니다. 
+
+1. **사용자 지정 배포** 블레이드에서 다음 설정을 사용하고 템플릿 배포를 시작합니다.
+
+    - 구독: 이 랩에서 사용 중인 구독의 이름
+
+    - 리소스 그룹: 새 리소스 그룹 **az1000302-RG** 의 이름
+
+    - 위치: 이 연습의 앞에서 선택한 동일한 Azure 지역
+
+    - Vm 이름 접두사: **az1000302-vm**
+
+    - Nic 이름 접두사: **az1000302-nic**
+
+    - Pip 이름 접두사: **az1000302-ip**
+
+    - 관리자 사용자 이름: **학생**
+
+    - 관리자 암호: **Pa55w.rd1234**
+
+    - 가상 네트워크 이름: **az1000301-vnet0**
+
+    - 이미지 게시자: **정식**
+
+    - 이미지 제공: **우분투 서버**
+
+    - 이미지 SKU: **16.04.0-LTS**
+
+    - Vm 크기: **Standard_DS1_v2**
+
+   > **참고**: 다음 작업을 진행하기 전에 배포가 완료될 때까지 기다립니다. 약 5 분이 소요됩니다.
+
+> **결과**: 이 연습을 완료한 후 Windows Server 2016 데이터 센터를 실행하는 Azure VM을 Azure 포털을 사용하여 가용성 집합에 배포하고, Windows Server 2016 데이터 센터를 실행하는 다른 Azure VM을 Azure를 사용하여 동일한 가용성 집합에 배포했습니다. PowerShell, 및 Azure 리소스 관리자 템플릿을 사용 하 여 가용성 집합에 리눅스 우분투를 실행 하는 두 개의 Azure VM을 배포 했습니다.
+
+   > **참고**: 템플릿을 사용하여 Windows Server 2016 데이터 센터를 호스팅하는 두 개의 Azure VM을 단일 작업에 배포할 수 있습니다(Linux Ubuntu 서버를 호스팅하는 두 개의 Azure VM에서 수행한 것처럼). 이러한 Azure VM을 두 개의 별도 작업에 배포하는 이유는 Azure Portal 및 Azure PowerShell 기반 배포에 익숙해질 수 있는 기회를 제공하기 위해서입니다.
+
+
+### 연습 2: Windows 및 Linux 운영 체제를 실행하는 Azure VM의 네트워킹 설정 구성
+  
+이 연습의 주요 작업은 다음과 같습니다:
+
+1. Azure VM의 정적 개인 및 공용 IP 주소 구성
+
+1. 공용 IP 주소를 통해 Windows Server 2016 데이터 센터를 실행하는 Azure VM에 연결
+
+1. 개인 IP 주소를 통해 리눅스 우분투 서버를 실행 하는 Azure VM에 연결
+
+
+#### 작업 1: Azure VM의 정적 개인 및 공용 IP 주소 구성
+
+1. Azure 포털에서 **az1000301-vm0** 블레이드로이동합니다.
+
+1. **az1000301-vm0** 블레이드에서 **az1000301-vm0-ip - 구성** 블레이드로 이동하여 네트워크 인터페이스에 할당된 공용 IP 주소 **az1000301-vm0-ip의** 구성을 표시합니다.
+
+1. **az1000301-vm0-ip - 구성 블레이드에서** 공용 IP 주소 할당을 정적** 으로 변경합니다.**
+
+   > **참고**: **az1000301-vm0** 의 네트워크 인터페이스에 할당된 공용 IP 주소를 기록해 둡니다. 이 연습의 뒷부분에서 필요할 것입니다.
+
+1. Azure 포털에서 **az1000302-vm0** 블레이드로이동합니다.
+
+1. **az1000302-vm0** 블레이드에서 **az1000302-vm0 - 네트워킹** 블레이드를 표시합니다.
+
+1. **az1000302-vm0 - 네트워킹** 블레이드에서 네트워크 인터페이스의 속성을 표시하는 블레이드로 이동합니다.
+
+1. **az1000302-vm0** 의 네트워크 인터페이스의 속성을 표시하는 블레이드에서 **ipconfig1** 블레이드로 이동합니다.
+
+1. **ipconfig1 블레이드에서** 개인 IP 주소를 정적으로 구성하고 **10.103.0.100** 으로 설정합니다.
+
+   > **참고**: 개인 IP 주소 할당을 변경하려면 Azure VM을 다시 시작해야 합니다.
+
+   > **참고**: 정적 또는 동적으로 할당된 공용 및 개인 IP 주소를 통해 Azure VM에 연결할 수 있습니다. 정적 IP 할당 선택은 일반적으로 이러한 IP 주소가 IP 필터링, 라우팅과 함께 사용되거나 DNS 서버로 작동하는 Azure VM의 네트워크 인터페이스에 할당되는 시나리오에서 수행됩니다.
+
+
+#### 작업 2: 공용 IP 주소를 통해 Windows Server 2016 데이터 센터를 실행하는 Azure VM에 연결
+
+1. Azure 포털에서 **az1000301-vm0** 블레이드로이동합니다.
+
+1. **az1000301-vm0** 블레이드에서 **az1000301-vm0 - 네트워킹** 블레이드로이동합니다.
+
+1. **az1000301-vm0 - 네트워킹** 블레이드에서 **az1000301-vm0** 의 네트워크 인터페이스에 할당된 네트워크 보안 그룹의 인바운드 포트 규칙을 검토합니다.
+
+   > **참고**: 기본 제공 규칙으로 구성된 기본 구성은 인터넷에서 인바운드 연결을 차단합니다(RDP 포트 TCP 3389를 통한 연결 포함).
+
+1. 다음 설정을 사용하여 기존 네트워크 보안 그룹에 인바운드 보안 규칙을 추가합니다.
+
+    - 출처: **아무것**
+
+    - 소스 포트 범위: **\***
+
+    - 대상: **아무것**
+
+    - 대상 포트 범위: **3389**
+
+    - 프로토콜: **TCP**
+
+    - 액션: **허용**
+
+    - 우선 순위: **100**
+
+    - 이름: **허용인터넷RDP인바운드**
+
+1. Azure 포털에서 **az1000301-vm0** 블레이드의 **개요 창** 을 표시합니다. 
+
+1. **az1000301-vm0** 블레이드의 **개요 창** 에서 RDP 파일을 생성하고 **az1000301-vm0에** 연결하는 데 사용합니다.
+
+1. 메시지가 표시되면 다음 자격 증명을 지정하여 인증합니다:
+
+    - 사용자 이름: **학생**
+
+    - 암호: **Pa55w.rd1234**
+
+
+#### 작업 3: 개인 IP 주소를 통해 리눅스 우분투 서버를 실행 하는 Azure VM에 연결
+ 
+1. RDP 세션 내에서 **az1000301-vm0,** **명령 프롬프트** 를 시작합니다.
+
+1. 명령 프롬프트에서 다음을 실행합니다.
 
    ```
    nslookup az1000302-vm0
    ```
 
-1. Examine the output and note that the name resolves to the IP address you assigned in the first task of this exercise (**10.103.0.100**).
+1. 출력을 검사하고 이 연습의 첫 번째 작업에서 할당한 IP 주소로 이름이 확인됩니다(**10.103.0.100**).
 
-   > **Note**: This is expected. Azure provides built-in DNS name resolution within a virtual network. 
+   > **참고**: 예상되는 상황입니다. Azure는 가상 네트워크 내에서 기본 제공 DNS 이름 확인을 제공합니다. 
 
-1. Within the RDP session to **az1000301-vm0**, from Server Manager, click **Local Server**, then disable **IE Enhanced Security Configuration**.
+1. RDP 세션 내에서 **az1000301-vm0**, 서버 관리자에서 일시적으로 **IE 강화 보안 구성** 을 사용하지 않도록 설정합니다.
 
-1. Within the RDP session to **az1000301-vm0**, start Internet Explorer and download **putty.exe** from [**https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html**](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 
+1. **az1000301-vm0** 에 RDP 세션 내에서,인터넷 익스플로러를 시작하고 [**https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html**](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 에서 **putty.exe**를 다운로드 
 
-1. Use **putty.exe** to verify that you can successfully connect to **az1000302-vm0** on its private IP address via the **SSH** protocol (TCP 22).
+1. **putty.exe** 를 사용하여 **SSH** 프로토콜(TCP 22)을 통해 개인 IP 주소에서 **az1000302-vm0** 에 성공적으로 연결할 수 있는지 확인합니다.
 
-1. When prompted, authenticate by specifying the following values:
+1. 메시지가 표시되면 다음 값을 지정하여 인증합니다:
 
-    - User name: **Student**
+    - 사용자 이름: **학생**
 
-    - Password: **Pa55w.rd1234**
+    - 암호: **Pa55w.rd1234**
 
-    > **Note**: Both the username and password are case sensitive.
- 
-1. Once you successfully authenticated, terminate the RDP session to **az1000301-vm0**.
+1. 성공적으로 인증되면 RDP 세션을 **az1000301-vm0** 로 종료합니다.
 
-1. On the lab virtual machine, in the Azure portal, navigate to the **az1000302-vm0** blade.
+1. 랩 가상 머신에서 Azure 포털에서 **az1000302-vm0** 블레이드로이동합니다.
 
-1. From the **az1000302-vm0** blade, navigate to the **Networking** blade.
+1. **az1000302-vm0** 블레이드에서 **az1000302-vm0 - 네트워킹** 블레이드로이동합니다.
 
-1. On the **az1000302-vm0 - Networking** blade, review the inbound port rules of the network security group assigned to the network interface of **az1000301-vm0** to determine why your SSH connection via the private IP address was successsful.
+1. **az1000302-vm0 - 네트워킹** 블레이드에서 **az1000301-vm0** 의 네트워크 인터페이스에 할당된 네트워크 보안 그룹의 인바운드 포트 규칙을 검토하여 개인 IP 주소를 통한SSH 연결이 성공한 이유를 확인합니다.
 
-   > **Note**: The default configuration consisting of built-in rules allows inbound connections within the Azure virtual network environment (including connections via the SSH port TCP 22).
+   > **참고**: 기본 제공 규칙으로 구성된 기본 구성을 사용하면 Azure 가상 네트워크 환경 내의 인바운드 연결을 허용합니다(SSH 포트 TCP 22를 통한 연결 포함).
 
-> **Result**: After you completed this exercise, you have configured static private and public IP addresses of Azure VMs, connected to an Azure VM running Windows Server 2016 Datacenter via a public IP address, and connect to an Azure VM running Linux Ubuntu Server via a private IP address
+> **결과**: 이 연습을 완료한 후 Azure VM의 정적 개인 및 공용 IP 주소를 구성하고 공용 IP 주소를 통해 Windows Server 2016 데이터 센터를 실행하는 Azure VM에 연결하고 개인 IP를 통해 Linux Ubuntu 서버를 실행하는 Azure VM에 연결했습니다. 주소
 
 
-### Exercise 3: Deploy and configure Azure VM scale sets
+### 연습 3: Azure VM 스케일 세트 배포 및 구성
 
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Identify an available DNS name for an Azure VM scale set deployment
+1. Azure VM 스케일 집합 배포에 사용할 수 있는 DNS 이름 식별
 
-1. Deploy an Azure VM scale set
+1. Azure VM 스케일 세트 배포
 
-1. Install IIS on a scale set VM by using DSC extensions
+1. DSC 확장을 사용하여 스케일 세트 VM에 IIS 설치
 
 
-#### Task 1: Identify an available DNS name for an Azure VM scale set deployment
+#### 작업 1: Azure VM 스케일 집합 배포에 사용할 수 있는 DNS 이름 식별
 
-1. From the Azure Portal, start a PowerShell session in the Cloud Shell pane. 
+1. Azure 포털에서 Cloud Shell 창에서 PowerShell 세션을 시작하십시오. 
 
-1. In the Cloud Shell pane, run the following command, substituting the placeholder &lt;custom-label&gt; with any string which is likely to be unique.
+1. 클라우드 셸 창에서 다음 명령을 실행하여 자리 표시자 및 lt;사용자 지정 레이블> 고유 할 가능성이있는 문자열및 자리 표시자 및 lt;위치 -az1000301-RG> **az1000301-RG** 리소스 그룹을 만든 Azure 지역의 이름으로 표시됩니다.
 
-   ```pwsh
-   $rg = Get-AzResourceGroup -Name az1000301-RG
-   Test-AzDnsAvailability -DomainNameLabel <custom-label> -Location $rg.Location
+   ```
+   Test-AzDnsAvailability -DomainNameLabel <custom-label> -Location '<location-of-az1000301-RG>'
    ```
 
-1. Verify that the command returned **True**. If not, rerun the same command with a different value of the &lt;custom-label&gt; until the command returns **True**. 
+1. 명령이 **True**. 그렇지 않은 경우 &lt;custom 레이블>gt의 다른 값으로 동일한 명령을 다시 실행합니다. 명령이 **True** 를 반환할 때까지. 
 
-1. Note the value of the &lt;custom-label&gt; that resulted in the successful outcome. You will need it in the next task
-
-
-#### Task 2: Deploy an Azure VM scale set
-
-1. In the Azure portal, navigate to the **Create a resource** blade.
-
-1. From the **Create a resource** blade, search Azure Marketplace for **Virtual machine scale set**.
-
-1. Use the list of search results to navigate to the **Create virtual machine scale set** blade.
-
-1. Use the **Create virtual machine scale set** blade to deploy a virtual machine scale set with the following settings:
-
-    - Virtual machine scale set name: **az1000303vmss0**
-
-    - Operating system disk image: **Windows Server 2016 Datacenter**
-
-    - Subscription: the name of the subscription you are using in this lab
-
-    - Resource group: the name of a new resource group **az1000303-RG**
-
-    - Location: the same Azure region you chose in the previous exercises of this lab
-
-    - Availability zone: **None**
-
-    - Username: **Student**
-
-    - Password: **Pa55w.rd1234**
-
-    - Instance count: **1**
-
-    - Instance size: **DS2 v2**
-
-    - Deploy as low priority: **No**
-
-    - Use managed disks: **Yes**
-
-    - Autoscale: **Disabled**
-
-    - Choose Load balancing options: **Load balancer**
-
-    - Public IP address name: **az1000303vmss0-ip**
-
-    - Domain name label: type in the value of the &lt;custom-label&gt; you identified in the previous task
-
-    - Virtual network: the name of a new virtual network **az1000303-vnet0** with the following settings:
-
-        - Address range: **10.203.0.0/16**
-
-        - Subnet name: **subnet0**
-
-        - Subnet address range: **10.203.0.0/24**
-
-    - Public IP address per instance: **Off**
-
-   > **Note**: Wait for the deployment to complete before you proceed to the next task. This should take about 5 minutes.
+1. 성공적인 결과를 가져온 &lt;custom-label&gt; 가치에 주목하십시오. 다음 작업에 필요합니다
 
 
-#### Task 3: Install IIS on a scale set VM by using DSC extensions
+#### 작업 2: Azure VM 스케일 세트 배포
 
-1. In the Azure portal, navigate to the **az1000303vmss0** blade.
+1. Azure 포털에서 **리소스 블레이드 만들기로** 이동합니다.
 
-1. From the **az1000303vmss0** blade, display its Extension blade.
+1. 리소스 **블레이드 만들기에서** Azure 마켓플레이스에서 **가상 시스템 크기 집합** 을 검색합니다.
 
-1. From the **az1000303vmss0 - Extension** blade, add the **PowerShell Desired State Configuration** extension with the following settings:
+1. 검색 결과 목록을 사용하여 **가상 머신 크기 집합** 블레이드 만들기로 이동합니다.
 
-   > **Note**: The DSC configuration module is available for upload from **Labfiles\\Module_02\\Deploy_and_Manage_Virtual_Machines\\az-100-03_install_iis_vmss.zip**. The module contains the DSC configuration script that installs the Web Server (IIS) role.
+1. **가상 머신 크기 집합 블레이드 만들기** 를 사용하여다음 설정으로 가상 시스템 스케일 집합을 배포합니다.
 
-    - Configuration Modules or Script: **"az-100-03_install_iis_vmss.zip"**
+    - 가상 머신 스케일 세트 이름: **az1000303vmss0**
 
-    - Module-qualified Name of Configuration: **az-100-03_install_iis_vmss.ps1\IISInstall**
+    - 운영 체제 디스크 이미지: **Windows Server 2016 Datacenter**
 
-    - Configuration Arguments: leave blank
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Configuration Data PSD1 File: leave blank
+    - 리소스 그룹: 새 리소스 그룹 **az1000303-RG** 의 이름
 
-    - WMF Version: **latest**
+    - 위치: 이 랩의 이전 연습에서 선택한 것과 동일한 Azure 지역
 
-    - Data Collection: **Disable**
+    - 가용성 영역: **없음**
 
-    - Version: **2.76**
+    - 사용자 이름: **학생**
 
-    - Auto Upgrade Minor Version: **Yes**
+    - 암호: **Pa55w.rd1234**
 
-1. Navigate to the **az1000303vmss0 - Instances** blade and initiate the upgrade of the **az1000303vmss0_0** instance.
+    - 인스턴스 수: **1**
 
-   > **Note**: The update will trigger application of the DSC configuration script. Wait for upgrade to complete. This should take about 5 minutes. You can monitor the progress from the **az1000303vmss0 - Instances** blade.
+    - 인스턴스 크기: **DS1 v2**
 
-1. Once the upgrade completes, navigate to the **Overview** blade. 
+    - 낮은 우선 순위로 배포: **아니요**
 
-1. On the **az1000303vmss0-ip** blade, note the public IP address assigned to **az1000303vmss0**.
+    - 관리 디스크 사용: **예**
 
-1. Start Microsoft Edge and navigate to the public IP address you identified in the previous step.
+    - 자동 크기 조정: **비활성화**
 
-1. Verify that the browser displays the default IIS home page. 
+    - 부하 균형 옵션을 선택합니다. **로드 밸런서**
 
-> **Result**: After you completed this exercise, you have identified an available DNS name for an Azure VM scale set deployment, deployed an Azure VM scale set, and installed IIS on a scale set VM by using the DSC extension.
+    - 공용 IP 주소 이름: **az1000303vms0-ip**
 
-## Exercise 4: Remove lab resources
+    - 도메인 이름 레이블: &lt;사용자 지정 레이블&gt; 이전 작업에서 식별된 값에 입력합니다.
 
-#### Task 1: Open Cloud Shell
+    - 가상 네트워크: 다음 설정이 있는 새 가상 네트워크 **az1000303-vnet0의** 이름:
 
-1. At the top of the portal, click the **Cloud Shell** icon to open the Cloud Shell pane.
+        - 주소 공간: **10.203.0.0/16**
 
-1. At the Cloud Shell interface, select **Bash**.
+        - 서브넷 이름: **서브넷0**
 
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to list all resource groups you created in this lab:
+        - 서브넷 주소 범위: **10.203.0.0/24**
 
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv
-   ```
+    - 인스턴스당 공용 IP 주소: **꺼짐**
 
-1. Verify that the output contains only the resource groups you created in this lab. These groups will be deleted in the next task.
+   > **참고**: 다음 작업을 진행하기 전에 배포가 완료될 때까지 기다립니다. 약 5 분이 소요됩니다.
 
-#### Task 2: Delete resource groups
 
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to delete the resource groups you created in this lab
+#### 작업 3: DSC 확장을 사용하여 스케일 세트 VM에 IIS 설치
 
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
-   ```
+1. Azure 포털에서 **az1000303vms0** 블레이드로이동합니다.
 
-1. Close the **Cloud Shell** prompt at the bottom of the portal.
+1. **az1000303vms0** 블레이드에서확장 블레이드를 표시합니다.
 
-> **Result**: In this exercise, you removed the resources used in this lab.
+1. **az1000303vms0 - 확장** 블레이드에서 다음설정으로** PowerShell 원하는 상태 구성 확장** 을 추가합니다.
+
+   > **참고**: DSC 구성 모듈은 **Labfiles\\AZ100\\Mod03\az-100-03_install_iis_vmss.zip에서**업로드 할 수 있습니다. 이 모듈에는 IIS(웹 서버) 역할을 설치하는 DSC 구성 스크립트가 포함되어 있습니다.
+
+    - 구성 모듈 또는 스크립트: **"az-100-03_install_iis_vmss.zip"**
+
+    - 모듈 인증 이름: **az-100-03_install_iis_vmss.ps1\IISInstall**
+
+    - 구성 인수: 비워 둡니다
+
+    - 구성 데이터 PSD1 파일: 비워 둡니다
+
+    - WMF 버전: **최신** 버전
+
+    - 데이터 수집: **비활성화**
+
+    - 버전: **2.76**
+
+    - 자동 업그레이드 마이너 버전: **예**
+
+1. **az1000303vms0 - 인스턴스** 블레이드로 이동하여 **az1000303vmss0_0** 인스턴스의 업그레이드를 시작합니다.
+
+   > **참고**: 이 업데이트는 DSC 구성 스크립트의 응용 프로그램을 트리거합니다. 업그레이드가 완료될 때까지 기다립니다. 약 5 분이 소요됩니다. **az1000303vms0 - 인스턴스** 블레이드에서 진행 상황을 모니터링할 수 있습니다. 
+
+1. 업그레이드가 완료되면 **az1000303vms0-ip** 블레이드로 이동합니다. 
+
+1. **az1000303vms0-IP** 블레이드에서 **az1000303vmss0** 에 할당된 공용 IP 주소를 기록하십시오.
+
+1. Microsoft Edge를 시작하고 이전 단계에서 식별한 공용 IP 주소로 이동합니다.
+
+1. 브라우저에 기본 IIS 홈 페이지가 표시되는지 확인합니다. 
+
+> **결과**: 이 연습을 완료한 후 Azure VM 규모 집합 배포에 사용할 수 있는 DNS 이름을 식별하고, Azure VM 규모 집합을 배포하고, DSC 확장을 사용하여 스케일 세트 VM에 IIS를 설치했습니다.

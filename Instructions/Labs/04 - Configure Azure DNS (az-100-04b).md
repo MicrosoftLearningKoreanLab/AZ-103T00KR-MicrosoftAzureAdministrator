@@ -1,136 +1,134 @@
+﻿---
+랩:
+    제목: 'Azure DNS 구성'
+    모듈: '가상 네트워킹'
 ---
-lab:
-    title: 'Configure Azure DNS'
-    module: 'Module 04 - Virtual Networking'
----
 
-# Lab: Configure Azure DNS
+# 랩: Azure DNS 구성
   
-All tasks in this lab are performed from the Azure portal (including a PowerShell Cloud Shell session) 
+이 랩의 모든 작업은 Azure 포털(PowerShell 클라우드 셸 세션 포함)에서 수행됩니다 
 
-   > **Note**: When not using Cloud Shell, the lab virtual machine must have the Azure PowerShell 1.2.0 module (or newer) installed [https://docs.microsoft.com/en-us/powershell/azure/install-az-ps](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps)
+   > **참고**: Cloud Shell을 사용하지 않는 경우 랩 가상 시스템에 Azure PowerShell 1.2.0 모듈(또는 최신 모듈)이 설치되어 있어야 [https://docs.microsoft.com/ko-kr/powershell/azure/install-az-ps?view=azps-1.2.0](https://docs.microsoft.com/ko-kr/powershell/azure/install-az-ps?view=azps-1.2.0)합니다.
 
-Lab files: 
+랩 파일: 
 
--  **Labfiles\\Module_04\\Configure_Azure_DNS\\az-100-04b_01_azuredeploy.json**
+-  **Allfiles/Labfiles/AZ-100.4/az-100-04b_01_azuredeploy.json**
 
--  **Labfiles\\Module_04\\Configure_Azure_DNS\\az-100-04b_02_azuredeploy.json**
+-  **Allfiles/Labfiles/AZ-100.4/az-100-04b_02_azuredeploy.json**
 
--  **Labfiles\\Module_04\\Configure_Azure_DNS\\az-100-04_azuredeploy.parameters.json**
+-  **Allfiles/Labfiles/AZ-100.4/az-100-04_azuredeploy.parameters.json**
 
 
-### Scenario
+### 시나리오
   
-Adatum Corporation wants to implement public and private DNS service in Azure without having to deploy its own DNS servers. 
+Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 공용 및 개인 DNS 서비스를 구현하려고 합니다. 
 
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
-- Configure Azure DNS for public domains
+- 공용 도메인에 대한 Azure DNS 구성
 
-- Configure Azure DNS for private domains
-
-
-### Exercise 1: Configure Azure DNS for public domains
-
-The main tasks for this exercise are as follows:
-
-1. Create a public DNS zone
-
-1. Create a DNS record in the public DNS zone
-
-1. Validate Azure DNS-based name resolution for the public domain
+- 개인 도메인에 대한 Azure DNS 구성
 
 
-#### Task 1: Create a public DNS zone
+### 연습 1: 공용 도메인에 대한 Azure DNS 구성
+
+이 연습의 주요 작업은 다음과 같습니다:
+
+1. 공용 DNS 영역 만들기
+
+1. 공용 DNS 영역에서 DNS 레코드 만들기
+
+1. 공용 도메인에 대한 Azure DNS 기반 이름 확인의 유효성 검사
+
+
+#### 작업 1: 공용 DNS 영역 만들기
   
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the Azure subscription you intend to use in this lab.
+1. 랩 가상 머신에서 Microsoft Edge를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 이 랩에서 사용하려는 Azure 구독에서 소유자 역할이 있는 Microsoft 계정을 사용하여 로그인합니다.
 
-1. In the Azure portal, navigate to the **Create a resource** blade.
+1. Azure 포털에서 **새** 블레이드로이동합니다.
 
-1. From the **Create a resource** blade, search Azure Marketplace for **DNS zone**.
+1. **새** 블레이드에서 Azure 마켓플레이스에서 **DNS 영역** 을 검색합니다.
 
-1. Select **DNS Zone**, and then click **Create**.
+1. 검색 결과 목록을 사용하여 **DNS 만들기 영역** 블레이드로 이동합니다.
 
-1. From the to **Create DNS zone** blade, create a new DNS zone with the following settings: 
+1. **DNS 영역 블레이드 만들기** 에서 다음 설정을 사용하여 새DNS 영역을 만듭니다: 
 
-    - Subscription: the name of the Azure subscription you are using in this lab
+    - 이름: **com** 네임스페이스의 고유하고 유효한 DNS 도메인 이름
 
-    - Resource group: the name of a new resource group **az1000401b-RG**
+    - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
-    - Name: any unique, valid DNS domain name in the **.com** namespace
+    - 리소스 그룹: 새 리소스 그룹 **az1000401b-RG** 의 이름
 
-    - Resource group location: **East US** (or a supported region near you)
+    - 리소스 그룹 위치: 랩 위치에 가장 가까운 Azure 영역의 이름 및 Azure DNS 영역을 프로비전할 수 있는 위치
 
 
-#### Task 2: Create a DNS record in the public DNS zone
+#### 작업 2: 공용 DNS 영역에서 DNS 레코드 만들기
   
-1. From the Azure Portal, start a PowerShell session in the Cloud Shell. 
+1. Azure 포털에서 클라우드 셸에서 PowerShell 세션을 시작합니다. 
 
-   > **Note**: If this is the first time you are launching the Cloud Shell in the current Azure subscription, you will be asked to create an Azure file share to persist Cloud Shell files. If so, accept the defaults, which will result in creation of a storage account in an automatically generated resource group.
+   > **참고**: 현재 Azure 구독에서 클라우드 셸을 처음 시작하는 경우 클라우드 셸 파일을 유지하도록 Azure 파일 공유를 만들라는 메시지가 표시됩니다. 이 경우 기본값을 허용하면 자동으로 생성된 리소스 그룹에서 저장소 계정이 생성됩니다.
 
-1. From your lab computer open a Powershell session, run the following in order to identify the public IP address of your lab computer:
+1. Cloud Shell 창에서 랩 컴퓨터의 공용 IP 주소를 식별하려면 다음을 실행합니다.
 
-   ```pwsh
+   ```
    Invoke-RestMethod http://ipinfo.io/json | Select-Object -ExpandProperty IP
    ```
 
-   > **Note**: Take a note of this IP address. You will use it later in this task.
+   > **참고**: 이 IP 주소를 기록해 둡니다. 이 과업에서 나중에 사용됩니다.
 
-1. In the Cloud Shell pane, run the following in order to create a public IP address resource:
+1. 클라우드 셸 창에서 공용 IP 주소 리소스를 만들려면 다음을 실행합니다.
 
-   ```pwsh
+   ```
    $rg = Get-AzResourceGroup -Name az1000401b-RG
 
    New-AzPublicIpAddress -ResourceGroupName $rg.ResourceGroupName -Sku Basic -AllocationMethod Static -Name az1000401b-pip -Location $rg.Location
    ```
 
-1. In the Azure portal, navigate to the **az1000401b-RG** resource group blade.
+1. Azure 포털에서 **az1000401b-RG** 리소스그룹 블레이드로 이동합니다.
 
-1. From the **az1000401b-RG** resource group blade, navigate to the blade displaying newly created public DNS zone.
+1. **az1000401b-RG** 리소스 그룹 블레이드에서새로 생성된 공용 DNS 영역을 표시하는 블레이드로 이동합니다.
 
-1. From the DNS zone blade, click **+ Record set** to navigate to the **Add record set** blade
+1. DNS 영역 블레이드에서 레코드 집합 블레이드 추가로 이동하여 **다음 설정을 사용하여** DNS 레코드를 만듭니다:
 
-1. Create a DNS record with the following settings:
+    - 이름: **mylabvmpip**
 
-    - Name: **mylabvmpip**
+    - 입력: **A**
 
-    - Type: **A**
-
-    - Alias record set: **No**
+    - 별칭 레코드 세트: **아니요**
 
     - TTL: **1**
 
-    - TTL unit: **Hours**
+    - TTL 장치: **시간**
 
-    - IP ADDRESS: the public IP address of your lab computer you identified earlier in this task
+    - IP 주소: 이 작업의 앞에서 확인한 랩 컴퓨터의 공용 IP 주소
 
-1. From the Overview blade, click **+ Record set**, and create another record with the following settings:
+1. 레코드 **집합 블레이드 추가** 에서 다음 설정을 사용하여 다른레코드를 만듭니다:
 
-    - Name: **myazurepip**
+    - 이름: **myazurepip**
 
-    - Type: **A**
+    - 입력: **A**
 
-    - Alias record set: **Yes**
+    - 별칭 레코드 세트: **예**
 
-    - Alias type: **Azure resource**
+    - 별칭 유형: **Azure 리소스**
 
-    - Choose a subscription: the name of the Azure subscription you are using in this lab
+    - 구독 선택: 이 랩에서 사용 중인 Azure 구독의 이름
 
-    - Azure resource: **az1000401b-pip**
+    - Azure 리소스: **az1000401b-pip**
 
     - TTL: **1**
 
-    - TTL unit: **Hours**
+    - TTL 장치: **시간**
 
 
-#### Task 3: Validate Azure DNS-based name resolution for the public domain
+#### 작업 3: 공용 도메인에 대한 Azure DNS 기반 이름 확인의 유효성 검사
 
-1. On the DNS zone blade, note the list of the name servers that host the zone you created. You will use the first of them named in the next step.
+1. DNS 영역 블레이드에서 만든 영역을 호스트하는 이름 서버 목록을 확인합니다. 다음 단계에서 명명된 첫 번째 단계를 사용합니다.
 
-1. From the lab virtual machine, start Command Prompt and run the following to validate the name resolution of the two newly created DNS records (where &lt;custom_DNS_domain&gt; represents the custom DNS domain you created in the first task of this exercise and &lt;name_server&gt; represents the name of the DNS name server you identified in the previous step): 
+1. 랩 가상 컴퓨터에서 명령 프롬프트를 시작하고 다음을 실행하여 새로 만든 두 DNS 레코드의 이름 확인을 확인합니다(여기서 &lt;custom_DNS_domain&gt; 이 연습의 첫 번째 작업에서 만든 사용자 지정 DNS 도메인을 나타내고 &lt; name_server&gt;는 이전 단계에서 식별한 DNS 이름 서버의 이름을 나타냅니다. 
 
    ```
    nslookup mylabvmpip.<custom_DNS_domain> <name_server>
@@ -138,39 +136,39 @@ The main tasks for this exercise are as follows:
    nslookup myazurepip.<custom_DNS_domain> <name_server>
    ```
 
-1. Verify that the IP addresses returned match those you identified earlier in this task.
+1. 반환된 IP 주소가 이 작업의 앞에서 확인한 주소와 일치하는지 확인합니다.
 
-> **Result**: After you completed this exercise, you have created a public DNS zone, created a DNS record in the public DNS zone, and validated Azure DNS-based name resolution for the public domain.
+> **결과**: 이 연습을 완료한 후 공용 DNS 영역을 만들고, 공용 DNS 영역에서 DNS 레코드를 만들고, 공용 도메인에 대한 Azure DNS 기반 이름 확인의 유효성을 검사했습니다.
 
 
-### Exercise 2: Configure Azure DNS for private domains
+### 연습 2: 개인 도메인에 대한 Azure DNS 구성
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Provision a multi-virtual network environment
+1. 다중 가상 네트워크 환경 프로비전
 
-1. Create a private DNS zone
+1. 개인 DNS 영역 만들기
 
-1. Deploy Azure VMs into virtual networks
+1. Azure VM을 가상 네트워크에 배포
 
-1. Validate Azure DNS-based name reservation and resolution for the private domain
+1. 개인 도메인에 대한 Azure DNS 기반 이름 예약 및 해결 방법의 유효성 검사
 
 
-#### Task 1: Provision a multi-virtual network environment
+#### 작업 1: 다중 가상 네트워크 환경 프로비전
   
-1. From the Azure Portal, start a PowerShell session in the Cloud Shell. 
+1. Azure 포털에서 클라우드 셸에서 PowerShell 세션을 시작합니다. 
 
-1. In the Cloud Shell pane, run the following in order to create a resource group:
+1. 클라우드 셸 창에서 리소스 그룹을 만들려면 다음을 실행합니다.
 
-   ```pwsh
+   ```
    $rg1 = Get-AzResourceGroup -Name 'az1000401b-RG'
 
    $rg2 = New-AzResourceGroup -Name 'az1000402b-RG' -Location $rg1.Location
    ```
 
-1. In the Cloud Shell pane, run the following in order to create two Azure virtual networks:
+1. 클라우드 셸 창에서 두 개의 Azure 가상 네트워크를 만들려면 다음을 실행합니다:
 
-   ```pwsh
+   ```
    $subnet1 = New-AzVirtualNetworkSubnetConfig -Name subnet1 -AddressPrefix '10.104.0.0/24'
 
    $vnet1 = New-AzVirtualNetwork -ResourceGroupName $rg2.ResourceGroupName -Location $rg2.Location -Name az1000402b-vnet1 -AddressPrefix 10.104.0.0/16 -Subnet $subnet1
@@ -180,108 +178,74 @@ The main tasks for this exercise are as follows:
    $vnet2 = New-AzVirtualNetwork -ResourceGroupName $rg2.ResourceGroupName -Location $rg2.Location -Name az1000402b-vnet2 -AddressPrefix 10.204.0.0/16 -Subnet $subnet2
    ```
 
-#### Task 2: Create a private DNS zone
+#### 작업 2: 개인 DNS 영역 만들기
 
-1. In the Cloud Shell pane, run the following in order to create a private DNS zone with the first virtual network supporting registration and the second virtual network supporting resolution:
+1. Cloud Shell 창에서 다음을 실행하여 첫 번째 가상 네트워크 등록및 두 번째 가상 네트워크 지원 해결 방법을 사용하여 개인 DNS 영역을 만듭니다.
 
-   ```pwsh
-   $vnet1 = Get-AzVirtualNetwork -Name az1000402b-vnet1
-
-   $vnet2 = Get-AzVirtualNetwork -name az1000402b-vnet2
-
+   ```
    New-AzDnsZone -Name adatum.local -ResourceGroupName $rg2.ResourceGroupName -ZoneType Private -RegistrationVirtualNetworkId @($vnet1.Id) -ResolutionVirtualNetworkId @($vnet2.Id)
    ```
 
-   > **Note**: Virtual networks that you assign to an Azure DNS zone cannot contain any resources.
+   > **참고**: Azure DNS 영역에 할당하는 가상 네트워크에는 리소스가 포함될 수 없습니다.
 
-1. In the Cloud Shell pane, run the following in order to verify that the private DNS zone was successfully created:
+1. 클라우드 셸 창에서 다음을 실행하여 개인 DNS 영역이 성공적으로 만들어졌는지 확인합니다.
 
-   ```pwsh
+   ```
    Get-AzDnsZone -ResourceGroupName $rg2.ResourceGroupName
    ```
 
 
-#### Task 3: Deploy Azure VMs into virtual networks
+#### 작업 3: Azure VM을 가상 네트워크에 배포
 
-1. In the Cloud Shell pane, upload **az-100-04b_01_azuredeploy.json**, **az-100-04b_02_azuredeploy.json**, and **az-100-04_azuredeploy.parameters.json** files.
+1. 클라우드 셸 창에서 **az-100-04b_01_azuredeploy.json,** **az-100-04b_02_azuredeploy.json** 및 **az-100-04_azuredeploy.data.json** 파일을 업로드합니다.
 
-1. In the Cloud Shell pane, run the following in order to deploy an Azure VM into the first virtual network:
+1. 클라우드 셸 창에서 Azure VM을 첫 번째 가상 네트워크에 배포하려면 다음을 실행합니다.
 
-   ```pwsh
-   cd $home
-
-   New-AzResourceGroupDeployment -ResourceGroupName $rg2.ResourceGroupName -TemplateFile "./az-100-04b_01_azuredeploy.json" -TemplateParameterFile "./az-100-04_azuredeploy.parameters.json" -AsJob
+   ```
+   New-AzResourceGroupDeployment -ResourceGroupName $rg2.ResourceGroupName -TemplateFile "$home/az-100-04b_01_azuredeploy.json" -TemplateParameterFile "$home/az-100-04_azuredeploy.parameters.json" -AsJob
    ```
 
-1. In the Cloud Shell pane, run the following in order to deploy an Azure VM into the second virtual network:
+1. 클라우드 셸 창에서 Azure VM을 두 번째 가상 네트워크에 배포하려면 다음을 실행합니다.
 
-   ```pwsh
-   New-AzResourceGroupDeployment -ResourceGroupName $rg2.ResourceGroupName -TemplateFile "./az-100-04b_02_azuredeploy.json" -TemplateParameterFile "./az-100-04_azuredeploy.parameters.json" -AsJob
+   ```
+   New-AzResourceGroupDeployment -ResourceGroupName $rg2.ResourceGroupName -TemplateFile "$home/az-100-04b_02_azuredeploy.json" -TemplateParameterFile "$home/az-100-04_azuredeploy.parameters.json" -AsJob
    ```
 
-   > **Note**: Wait for both deployments to complete before you proceed to the next task. You can identify the state of the jobs by running the `Get-Job` cmdlet in the Cloud Shell pane.
+   > **참고**: 다음 작업을 진행하기 전에 두 배포가 모두 완료될 때까지 기다립니다. 클라우드 셸 창에서 `Get-Job` cmdlet을 실행하여 작업 상태를 식별할 수 있습니다.
 
 
-#### Task 4: Validate Azure DNS-based name reservation and resolution for the private domain
+#### 작업 4: 개인 도메인에 대한 Azure DNS 기반 이름 예약 및 해결 방법의 유효성 검사
 
-1. In the Azure portal, navigate to the blade of the **az1000402b-vm2** Azure VM. 
+1. Azure 포털에서 **az1000402b-vm2** Azure VM의 블레이드로 이동합니다. 
 
-1. From the **Overview** pane of the **az1000402b-vm2** blade, generate an RDP file and use it to connect to **az1000402b-vm2**.
+1. **az1000402b-vm2** 블레이드의 **개요** 창에서 RDP 파일을 생성하고 **az1000402b-vm2** 에 연결하는 데 사용합니다.
 
-1. When prompted, authenticate by specifying the following credentials:
+1. 메시지가 표시되면 다음 자격 증명을 지정하여 인증합니다:
 
-    - User name: **Student**
+    - 사용자 이름: **학생**
 
-    - Password: **Pa55w.rd1234**
+    - 암호: **Pa55w.rd1234**
 
-1. Within the Remote Desktop session to **az1000402b-vm2**, start a Command Prompt window and run the following: 
+1. 원격 데스크톱 세션 내에서 **az1000402b-vm2로** 명령 프롬프트 창을 시작하고 다음을 실행합니다. 
 
    ```
    nslookup az1000402b-vm1.adatum.local
    ```
 
-1. Verify that the name is successfully resolved.
+1. 이름이 성공적으로 확인되었는지 확인합니다.
 
-1. Switch back to the lab virtual machine and, in the Cloud Shell pane of the Azure portal window, run the following in order to create an additional DNS record in the private DNS zone:
+1. 랩 가상 컴퓨터로 다시 전환하고 Azure 포털 창의 Cloud Shell 창에서 다음을 실행하여 개인 DNS 영역에서 추가 DNS 레코드를 만듭니다.
 
-   ```pwsh
+   ```
    New-AzDnsRecordSet -ResourceGroupName $rg2.ResourceGroupName -Name www -RecordType A -ZoneName adatum.local -Ttl 3600 -DnsRecords (New-AzDnsRecordConfig -IPv4Address "10.104.0.4")
    ```
 
-1. Switch again to the Remote Desktop session to **az1000402b-vm2** and run the following from the Command Prompt window: 
+1. 원격 데스크톱 세션을 **az1000402b-vm2** 로 다시 전환하고 명령 프롬프트 창에서 다음을 실행합니다. 
 
    ```
    nslookup www.adatum.local
    ```
 
-1. Verify that the name is successfully resolved.
+1. 이름이 성공적으로 확인되었는지 확인합니다.
 
-> **Result**: After completing this exercise, you have provisioned a multi-virtual network environment, created a private DNS zone, deployed Azure VMs into virtual networks, and validated Azure DNS-based name reservation and resolution for the private domain
-
-## Exercise 3: Remove lab resources
-
-#### Task 1: Open Cloud Shell
-
-1. At the top of the portal, click the **Cloud Shell** icon to open the Cloud Shell pane.
-
-1. At the Cloud Shell interface, select **Bash**.
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to list all resource groups you created in this lab:
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv
-   ```
-
-1. Verify that the output contains only the resource groups you created in this lab. These groups will be deleted in the next task.
-
-#### Task 2: Delete resource groups
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to delete the resource groups you created in this lab
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1000')].name" --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
-   ```
-
-1. Close the **Cloud Shell** prompt at the bottom of the portal.
-
-> **Result**: In this exercise, you removed the resources used in this lab.
+> **결과**: 이 연습을 완료한 후 다중 가상 네트워크 환경을 프로비전하고, 개인 DNS 영역을 만들고, Azure VM을 가상 네트워크에 배포하고, 개인 도메인에 대한 Azure DNS 기반 이름 예약 및 확인의 유효성을 검사했습니다

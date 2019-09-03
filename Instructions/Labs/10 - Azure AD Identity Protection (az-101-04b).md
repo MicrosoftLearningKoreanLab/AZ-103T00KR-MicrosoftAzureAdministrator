@@ -1,416 +1,388 @@
+﻿---
+랩:
+    제목: 'Azure AD ID 보호 구현 및 유효성 검사'
+    모듈: '보안 신원’
 ---
-lab:
-    title: 'Azure AD Identity Protection'
-    module: 'Module 10 - Securing Identities'
----
 
-# Lab: Azure AD Identity Protection
+# 랩: Azure AD ID 보호 구현 및 유효성 검사
 
-All tasks in this lab are performed from the Azure portal, except for steps in Exercise 2 performed within a Remote Desktop session to an Azure VM.
+Azure VM에 대한 원격 데스크톱 세션에서 수행하는 연습 2의 단계를 제외하고, 이 랩의 모든 과제는 Azure 포털에서 수행합니다.
 
-Lab files:
+랩 파일: 없음
 
--  **Labfiles\\Module_10\\Azure_AD_Identity_Protection\\az-101-04b_azuredeploy.json**
-
--  **Labfiles\\Module_10\\Azure_AD_Identity_Protection\\az-101-04b_azuredeploy.parameters.json**
-
-### Scenario
+### 시나리오
   
-Adatum Corporation wants to take advantage of Azure AD Premium features for Identity Protection.
+Adatum Corporation은 ID 보호를 위해 Azure AD Premium 기능을 활용하려고 합니다.
 
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
--  Deploy an Azure VM by using an Azure Resource Manager template
+-  Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
--  Implement Azure MFA
+-  Azure MFA 구현
 
--  Implement Azure AD Identity Protection
+-  Azure AD ID 보호 구현
 
 
-### Exercise 0: Prepare the lab environment
+### 연습 0: 랩 환경 준비
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Deploy an Azure VM by using an Azure Resource Manager template
+1. Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
 
-#### Task 1: Deploy an Azure VM by using an Azure Resource Manager template
+#### 작업 1: Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the Azure subscription you intend to use in this lab.
+1. 랩 가상 컴퓨터에서 Microsoft Edge를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 이 랩에서 사용하려는 Azure 구독에서 소유자 역할이 있는 Microsoft 계정을 사용하여 로그인합니다.
 
-1. In the Azure portal, navigate to the **New** blade.
+1. Azure 포털에서 **새** 블레이드로 이동합니다.
 
-1. From the **New** blade, search Azure Marketplace for **Template deployment**.
+1. **새** 블레이드에서 Azure 마켓플레이스에서 **템플릿 배포** 를 검색합니다. 
 
-1. Use the list of search results to navigate to the **Custom deployment** blade.
+1. 검색 결과 목록을 사용하여 **사용자 지정** 배포 블레이드로 이동합니다. 
 
-1. On the **Custom deployment** blade, select the **Build your own template in the editor**.
+1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿 빌드** 를 선택합니다.
 
-1. From the **Edit template** blade, load the template file **az-101-04b_azuredeploy.json**. 
+1. 편집 **템플릿 블레이드** 에서 템플릿 파일 **az-101-04b_azuredeploy.json** 을 로드합니다. 
 
-   > **Note**: Review the content of the template and note that it defines deployment of an Azure VM hosting Windows Server 2016 Datacenter.
+   > **참고**:  템플릿의 내용을 검토하고 Windows Server 2016 데이터 센터를 호스팅하는 Azure VM의 배포를 정의합니다.
 
-1. Save the template and return to the **Custom deployment** blade. 
+1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다.  
 
-1. From the **Custom deployment** blade, navigate to the **Edit parameters** blade.
+1. **사용자 지정 배포** 블레이드에서 **매개 변수 편집** 블레이드로 이동합니다. 
 
-1. From the **Edit parameters** blade, load the parameters file **az-101-04b_azuredeploy.parameters.json**. 
+1. 편집 **파라미터 변수** 블레이드에서 매개 변수 파일 **az-101-04b_azuredeploy.parameters.json** 을 로드합니다. 
 
-1. Save the parameters and return to the **Custom deployment** blade. 
+1. 매개 변수를 저장하고 **사용자 지정 배포 ** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, initiate a template deployment with the following settings:
+1. **사용자 지정 배포** 블레이드에서 다음 설정을 사용하고 템플릿 배포를 시작합니다:
 
-    - Subscription: the name of the subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: the name of a new resource group **az1010401b-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1010401b-RG** 의 이름
 
-    - Location: the name of the Azure region which is closest to the lab location and where you can provision Azure VMs
+    - 위치: 랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 위치
 
-    - Vm Size: **Standard_DS1_v2**
+    - Vm 크기: **Standard_DS1_v2**
 
-    - Vm Name: **az1010401b-vm1**
+    - Vm 이름: **az1010401b-vm1**
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Virtual Network Name: **az1010401b-vnet1**
+    - 가상 네트워크 이름: **az1010401b-vnet1**
 
-   > **Note**: To identify Azure regions where you can provision Azure VMs, refer to [**https://azure.microsoft.com/en-us/regions/offers/**](https://azure.microsoft.com/en-us/regions/offers/)
+   > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 확인하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 
-   > **Note**: Do not wait for the deployment to complete but proceed to the next exercise. You will use the virtual machine included in this deployment in the last exercise of this lab.
+   > **참고**: 배포가 완료될 때까지 기다리지 말고 다음 연습으로 진행합니다. 이 랩의 마지막 연습에서 이 배포에 포함된 가상 컴퓨터를 사용합니다.
 
-> **Result**: After you completed this exercise, you have initiated a template deployment of an Azure VM **az1010401b-vm1** that you will use in the next exercise of this lab.
+> **결과**: 이 연습을 완료한 후 이 랩의 다음 연습에서 사용할 Azure VM **az1010401b-vm1** 의 템플릿 배포를 시작했습니다.
 
 
-### Exercise 1: Implement Azure MFA
+### 연습 1: Azure MFA 구현
 
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Create a new Azure AD tenant
+1. 새 Azure AD 테넌트 만들기
 
-1. Activate Azure AD Premium v2 trial
+1. Azure AD Premium v2 평가판 활성화
 
-1. Create Azure AD users and groups
+1. Azure AD 사용자 및 그룹 만들기
 
-1. Assign Azure AD Premium v2 licenses to Azure AD users
+1. Azure AD Premium v2 라이선스를 Azure AD 사용자에게 할당합니다
 
-1. Configure Azure MFA settings, including fraud alert, trusted IPs, and app passwords
+1. 사기 경고, 신뢰할 수 있는 IP 및 앱 암호를 포함한 Azure MFA 설정 구성
 
-1. Validate MFA configuration
+1. MFA 구성 유효성 검사
 
 
-#### Task 1: Create a new Azure AD tenant
+#### 작업 1: 새 Azure AD 테넌트 만들기
 
-1. In the Azure portal, navigate to the **New** blade. 
+1. Azure 포털에서 **새** 블레이드로 이동합니다. 
 
-1. From the **New** blade, search Azure Marketplace for **Azure Active Directory**.
+1. **새** 블레이드에서 **Azure Active Directory** 에 대한 Azure 마켓플레이스를 검색합니다. 
 
-1. Use the list of search results to navigate to the **Create directory** blade.
+1. 검색 결과 목록을 사용하여 **디렉터리 만들기** 블레이드로 이동합니다.
 
-1. From the **Create directory** blade, create a new Azure AD tenant with the following settings: 
+1. 디렉터리 블레이드 **만들기**에서 다음 설정을 사용하여 새 AzureAD 테넌트를 만듭니다: 
 
-  - Organization name: **AdatumLab101-4b**
+  - 조직 이름: **AdatumLab101-4b**
 
-  - Initial domain name: a unique name consisting of a combination of letters and digits. 
+  - 초기 도메인 이름: 문자와 숫자의 조합으로 구성된 고유한 이름입니다. 
 
-  - Country or region: **United States**
+  - 국가/지역: **미국**
 
-   > **Note**: Take a note of the initial domain name. You will need it later in this lab. 
+   > **참고**: 초기 도메인 이름을 기록해 둡니다. 이 실험실에서 나중에 필요할 것입니다. 
 
 
-#### Task 2: Activate Azure AD Premium v2 trial
+#### 작업 2: Azure AD Premium v2 평가판 활성화
 
-1. In the Azure portal, set the **Directory + subscription** filter to the newly created Azure AD tenant.
+1. Azure 포털에서 **디렉터리 + 구독** 필터를 새로 만든 AzureAD 테넌트에 설정합니다.
 
-   > **Note**: The **Directory + subscription** filter appears to the right of the Cloud Shell icon in the toolbar of the Azure portal 
+   > **참고**: **디렉터리 + 구독** 필터는 Azure 포털의 도구 모음에서 클라우드 셸 아이콘의 오른쪽에 나타납니다 
 
-   > **Note**: You might need to refresh the browser window if the **AdatumLab101-4b** entry does not appear in the **Directory + subscription** filter list.
+   > **참고**: **AdatumLab101-4b** 항목이 **디렉터리 + 구독** 필터 목록에 나타나지 않으면 브라우저 창을 새로 고쳐야 할 수 있습니다. 
 
-1. In the Azure portal, navigate to the **AdatumLab101-4b - Overview** blade.
+1. Azure 포털에서 **AdatumLab101-4b - 개요** 블레이드로 이동합니다. 
 
-1. From the **AdatumLab101-4b - Overview** blade, navigate to the **Licenses - Overview** blade.
+1. **AdatumLab101-4b에서 개요** 블레이드, **라이선스 - 개요** 블레이드로 이동합니다.
 
-1. From the **Licenses - Overview** blade, navigate to the **Licenses - All products** blade. 
+1. **라이센스에서 - 개요** 블레이드에서 **제품** 블레이드로 이동합니다. 
 
-1. From the **Licenses - All products** blade, navigate to the **Activate** blade and activate **Azure AD Premium P2** free trial.
+1. **제품** 블레이드에서 **활성화** 블레이드로 이동하여 **Azure AD 프리미엄 P2** 무료 평가판을 활성화합니다.
 
 
-#### Task 3: Create Azure AD users and groups.
+#### 작업 3: Azure AD 사용자 및 그룹을 만듭니다.
 
-1. In the Azure portal, navigate to the **Users - All users** blade of the AdatumLab101-4b Azure AD tenant.
+1. Azure 포털에서 AdatumLab101-4b Azure AD 테넌트의 **사용자 - 모든 사용자** 블레이드로 이동합니다.
 
-1. From the **Users - All users** blade, create a new user with the following settings:
+1. **사용자 - 모든 사용자** 블레이드에서 다음 설정을 사용하여 새 사용자를 만듭니다: 
 
-    - Name: **aaduser1**
+    - 이름: **aaduser1**
 
-    - User name: **aaduser1@&lt;DNS-domain-name&gt;.onmicrosoft.com** where &lt;DNS-domain-name&gt; represents the initial domain name you specified in the first task of this exercise. 
+    - 사용자 이름: **aaduser1@&lt;DNS 도메인 이름&gt;.** onmicrosoft.com &lt;DNS 도메인 이름>이 연습의 첫 번째 작업에서 지정한 초기 도메인 이름을 나타냅니다.  
 
-   > **Note**: Take a note of this user name. You will need it later in this lab.
+   > **참고**: 이 사용자 이름을 기록해 둡니다. 이 실험실에서 나중에 필요할 것입니다.
 
-    - Profile: **Default**
+    - 프로필: **기본값**
 
-    - Properties: **Default**
+    - 속성: **기본값**
 
-    - Groups: **0 groups selected**
+    - 그룹: **선택한 그룹 0개**
 
-    - Directory role: **Global administrator**
+    - 디렉터리 역할: **사용자**
 
-    - Password: select the checkbox **Show Password** and note the string appearing in the **Password** text box. You will need it later in this lab.
+    - 암호: **암호 표시** 확인란을 선택하고 **암호** 텍스트 상자에 나타나는문자열을 기록합니다. 이 실험실에서 나중에 필요할 것입니다.
 
-1. From the **Users - All users** blade, create a new user with the following settings:
+1. **사용자 - 모든 사용자** 블레이드에서 다음 설정을 사용하여 새 사용자를 만듭니다:
 
-    - Name: **aaduser2**
+    - 이름: **aaduser2**
 
-    - User name: **aaduser2@&lt;DNS-domain-name&gt;.onmicrosoft.com** where &lt;DNS-domain-name&gt; represents the initial domain name you specified in the first task of this exercise. 
+    - 사용자 이름: **aaduser2@&lt;DNS-domain-name&gt;.onmicrosoft.com** &lt;DNS-domain-name&gt; 연습의 첫 번째 작업에서 지정한 초기 도메인 이름을 나타냅니다. 
 
-   > **Note**: Take a note of this user name. You will need it later in this lab.
+   > **참고**: 이 사용자 이름을 기록해 둡니다. 이 실험실에서 나중에 필요할 것입니다.
 
-    - Profile: **Default**
+    - 프로필: **기본값**
 
-    - Properties: **Default**
+    - 속성: **기본값**
 
-    - Groups: **0 groups selected**
+    - 그룹: **선택한 그룹 0개**
 
-    - Directory role: **User**
+    - 디렉터리 역할: **사용자**
 
-    - Password: select the checkbox **Show Password** and note the string appearing in the **Password** text box. You will need it later in this lab.
+    - 암호: **암호 표시** 확인란을 선택하고 **암호** 텍스트 상자에 나타나는문자열을 기록합니다. 이 실험실에서 나중에 필요할 것입니다.
 
 
-#### Task 4: Assign Azure AD Premium v2 licenses to Azure AD users
+#### 작업 4: Azure AD Premium v2 라이선스를 Azure AD 사용자에게 할당합니다
 
-   > **Note**: In order to assign Azure AD Premium v2 licenses to Azure AD users, you first have to set their location attribute.
+   > **참고**: Azure AD Premium v2 라이선스를 Azure AD 사용자에게 할당하려면 먼저 위치 특성을 설정해야 합니다.
 
-1. From the **Users - All users** blade, navigate to the **aaduser1 - Profile** blade and set the **Usage location** to **United States**.
+1. **사용자 - 모든 사용자** 블레이드, **aaduser1로 이동 - 프로필** 블레이드 및 **사용 위치**를 **미국** 으로 설정합니다.
 
-1. From the **aaduser1 - Profile** blade, navigate to the **aaduser1 - Licenses** blade and assign to the user an Azure Active Directory Premium P2 license with all licensing options enabled.
+1. **aaduser1 - 프로필** 블레이드에서 **aaduser1 - 라이선스** 블레이드로 이동하여모든 라이선스 옵션이 활성화된 Azure Active Directory 프리미엄 P2 라이선스를 사용자에게 할당합니다.
 
-1. Return to the **Users - All users** blade, navigate to the **aaduser2 - Profile** blade, and set the **Usage location** to **United States**.
+1. **사용자 - 모든 사용자** 블레이드로 돌아가서, **aaduser2 - 프로필** 블레이드로 이동한 다음 **사용 위치** 를 **미국** 으로 설정합니다.
 
-1. From the **aaduser2 - Profile** blade, navigate to the **aaduser2 - Licenses** blade and assign to the user an Azure Active Directory Premium P2 license with all licensing options enabled.
+1. **aaduser2 - 프로필** 블레이드에서 **aaduser2 - 라이선스** 블레이드로 이동하여모든 라이선스 옵션이 활성화된 Azure Active Directory 프리미엄 P2 라이선스를 사용자에게 할당합니다.
 
-1. Return to the **Users - All users** blade, navigate to the Profile entry of your user account and set the **Usage location** to **United States**.
+1. **사용자- 모든 사용자** 블레이드로 돌아가서 사용자 계정의 프로필 항목으로 이동한 다음 **사용 위치** 를 **미국** 으로 설정합니다. 
 
-1. Navigate to **Licenses** blade of your user account and assign to it an Azure Active Directory Premium P2 license with all licensing options enabled.
+1. 사용자 계정의 **라이선스** 블레이드로 이동하여 모든 라이선스 옵션이 활성화 된 Azure Active Directory 프리미엄 P2 라이선스를 할당합니다. 
 
-1. Sign out from the portal and sign back in using the same account you are using for this lab. 
+1. 포털에서 로그아웃하고 이 실습에 사용하는 것과 동일한 계정을 사용하여 다시 로그인합니다. 
 
-   > **Note**: This step is necessary in order for the license assignment to take effect. 
+   > **참고**: 라이센스 할당이 적용되기 위해서는 이 단계가 필요합니다. 
 
 
-#### Task 5: Configure Azure MFA settings.
+#### 작업 5: Azure MFA 설정을 구성합니다.
 
-1. In the Azure portal, navigate to the **Users - All users** blade of the AdatumLab101-4b Azure AD tenant.
+1. Azure 포털에서 AdatumLab101-4b Azure AD 테넌트의 **사용자 - 모든 사용자** 블레이드로 이동합니다.
 
-1. From the **Users - All users** blade of the AdatumLab101-4b Azure AD tenant, use the **Multi-Factor Authentication** link to open the **multi-factor authentication** portal. 
+1. AdatumLab101-4b Azure AD 테넌트의 **사용자-모든 사용자** 블레이드는 **다단계 인증** 링크를 사용하여 **다단계 인증** 포털을 엽니다. 
 
-1. On the **multi-factor authentication** portal, display to the **service settings** tab, review its settings, and the **verification options**, including **Text message to phone**, **Notification through mobile app**, and **Verification code from mobile app or hardware token** are enabled.
+1. **다단계 인증 포털에서** 서비스 설정 탭에 표시하고, **설정을** 검토하고, **전화 통화**, **전화로 문자 메시지**, **모바일 앱 또는 하드웨어 토큰** 을 포함하는 **확인 옵션** 을 사용가능 합니다.
 
-1. On the **multi-factor authentication** portal, switch to the **users** tab, select **aaduser1** entry, and enable its multi-factor authentication status.
+1. **다단계 인증** 포털에서 **사용자** 탭으로 전환하고 **aaduser1** 항목을 선택하여 다단계 인증 상태를 사용하도록 설정합니다.
 
-1. On the **multi-factor authentication** portal, note that the multi-factor authentication status of **aaduser1** changed to **Enabled** and that, once you select the user entry again, you have the option of changing it to **Enforced**.
+1. **다단계 인증 포털에서** aaduser1의 다단계 인증 상태가 사용으로 ****변경되었으며 **사용자 항목을 다시 선택하면** ****적용됨으로 변경할 수 있습니다.
 
-   > **Note**: Changing the user status from enabled to enforced impacts only legacy, Azure AD integrated apps which do not support Azure MFA and, once the status changes to enforced, require the use of app passwords.
+   > **참고**: 사용자 상태를 사용 상태에서 적용됨 상태로 변경하면 Azure MFA를 지원하지 않는 레거시 Azure AD 통합 앱에만 영향을 미치며, 상태가 적용됨으로 변경된 후에는 앱 암호를 사용해야 합니다.
 
-1. On the **multi-factor authentication** portal, with the **aaduser1** entry selected, display the **Manage user settings** window and review its options, including:
+1. **aaduser1** 항목을 선택한 **다단계 인증** 포털에서 **사용자 관리 설정** 창을 표시하고 다음을 포함한 옵션을 검토합니다:
 
-    - Require selected users to provide contact methods again
+    - 선택한 사용자가 연락처 방법을 다시 제공하도록 요구합니다.
 
-    - Delete all existing app passwords generated by the selected users
+    - 선택한 사용자가 생성한 모든 기존 앱 암호 삭제합니다.
 
-    - Restore multi-factor authentication on all remembered devices
+    - 기억되는 모든 장치에서 다단계 인증 복원합니다.
 
-1. Do not make any changes to user settings and switch back to the Azure portal. 
+1. 사용자 설정을 변경하지 말고 Azure 포털로 다시 전환합니다. 
 
-1. From the **Users - All users** blade of the AdatumLab101-4b Azure AD tenant, navigate to the **AdatumLab101-4b - Overview** blade.
+1. AdatumLab101-4b Azure AD 테넌트의 **사용자-모든 사용자** 블레이드를 **AdatumLab101-4b - 개요** 블레이드로 이동합니다.
 
-1. From the **AdatumLab101-4b - Overview** blade, navigate to the **AdatumLab101-4b - MFA** blade.
+1. **AdatumLab101-4b에서 개요** 블레이드에서 **AdatumLab101-4b-MFA** 블레이드로 이동합니다.
 
-1. From the **AdatumLab101-4b - MFA** blade, navigate to the **Multi-Factor Authentication - Fraud alert** blade and configure the following settings:
+1. **AdatumLab101-4b - MFA 블레이드** 에서 **다단계 인증 - 사기 경고** 블레이드로 이동하여 다음 설정을 구성합니다:
 
-    - Allow users to submit fraud alerts: **On**
+    - 사용자가 사기 경고를 제출할 수 있도록 허용: **켜기**
 
-    - Automatically block users who report fraud: **On**
+    - 사기를 신고하는 사용자를 자동으로 차단합니다. **켜기**
 
-    - Code to report fraud during initial greeting: **0**
+    - 초기 인사말 중에 사기를 신고하는 코드: **0**
 
 
-#### Task 6: Validate MFA configuration
+#### 작업 6: MFA 구성 유효성 검사
 
-1. Open an InPrivate Microsoft Edge window.
+1. 비공개 Microsoft 가장자리 창을 엽니다.
 
-1. In the new browser window, navigate to the Azure portal and sign in using the **aaduser1** user account. When prompted, change the password to a new value.
+1. 새 브라우저 창에서 Azure 포털로 이동하고 **aaduser1** 사용자 계정을 사용하여 로그인 합니다. 메시지가 표시되면 암호를 새 값으로 변경합니다.
 
-   > **Note**: You will need to provide a fully qualified name of the **aaduser1** user account, including the Azure AD tenant DNS domain name, as noted earlier in this lab.
+   > **참고**: 이 실습의 앞에서 설명한 대로 AzureAD 테넌트 DNS 도메인 이름을 포함하여 **aaduser1** 사용자 계정의 정규화된 이름을 제공해야 합니다.
 
-1. When prompted with the **More information required** message, continue to the **Additional security verification** page.
+1. **추가 정보가 필요한** 메시지가 표시되면 **추가 보안 확인** 페이지로 계속 이동합니다.
 
-1. On the **How should we contact you?** page, note that you need to set up one of the following options:
+1. 다음 옵션 중 하나이상을 설정해야 하는 경우 **어떻게 연락해야 합니까?**
 
-    - **Authentication phone**
+    - **인증 전화**
 
-    - **Mobile app**
+    - **사무실 전화**
 
-1. Select the **Authentication phone** option with the **Send me a code by text message** method.
+    - **모바일 앱**
 
-1. Complete the verification and note the automatically generated app password. 
+1. **인증 전화** 또는 **사무실 전화** 옵션을 선택하고 **전화 걸기** 연락 방법을 선택합니다.
 
-1. When prompted, change the password from the one generated when you created the **aaduser1** account.
+1. 확인을 완료하고 자동으로 생성된 앱 암호를 기록합니다. 
 
-1. Verify that you successfully signed in to the Azure portal.
+1. 메시지가 표시되면 **aaduser1** 계정을 만들 때 생성된 암호에서 암호를 변경합니다.
 
-1. Sign out as **aaduser1** and close the InPrivate browser window.
+1. Azure 포털에 성공적으로 로그인했는지 확인합니다.
 
+1. **aaduser1** 로 로그아웃하고InPrivate 브라우저 창을 닫습니다.
 
-### Exercise 2: Implement Azure AD Identity Protection:
+1. InPrivate Microsoft Edge 창을 다시 열고 Azure 포털로 이동한 다음 메시지가 표시되면 **aaduser1** 사용자 계정을 사용하여 로그인합니다. 그러면 제공한 전화 번호로 전화가 자동으로 트리거됩니다.
+
+1. 통화에 응답하고 **0#** 을 누르고 나머지 메시지를 들어보십시오. 
+
+   > **참고**: 이때, 여러분의 계정은 자동으로 차단됩니다. 
+
+1. **aaduser1** 계정의 차단을 해제하려면 **AdatumLab101-4b** Azure AD 테넌트를 만드는 데 사용한 Microsoft 계정을 사용하여 Azure 포털에 로그인하고 **다단계 인증 - 차단/차단 해제 사용자** 블레이드로 이동하여 **aaduser1** 항목 옆에 있는 링크를 차단 해제하여 이사용자 계정의 **차단을 해제** 합니다. 
+
+   > **참고**: **사용자 차단** 을 해제하려면 사용자 블레이드 **차단 해제에 대한 이유** 를 제공해야 합니다. 
+
+
+### 연습 2: Azure AD ID 보호 구현:
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Enable Azure AD Identity Protection
+1. Azure AD ID 보호 사용
 
-1. Configure user risk policy
+1. 사용자 위험 정책 구성
 
-1. Configure sign-in risk policy
+1. 로그인 위험 정책 구성
 
-1. Validate Azure AD Identity Protection configuration by simulating risk events
+1. 위험 이벤트를 시뮬레이션하여 Azure AD ID 보호 구성의 유효성 검사
 
 
-#### Task 1: Enable Azure AD Identity Protection
+#### 작업 1: Azure AD ID 보호 사용
 
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using the Microsoft account you used to create the **AdatumLab101-4b** Azure AD tenant. 
+1. 랩 가상 컴퓨터에서 Microsoft Edge를 시작하고 [**http://portal.azure.com**](http://portal.azure.com)의 Azure 포털을 찾아보고 **AdatumLab101-4b** Azure AD 테넌트를 만드는 데 사용한 Microsoft 계정을 사용하여 로그인합니다. 
 
-   > **Note**: Ensure that you are signed-in to the **AdatumLab101-4b** Azure AD tenant. You can use the **Directory + subscription** filter to switch between Azure AD tenants. 
+   > **참고**: **AdatumLab101-4b** Azure AD 테넌트에 로그인되어 있는지 확인합니다. **디렉터리 + 구독** 필터를 사용하여 Azure AD 테넌트 간에 전환할 수 있습니다. 
 
-1. In the Azure portal, navigate to the **New** blade.
+1. Azure 포털에서 **새** 블레이드로이동합니다.
 
-1. From the **New** blade, search Azure Marketplace for **Azure AD Identity Protection**.
+1. **새** 블레이드에서 **Azure AD ID 보호** 를 위한 Azure 마켓플레이스를 검색합니다.
 
-1. Select the **Azure AD Identity Protection** in the list of search results and proceed to create an instance of **Azure AD Identity Protection** associated with the **AdatumLab101-4b** Azure AD tenant.
+1. 검색 결과 목록에서 **Azure AD ID 보호** 를 선택하고 **AdatumLab101-4b** Azure AD 테넌트와 연결된 **Azure AD ID 보호** 의 인스턴스를 만듭니다.
 
-1. In the Azure portal, navigate to the **All services** blade and use the search filter to display the **Azure AD Identity Protection** blade.
+1. Azure 포털에서 **모든 서비스** 블레이드로 이동 한 다음 검색 필터를 사용하여 **Azure AD ID 보호** 블레이드를 표시합니다.
 
 
-#### Task 2: Configure user risk policy
+#### 작업 2: 사용자 위험 정책 구성
 
-1. From the **Azure AD Identity Protection** blade, navigate to the **Azure AD Identity Protection - User risk policy** blade
+1. **Azure AD ID 보호** 블레이드에서 Azure **AD ID 보호- 사용자 위험 정책** 블레이드로 이동
 
-1. On the **Azure AD Identity Protection - User risk policy** blade, configure the **User risk remediation policy** with the following settings:
+1. Azure **AD ID 보호 - 사용자 위험 정책** 블레이드에서 다음설정으로 **사용자 위험 해결 정책** 을 구성합니다:
 
-    - Assignments: 
+    - 과제: 
 
-        - Users: **All users** (be sure to exclude the current admin account to avoid getting locked out of the tenant)
+        - 사용자: **모든 사용자**
 
-        - Conditions:
+        - 조건:
 
-            - User risk: **Medium and above**
+            - 사용자 위험: **중간 이상**
 
-    - Controls:
+    - 확인하십시오:
 
-        - Access: **Allow access**
+        - 액세스: **액세스 허용**
 
-        - **Require password change**
+        - **암호 변경 필요**
 
-    - Enforce Policy: **On**
+    - 정책 적용: **켜기**
 
 
-#### Task 3: Configure sign-in risk policy
+#### 작업 3: 로그인 위험 정책 구성
 
-1. From the **Azure AD Identity Protection - User risk policy** blade, navigate to the **Azure AD Identity Protection - Sign-in risk policy** blade
+1. Azure **AD ID 보호 - 사용자 위험 정책** 블레이드에서 **Azure AD ID보호 - 로그인 위험 정책** 블레이드로 이동
 
-1. On the **Azure AD Identity Protection - Sign-in risk policy** blade, configure the **Sign-in risk remediation policy** with the following settings:
+1. Azure **AD ID 보호 - 로그인 위험 정책** 블레이드에서 **로그인 위험 수정 정책** 을 다음 설정으로 구성합니다:
 
-    - Assignments: 
+    - 과제: 
 
-        - Users: **All users**
+        - 사용자: **모든 사용자**
 
-        - Conditions:
+        - 조건:
 
-            - User risk: **Medium and above**
+            - 사용자 위험: **중간 이상**
 
-    - Controls:
+    - 확인하십시오:
 
-        - Access: **Allow access**
+        - 액세스: **액세스 허용**
 
-        - **Require multi-factor authentication**
+        - **다단계 인증 필요**
 
-    - Enforce Policy: **On**
+    - 정책 적용: **켜기**
 
 
-#### Task 4: Validate Azure AD Identity Protection configuration by simulating risk events
+#### 작업 4: 위험 이벤트를 시뮬레이션하여 Azure AD ID 보호 구성의 유효성 검사
 
-   > **Note**: Before you start this task, ensure that the template deployment you started in Exercise 0 has completed. 
+   > **참고**: 이 작업을 시작하기 전에 연습 0에서 시작한 템플릿 배포가 완료되었는지 확인합니다. 
 
-1. In the Azure portal, set the **Directory + subscription** filter to the default Azure AD tenant.
+1. Azure 포털에서 **az1010401b-vm1** 블레이드로 이동합니다.
 
-1. In the Azure portal, navigate to the **az1010401b-vm1** blade.
+1. **az1010401b-vm1** 블레이드에서원격 데스크톱 세션을 통해 Azure VM에 연결하고 로그인하라는 메시지가 표시되면 다음 자격 증명을 제공합니다.
 
-1. From the **az1010401b-vm1** blade, connect to the Azure VM via Remote Desktop session and, when prompted to sign in, provide the following credentials:
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Username: **Student**
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Admin Password: **Pa55w.rd1234**
+1. 원격 데스크톱 세션 내에서 InPrivate 인터넷 탐색기 창을 엽니다.
 
-1. Within the Remote Desktop session, in Server Manager, click **Local Server** and then click **IE Enhanced Security Configuration**. 
+1. 새 브라우저 창에서 [**https://www.torproject.org/projects/torbrowser.html.en**](https://www.torproject.org/projects/torbrowser.html.en)에서 ToR 브라우저 프로젝트로 이동하여 ToR 브라우저를 다운로드하고 기본 옵션으로 설치합니다.
 
-1. In the **Internet Explorer Enhanced Security Configuration** dialog box, set both options to **Off** and click **OK**.
+1. 설치가 완료되면 ToR 브라우저를 시작하고 초기 페이지에서 **연결** 옵션을 사용하고 [**https://myapps.microsoft.com**](https://myapps.microsoft.com)에서응용 프로그램 액세스 패널로 이동합니다.
 
-1. Within the Remote Desktop session, open an InPrivate Internet Explorer window.
+1. 메시지가 표시되면 이전 연습에서 만든 **aaduser2** 계정으로 로그인합니다.
 
-1. In the new browser window, navigate to the ToR Browser Project at [**https://www.torproject.org/projects/torbrowser.html.en**](https://www.torproject.org/projects/torbrowser.html.en), download the ToR Browser, and install it with the default options.
+1. **로그인이 차단되었다는** 메시지가 표시됩니다. 이 계정은 ToR 브라우저 사용과 관련된 로그인 위험이 증가하여 필요한 다중 요소 인증으로 구성되지 않았기 때문에 이 문제가 예상됩니다.
 
-1. Once the installation completes, start the ToR Browser, use the **Connect** option on the initial page, and navigate to the Application Access Panel at [**https://myapps.microsoft.com**](https://myapps.microsoft.com)
+1. **로그아웃을 사용하고 다른 계정 옵션으로 로그인하여** 이전 연습에서 다단계 인증을 위해 만들고 구성한 **aaduser1** 계정으로 로그인합니다.
 
-1. When prompted, sign in with the **aaduser2** account you created in the previous exercise.
+1. 이번에는 **의심스러운 활동 감지 메시지가 표시됩니다.** 이 계정은 다중 요소 인증으로 구성되므로 다시 한 번 이 문제가 예상됩니다. ToR 브라우저 사용과 관련된 로그인 위험이 증가하는 것을 고려하면 이전 작업에서 구성한 로그인 위험 정책에 따라 다단계 인증을 사용해야 합니다.
 
-1. You will be presented with the message **Your sign-in was blocked**. This is expected, since this account is not configured with multi-factor authentiation, which is required due to increased sign-in risk associated with the use of ToR Browser.
+1. 확인 옵션을 사용하여 텍스트 또는 통화를 통해 신원을 **확인** 할지 여부를 지정합니다. 
 
-1. Use the **Sign out and sign in with a different account option** to sign in as **aaduser1** account you created and configured for multi-factor authentication in the previous exercise.
+1. 확인을 완료하고 응용 프로그램 액세스 패널에 성공적으로 로그인되었는지 확인합니다.
 
-1. This time, you will be presented with the **Suspicious activity detected** message. Again, this is expected, since this account is configured with multi-factor authentiation. Considering the increased sign-in risk associated with the use of ToR Browser, you will have to use multi-factor authentication, according to the sign-in risk policy you configured in the previous task.
+1. **aaduser1** 로 로그아웃하고ToR 브라우저 창을 닫습니다.
 
-1. Use the **Verify** option and specify whether you want to verify your identity via text or a call. 
+1. 인터넷 익스플로러를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 **AdatumLab101-4b Azure** AD 테넌트를 만드는 데 사용한 Microsoft 계정을 사용하여 로그인합니다. 
 
-1. Complete the verification and ensure that you successfully signed in to the Application Access Panel.
+1. Azure 포털에서 **Azure AD ID 보호 - 위험 이벤트** 블레이드로 이동하여 **익명 IP 주소에서 로그인** 을 나타내는 항목이 있음을 확인합니다.
 
-1. Sign out as **aaduser1** and close the ToR Browser window.
+1. Azure **AD ID 보호 - 위험 이벤트** 블레이드에서 **Azure AD ID 보호로 이동 - 위험 블레이드에 플래그가 지정된 사용자** 및 **aaduser2** 를나타내는 항목을 기록합니다.
 
-1. Start Internet Explorer, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using the Microsoft account you used to create the **AdatumLab101-4b** Azure AD tenant. 
-
-1. In the Azure portal, navigate to the **Azure AD Identity Protection - Risk events** blade and note that the entry representing **Sign-in from anonymous IP address**.
-
-1. From the **Azure AD Identity Protection - Risk events** blade, navigate to the **Azure AD Identity Protection - Users flagged for risk** blade and note the entry representing **aaduser2**.
-
-> **Result**: After you completed this exercise, you have enabled Azure AD Identity Protection, configured user risk policy and sign-in risk policy, as well as validated Azure AD Identity Protection configuration by simulating risk events
-
-## Exercise 3: Remove lab resources
-
-#### Task 1: Open Cloud Shell
-
-1. At the top of the portal, click the **Cloud Shell** icon to open the Cloud Shell pane.
-
-1. At the Cloud Shell interface, select **Bash**.
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to list all resource groups you created in this lab:
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1010')].name" --output tsv
-   ```
-
-1. Verify that the output contains only the resource groups you created in this lab. These groups will be deleted in the next task.
-
-#### Task 2: Delete resource groups
-
-1. At the **Cloud Shell** command prompt, type in the following command and press **Enter** to delete the resource groups you created in this lab
-
-   ```sh
-   az group list --query "[?starts_with(name,'az1010')].name" --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
-   ```
-
-1. Close the **Cloud Shell** prompt at the bottom of the portal.
-
-> **Note**: To remove the Azure AD tenant you created in this lab, follow https://docs.microsoft.com/en-us/azure/active-directory/users-groups-roles/directory-delete-howto  
-
-> **Result**: In this exercise, you removed the resources used in this lab.
+> **결과**: 이 연습을 완료한 후 위험 이벤트를 시뮬레이션하여 Azure AD ID 보호, 구성된 사용자 위험 정책 및 로그인 위험 정책을 활성화하고 유효성을 검사한 Azure AD ID 보호 구성을 활성화했습니다.

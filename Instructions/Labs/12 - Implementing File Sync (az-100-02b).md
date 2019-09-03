@@ -1,343 +1,339 @@
+﻿---
+랩:
+    제목: 'Azure 파일 동기화 구현'
+    모듈: '스토리지 구현 및 관리'
 ---
-lab:
-    title: 'Azure File Sync'
-    module: 'Module 12 - Data Services'
----
 
-# Lab: Implement Azure File Sync
+# 랩: Azure 파일 동기화 구현
 
-All tasks in this lab are performed from the Azure portal, except for steps in Exercise 1 and Exercise 2 performed within a Remote Desktop session to an Azure VM.
+이 실습의 모든 작업은 Azure 포털에서 수행됩니다. 단, 연습 1 및 연습 2의 단계는 Azure VM에 대한 원격 데스크톱 세션에서 수행해야합니다.
 
-Lab files: 
+랩 파일: 
 
--  **Labfiles\\Module_12\\Implementing_File_Sync\\az-100-02b_azuredeploy.json**
+-  **Allfiles/Labfiles/AZ-100.2/az-100-02b_azuredeploy.json**
 
--  **Labfiles\\Module_12\\Implementing_File_Sync\\az-100-02b_azuredeploy.parameters.json**
+-  **Allfiles/Labfiles/AZ-100.2/az-100-02b_azuredeploy.parameters.json**
 
-### Scenario
+### 시나리오
   
-Adatum Corporation hosts its file shares in on-premises file servers. Considering its plans to migrate majority of its workloads to Azure, Adatum is looking for the most efficient method to replicate its data to file shares that will be available in Azure. To implement it, Adatum will use Azure File Sync.
+Adatum Corporation은 온-프레미스 파일 서버에서 파일 공유를 호스팅합니다. 대부분의 워크로드를 Azure로 마이그레이션하려는 계획을 고려할 때 Adatum은 Azure에서 사용할 수 있는 파일 공유에 데이터를 복제하는 가장 효율적인 방법을 찾고 있습니다. 이를 구현하기 위해 Adatum은 Azure 파일 동기화를 사용합니다.
 
-### Objectives
+### 목표
   
-After completing this lab, you will be able to:
+이 과정을 완료하면 다음과 같은 역량을 갖추게 됩니다:
 
--  Deploy an Azure VM by using an Azure Resource Manager template
+-  Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
--  Prepare Azure File Sync infrastructure
+-  Azure 파일 동기화 인프라 준비
 
--  Implement and validate Azure File Sync
+-  Azure 파일 동기화 구현 및 유효성 검사
 
 
-### Exercise 0: Prepare the lab environment
+### 연습 0: 랩 환경 준비
   
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Deploy an Azure VM by using an Azure Resource Manager template
+1. Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
 
-#### Task 1: Deploy an Azure VM by using an Azure Resource Manager template
+#### 작업 1: Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
-1. From the lab virtual machine, start Microsoft Edge, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using a Microsoft account that has the Owner role in the Azure subscription you intend to use in this lab.
+1. 랩 가상 머신에서 Microsoft Edge를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 찾아보고 이 랩에서 사용하려는 Azure 구독에서 소유자 역할이 있는 Microsoft 계정을 사용하여 로그인합니다.
 
-1. In the Azure portal, navigate to the **New** blade.
+1. Azure 포털에서 **새** 블레이드로이동합니다.
 
-1. From the **New** blade, search Azure Marketplace for **Template deployment**.
+1. **새 **블레이드에서 Azure 마켓플레이스에서 **템플릿 배포** 를 검색합니다. 
 
-1. Use the list of search results to navigate to the **Custom deployment** blade.
+1. 검색 결과 목록을 사용하여 **사용자 지정배포** 블레이드로 이동합니다.
 
-1. On the **Custom deployment** blade, select the **Build your own template in the editor**.
+1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿 빌드** 를 선택합니다.
 
-1. From the **Edit template** blade, load the template file **az-100-02b_azuredeploy.json**. 
+1. **편집 템플릿** 블레이드에서 템플릿 파일 **az-100-100-02b_azuredeploy.json** 을 로드합니다. 
 
-   > **Note**: Review the content of the template and note that it defines deployment of an Azure VM hosting Windows Server 2016 Datacenter with a single data disk.
+   > **참고**: 템플릿의 내용을 검토하고 Windows Server 2016 데이터 센터를 호스팅하는 Azure VM의 배포를 정의합니다 단일 데이터 디스크.
 
-1. Save the template and return to the **Custom deployment** blade. 
+1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, navigate to the **Edit parameters** blade.
+1. **사용자 지정 배포** 블레이드에서 **매개 변수 편집** 블레이드로 이동합니다.
 
-1. From the **Edit parameters** blade, load the parameters file **az-100-02b_azuredeploy.parameters.json**. 
+1. **편집 매개 변수** 블레이드에서 매개 변수 파일 **az-100-02b_azuredeploy.parameters.json** 을 로드합니다. 
 
-1. Save the parameters and return to the **Custom deployment** blade. 
+1. 매개 변수를 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
 
-1. From the **Custom deployment** blade, initiate a template deployment with the following settings:
+1. **사용자 지정 배포** 블레이드에서 다음 설정을 사용 하 고 템플릿배포를 시작 합니다:
 
-    - Subscription: the name of the subscription you are using in this lab
+    - 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: the name of a new resource group **az1000201b-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1000201b-RG** 의 이름
 
-    - Location: the name of the Azure region which is closest to the lab location and where you can provision Azure VMs
+    - 위치: 랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 위치
 
-    - Vm Size: **Standard_DS1_v2**
+    - Vm 크기: **Standard_DS1_v2**
 
-    - Vm Name: **az1000201b-vm1**
+    - Vm 이름: **az1000201b-vm1**
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-    - Virtual Network Name: **az1000201b-vnet1**
+    - 가상 네트워크 이름: **az1000201b-vnet1**
 
-   > **Note**: To identify Azure regions where you can provision Azure VMs, refer to [**https://azure.microsoft.com/en-us/regions/offers/**](https://azure.microsoft.com/en-us/regions/offers/)
+   > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 
-   > **Note**: Do not wait for the deployment to complete but proceed to the next exercise. You will use the virtual machine included in this deployment in the next exercise of this lab.
+   > **참고**: 배포가 완료될 때까지 기다리지 말고 다음 연습으로 진행합니다. 이 랩의 다음 연습에서는 이 배포에 포함된 가상 머신를 사용합니다.
 
-   > **Note**: Keep in mind that the purpose of Azure VM **az1000201b-vm1** is to emulate an on-premises file server in our scenario.
+   > **참고**: Azure VM **az1000201b-vm1** 의 목적은시나리오에서 온-프레미스 파일 서버를 에뮬레이트하는 것입니다.
 
-> **Result**: After you completed this exercise, you have initiated a template deployment of an Azure VM **az1000201b-vm1** that you will use in the next exercise of this lab.
+> **결과**: 이 연습을 완료한 후 이 랩의 다음 연습에서 사용할 Azure VM **az1000201b-vm1** 및 Azure VM 규모 집합 az1000302bvmss1의템플릿 배포를 시작했습니다.
 
 
-### Exercise 1: Prepare Azure File Sync infrastructure
+### 연습 1: Azure 파일 동기화 인프라 준비
 
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Create an Azure Storage account and a file share
+1. Azure 저장소 계정 및 파일 공유 만들기
 
-1. Prepare Windows Server 2016 for use with Azure File Sync
+1. Azure 파일 동기화와 함께 사용할 Windows Server2016 준비
 
-1. Run Azure File Sync evaluation tool
+1. Azure 파일 동기화 평가 도구 실행
 
 
-#### Task 1: Create an Azure Storage account and a file share
+#### 작업 1: Azure 저장소 계정 및 파일 공유 만들기
 
-1. In the Azure portal, navigate to the **New** blade.
+1. Azure 포털에서 **새** 블레이드로이동합니다.
 
-1. From the **New** blade, search Azure Marketplace for **Storage account**.
+1. **새** 블레이드에서 Azure 마켓플레이스 저장소 **계정-Blob, 파일,테이블, 큐** 를 검색합니다.
 
-1. Use the list of search results to navigate to the **Create storage account** blade.
+1. 검색 결과 목록을 사용하여 저장소 **계정 만들기** 블레이드로 이동합니다.
 
-1. From the **Create storage account** blade, create a new storage account with the following settings: 
+1. **스토리지 계정 만들기** 블레이드에서 다음 설정으로 새 스토리지 계정을 만듭니다: 
 
-    - Subscription: the same subscription you selected in the previous task
+    - 구독 : 이전 작업에서 선택한 동일한 구독
 
-    - Resource group: the name of a new resource group **az1000202b-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1000202b-RG** 의 이름
 
-    - Storage account name: any valid, unique name between 3 and 24 characters consisting of lowercase letters and digits
+    - 저장소 계정 이름: 소문자와 숫자로 구성된 3~24자 사이의 유효하고 고유한 이름
 
-    - Location: the name of the Azure region which you selected in the previous task
+    - 위치: 이전 작업에서 선택한 Azure 지역의 이름
 
-    - Performance: **Standard**
+    - 성능: **표준**
 
-    - Account kind: **Storage (general purpose v1)**
+    - 계정 종류: **보관 (범용 v1)**
 
-    - Replication: **Locally-redundant storage (LRS)**
+    - 복제: **로컬 중복 스토리지 (LRS)**
 
-    - Secure transfer required: **Disabled**
+    - 보안 전송 필요: **비활성화**
 
-    - Allow access from: **All networks**
+    - 다음 에서 액세스 허용: **모든 네트워크**
 
-    - Hierarchical namespace: **Disabled**
+    - 계층적 네임스페이스: **비활성화**
 
-   > **Note**: Wait for the storage account to be provisioned then proceed to the next step.
+   > **참고**: 저장소 계정이 프로비전될 때까지 기다리지만 다음 단계로 진행합니다.
 
-1. In the Azure portal, navigate to the blade representing the newly provisioned storage account.
+1. Azure 포털에서 새로 프로비전된 저장소 계정을 나타내는 블레이드로 이동합니다.
 
-1. From the storage account blade, display the properties of its File Service.
+1. 저장소 계정 블레이드에서 파일 서비스의 속성을 표시합니다.
 
-1. From the storage account **Files** blade, create a new file share with the following settings:
+1. 저장소 계정 **파일** 블레이드에서다음 설정으로 새 파일 공유를 만듭니다:
 
-    - Name: **az10002bshare1**
+    - 이름: **az10002bshare1**
 
-    - Quota: none
+    - 할당량: 없음
 
 
-#### Task 2: Prepare Windows Server 2016 for use with Azure File Sync
+#### 작업 2: Azure 파일 동기화와 함께 사용할 Windows Server2016 준비
 
-   > **Note**: Before you start this task, ensure that the template deployment you started in Exercise 0 has completed. 
+   > **참고**: 이 작업을 시작하기 전에 연습 0에서 시작한 템플릿 배포가 완료되었는지 확인합니다. 
 
-1. In the Azure portal, navigate to the **az1000201b-vm1** blade.
+1. Azure 포털에서 **az1000201b-vm1** 블레이드로 이동합니다.
 
-1. From the **az1000201b-vm1** blade, connect to the Azure VM via the RDP protocol and, when prompted to sign in, provide the following credentials:
+1. **az1000201b-vm1** 블레이드에서 RDP 프로토콜을 통해 Azure VM에 연결하고 로그인하라는 메시지가 표시되면 다음 자격 증명을 제공합니다:
 
-    - Admin Username: **Student**
+    - 관리자 사용자 이름: **학생**
 
-    - Admin Password: **Pa55w.rd1234**
+    - 관리자 암호: **Pa55w.rd1234**
 
-1. Within the RDP session to the Azure VM, in Server Manager, navigate to **File and Storage Services**, locate the data disk attached to the Azure VM, initialize it as a **GPT** disk, and use **New Volume Wizard** to create a single volume occupying entire disk with the following settings:
+1. 서버 관리자에서 Azure VM에 대한 RDP 세션 내에서 **파일 및 저장소 서비스** 로 이동하여 Azure VM에 연결된 데이터 디스크를 찾고, **GPT** 디스크로 초기화하고, **새 볼륨 마법사** 를 사용하여 전체 볼륨을 차지하는 단일 볼륨을 만듭니다. 다음 설정이 있는 디스크:
 
-    - Drive letter: **S**
+    - 드라이브 레터: **S**
 
-    - File system: **NTFS**
+    - 파일 시스템: **NTFS**
 
-    - Allocation unit size: **Default**
+    - 할당 단위 크기: **기본값**
 
-    - Volume label: **Data**
+    - 볼륨 레이블: **데이터**
 
-1. Within the RDP session, start a Windows PowerShell session as administrator. 
+1. RDP 세션 내에서 Windows PowerShell 세션을 관리자로 시작합니다. 
 
-1. From the Windows PowerShell console, set up a file share by running the following:
+1. Windows PowerShell 콘솔에서 다음을 실행하여 파일 공유를 설정합니다.
 
-   ```powershell
+   ```
    $directory = New-Item -Type Directory -Path 'S:\az10002bShare'
 
    New-SmbShare -Name $directory.Name -Path $directory.FullName -FullAccess 'Administrators' -ReadAccess Everyone   
 
-   Copy-Item -Path 'C:\WindowsAzure\*' -Destination $directory.FullName –Recurse
+   Copy-Item -Path 'C:\WindowsAzure\*' -Destination $directory.FullName ?Recurse
    ```
 
-   > **Note**: To populate the file share with sample data, we use content of the *C:\\WindowsAzure* folder, which should contain about 100 MB worth of files
+   > **참고**: 파일 공유를 샘플 데이터로 채우려면 약 100MB 상당의 파일이 포함되어야 하는 C:\\WindowsAzure 폴더의 콘텐츠를 사용합니다.
 
-1. From the Windows PowerShell console, install the latest Az PowerShell module by running the following:
+1. Windows PowerShell 콘솔에서 다음을 실행하여 최신 AzureRM 모듈을 설치합니다.
 
-   ```powershell
-   Install-Module -Name Az -AllowClobber
+   ```
+   Install-Module -Name AzureRM
    ```
 
-   > **Note**: When prompted, confirm that you want to proceed with the installation from PSGallery repository.
+   > **참고**: 메시지가 표시되면 PSGallery 리포지토리에서 설치를 진행하려는지 확인합니다.
 
 
-#### Task 3: Run Azure File Sync evaluation tool
+#### 작업 3: Azure 파일 동기화 평가 도구 실행
 
-1. Within the RDP session to the Azure VM, from the Windows PowerShell console, install the latest version of Package Management and PowerShellGet by running the following:
+1. Windows PowerShell 콘솔에서 Azure VM에 대한 RDP 세션 내에서 다음을 실행하여 최신 버전의 패키지 관리 및 PowerShellGet을 설치합니다.
 
-   ```powershell
+   ```
    Install-Module -Name PackageManagement -Repository PSGallery -Force
 
    Install-Module -Name PowerShellGet -Repository PSGallery -Force
    ```
 
-   > **Note**: When prompted, confirm that you want to proceed with the installation of the NuGet provider.
+   > **참고**: 메시지가 표시되면 NuGet 공급자의 설치를 진행하려는지 확인합니다.
 
-1. Restart the PowerShell session.
+1. PowerShell 세션을 다시 시작합니다.
 
-1. From the Windows PowerShell console, install the Azure File Sync PowerShell module by running the following:
+1. Windows PowerShell 콘솔에서 다음을 실행하여 Azure 파일 동기화 PowerShell 모듈을 설치합니다.
 
-   ```powershell
-   Install-Module -Name Az.StorageSync -AllowClobber -Force
+   ```
+   Install-Module -Name Az.StorageSync -AllowPrerelease -AllowClobber -Force
    ```
 
-1. From the Windows PowerShell console, install the Azure File Sync PowerShell module by running the following:
+1. Windows PowerShell 콘솔에서 다음을 실행하여 Azure 파일 동기화 PowerShell 모듈을 설치합니다.
 
-   ```powershell
+   ```
    Invoke-AzStorageSyncCompatibilityCheck -Path 'S:\az10002bShare'
    ```
 
-1. Review the results and verify that no compatibility issues have been found.
+1. 결과를 검토하고 호환성 문제가 발견되지 않았는지 확인합니다.
 
-> **Result**: After you completed this exercise, you have created an Azure Storage account and a file share, prepare Windows Server 2016 for use with Azure File Sync, and run Azure File Sync evaluation tool
+> **결과**: 이 연습을 완료한 후 Azure Storage 계정 및 파일 공유를 만들고, Azure 파일 동기화와 함께 사용할 Windows Server 2016을 준비하고, Azure 파일 동기화 평가 도구를 실행했습니다.
 
 
-### Exercise 2: Prepare Azure File Sync infrastructure
+### 연습 2: Azure 파일 동기화 인프라 준비
 
-The main tasks for this exercise are as follows:
+이 연습의 주요 작업은 다음과 같습니다:
 
-1. Deploy the Storage Sync Service
+1. 스토리지 동기화 서비스 배포
 
-1. Install the Azure File Sync Agent
+1. Azure 파일 동기화 에이전트 설치
 
-1. Register the Windows Server with Storage Sync Service
+1. 스토리지 동기화 서비스로 Windows 서버 등록
 
-1. Create sync groups and a cloud endpoint
+1. 동기화 그룹 및 클라우드 끝점 만들기
 
-1. Create a server endpoint
+1. 서버 끝점 만들기
 
-1. Validate Azure File Sync operations
+1. Azure 파일 동기화 작업의 유효성 검사
 
 
-#### Task 1: Deploy the Storage Sync Service
+#### 작업 1: 스토리지 동기화 서비스 배포
 
-1. Within the RDP session to the Azure VM, in Server Manager, navigate to the Local Server view and turn off temporarily **IE Enhanced Security Configuration**.
+1. Azure VM에 대한 RDP 세션 내에서, 관리자에서 로컬 서버 보기로 이동하여 일시적으로 **IE 고급 보안 구성** 을 끕니다.
 
-1. Within the RDP session to the Azure VM, start Internet Explorer, browse to the Azure portal at [**http://portal.azure.com**](http://portal.azure.com) and sign in by using the same Microsoft account you used previously in this lab.
+1. Azure VM에 대한 RDP 세션 내에서, Internet Explorer를 시작하고 **[http://portal.azure.com**](http://portal.azure.com)에서 Azure 포털을 탐색하고 이 랩에서 이전에 사용한 것과 동일한 Microsoft 계정을 사용하여 로그인합니다.
 
-1. In the Azure portal, navigate to the **New** blade.
+1. Azure 포털에서 **새** 블레이드로이동합니다.
 
-1. From the **New** blade, search Azure Marketplace for **Azure File Sync**.
+1. **새** 블레이드에서 **Azure File Sync** 에 대한 Azure 마켓플레이스를 검색합니다.
 
-1. Use the list of search results to navigate to the **Deploy Storage Sync** blade.
+1. **배포 저장 동기화** 블레이드로 이동 검색 결과 목록을 사용합니다.
 
-1. From the **Deploy Storage Sync** blade, create a Storage Sync Service with the following settings:
+1. **저장소 동기화 배포** 블레이드에서 다음 설정으로 저장소 동기화 서비스를 만듭니다:
 
-    - Name: **az1000202b-ss**
+    - 이름: **az1000202b-ss**
 
-    - Subscription: the same subscription you selected in the previous task
+    - 구독 : 이전 작업에서 선택한 동일한 구독
 
-    - Resource group: the name of a new resource group **az1000203b-RG**
+    - 리소스 그룹: 새 리소스 그룹 **az1000203b-RG** 의 이름
 
-    - Location: the name of the Azure region in which you created the storage account earlier in this exercise
+    - 위치: 이 연습의 앞에서 저장소 계정을 만든 Azure 영역의 이름입니다
 
 
-#### Task 2: Install the Azure File Sync Agent.
+#### 작업 2: Azure 파일 동기화 에이전트를 설치합니다.
 
-1. Within the RDP session, start another instance of Internet Explorer, browse to Microsoft Download Center at [**https://go.microsoft.com/fwlink/?linkid=858257**](https://go.microsoft.com/fwlink/?linkid=858257) and download the Azure File Sync Agent Windows Installer file **StorageSyncAgent_V6_WS2016.msi**.
+1. RDP 세션 내에서 Internet Explorer의 다른 인스턴스를 시작하고 [**https://go.microsoft.com/fwlink/?linkid=858257**](https://go.microsoft.com/fwlink/?linkid=858257) 에서 Microsoft 다운로드 센터를 찾아보고 Azure 파일 동기화 에이전트 Windows Installer 파일 **StorageSyncAgent_V5_WS2016.msi** 를 다운로드합니다.
 
-1. Once the download completes, run the Storage Sync Agent Setup wizard with the default settings to install Azure File Sync Agent.
+1. 다운로드가 완료되면 기본 설정으로 저장소 동기화 에이전트 설치 마법사를 실행하여 Azure File Sync 에이전트를 설치합니다.
 
-1. After the Azure File Sync agent installation completes, the **Azure File Sync - Server Registration** wizard will automatically start.
+1. Azure 파일 동기화 에이전트 설치가 완료되면 **Azure 파일 동기화 - 서버 등록** 마법사가 자동으로 시작됩니다.
 
 
-#### Task 3: Register the Windows Server with Storage Sync Service
+#### 작업 3: 스토리지 동기화 서비스로 Windows 서버 등록
 
-1. From the initial page of the **Azure File Sync - Server Registration** wizard, sign in by using the same Microsoft account you used previously in this lab.
+1. **Azure 파일 동기화 - 서버 등록** 마법사의 초기 페이지에서 이 랩에서 이전에 사용한 것과 동일한 Microsoft 계정을 사용하여 로그인합니다.
 
-1. On the **Choose a Storage Sync Service** page of the **Azure File Sync - Server Registration** wizard, specify the following settings to register:
+1. **Azure 파일 동기화 - 서버 등록** 마법사의 **저장소 동기화 서비스 선택** 페이지에서 등록할 다음 설정을 지정합니다.
 
-    - Azure Subscription: the name of the subscription you are using in this lab
+    - Azure 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Resource group: **az1000203b-RG**
+    - 리소스 그룹: **az1000203b-RG**
 
-    - Storage Sync Service: **az1000202b-ss**
+    - 스토리지 동기화 서비스: **az1000202b-ss**
 
-1. When prompted, sign in again by using the same Microsoft account you used previously in this lab.
+1. 메시지가 표시되면 이 랩에서 이전에 사용한 것과 동일한 Microsoft 계정을 사용하여 다시 로그인합니다.
 
 
-#### Task 4: Create a sync group and a cloud endpoint
+#### 작업 4: 동기화 그룹 및 클라우드 끝점 만들기
 
-1. Within the RDP session to the Azure VM, in the Azure portal, navigate to the **az1000202b-ss** Storage Sync Service blade.
+1. Azure VM에 대한 RDP 세션에서 Azure 포털에서 **az1000202b-ss** 스토리지 동기화 서비스 블레이드로 이동합니다.
 
-1. From the **az1000202b-ss** Storage Sync Service blade, navigate to the **Sync group** blade and create a new sync group with the following settings:
+1. **az1000202b-ss** 스토리지 동기화 서비스 블레이드에서 **동기화 그룹** 블레이드로 이동하여 다음 설정으로 새 동기화 그룹을 만듭니다.
 
-    - Sync group name: **az1000202b-syncgroup1**
+    - 동기화 그룹 이름: **az1000202b-syncgroup1**
 
-    - Azure Subscription: the name of the subscription you are using in this lab
+    - Azure 구독: 이 랩에서 사용 중인 구독의 이름
 
-    - Storage account: the resource id of the storage account you created in the previous exercise
+    - 스토리지 계정 : 이전 연습에서 생성한 스토리지 계정의 리소스 ID
 
-    - Azure File Share: **az10002bshare1**
+    - Azure 파일 공유: **az10002bshare1**
 
 
-#### Task 5: Create a server endpoint
+#### 작업 5: 서버 끝점 만들기
 
-1. Within the RDP session to the Azure VM, in the Azure portal, from the **az1000202b-ss** Storage Sync Service blade, navigate to the **az1000202b-syncgroup1** blade.
+1. rdP 세션 내에서 azure 포털에서 **az1000202b-ss** 스토리지 동기화 서비스 블레이드에서 **az10000202b-syncgroup1** 블레이드로이동합니다.
 
-1. From the **az1000202b-syncgroup1** blade, navigate to the **Add server endpoint** blade and create a new server endpoint with the following settings:
+1. **az1000202b-syncgroup1** 블레이드에서 **서버 끝점 추가** 블레이드로 이동하여 다음 설정을 사용하여 새 서버끝점을 만듭니다.
 
-    - Registered server: **az1000201b-vm1**
+    - 등록 된 서버 : **az1000201b-vm1**
 
-    - Path: **S:\\az10002bShare**
+    - 경로: **S:\\az10002bShare**
 
-    - Cloud Tiering: **Enabled**
+    - 클라우드 계층화: **사용**
 
-        - Always preserve the specified percentage of free space on the volume: **15**
+        - 항상 볼륨에서 여유 공간의 지정된 비율을 유지합니다: **15**
 
-        - Only cache files that were accessed or modified within the specified number of days: **30**
+        - 지정된 일 수 내에 액세스하거나 수정된 파일만 캐시합니다: **30**
 
-    - Offline Data Transfer: **Disabled**
+    - 오프라인 데이터 전송: **비활성화**
 
 
-#### Task 6: Validate Azure File Sync operations
+#### 작업 6: Azure 파일 동기화 작업의 유효성 검사
 
-1. Within the RDP session to the Azure VM, in the Azure portal, monitor the health status of the server endpoint **az100021b-vm1** on the **az1000202b-syncgroup1** blade, as it changes from **Provisioning** to **Pending** and, eventually, to a green checkmark.
+1. Azure 포털에서 Azure VM에 대한 RDP 세션 내에서 **az1000202b-syncgroup1** 블레이드에서 서버 끝점 **az100021b-vm1** 의 상태 상태를 모니터링하여 **프로비저닝** 에서 **보류 중** 으로 변경하고 결국 녹색 체크 표시.
 
-   > **Note**: You should be able to proceed to the next step after a few minutes. 
+   > **참고**: 몇 분 후에 다음 단계로 진행할 수 있습니다. 
 
-1. In the Azure portal, navigate to the blade for the storage account you created earlier in the lab, switch to the **Files** tab and then click **az10002bshare1**.
+1. Azure 포털에서 **az10002bshare1** 블레이드로 이동하여 **연결** 블레이드를 표시합니다.
 
-1. On the **az10002bshare1** blade, click **Connect**.
+1. **연결** 블레이드에서 Windows 컴퓨터의 파일 공유에 연결하는 PowerShell 명령을 클립보드에 복사합니다.
 
-1. From the **Connect** blade, copy into Clipboard the PowerShell commands that connect to the file share from a Windows computer.
+1. RDP 세션 내에서 Windows PowerShell ISE 세션을 시작합니다. 
 
-1. Within the RDP session, start a Windows PowerShell ISE session. 
+1. Windows PowerShell ISE 세션에서 스크립트 창을 열고 로컬 클립보드의 내용을 붙여넣습니다.
 
-1. From the Windows PowerShell ISE session, open the script pane and paste into it the content of your local Clipboard.
+1. 스크립트를 실행하고 출력이 Z: 드라이브를 Azure 저장소 파일 서비스 공유로 성공적으로 매핑했는지 확인합니다.
 
-1. Add the ` -Persist` switch to the end of the line containing the `New-PSDrive` cmdlet.
+1. RDP 세션 내에서 파일 탐색기를 시작하고 Z: 드라이브로 이동한 다음 S:\\\az10002bShare와 동일한 콘텐츠가 포함되어 있는지 확인합니다.
 
-1. Execute the script and verify that its output confirms successful mapping of the Z: drive to the Azure Storage File Service share.
+1. Z: 드라이브에 개별 폴더의 속성 창을 표시하고 보안 탭을 검토하고 항목이 S: 드라이브의 해당 폴더에 할당된 NTFS 권한을 나타냅니다.
 
-1. Within the RDP session, start File Explorer, navigate to the Z: drive, and verify that it contains the same content as S:\\az10002bShare
 
-1. Display the Properties window of individual folders on the Z: drive, review the Security tab, and note that the entries represent NTFS permissions assigned to the corresponding folders on the S: drive.
-
-
-> **Result**: After you completed this exercise, you have deployed the Storage Sync Service, installed the Azure File Sync Agent, registered the Windows Server with Storage Sync Service, created a sync group and a cloud endpoint, created a server endpoint, and validated Azure File Sync operations.
+> **결과**: 이 연습을 완료한 후 저장소 동기화 서비스를 배포하고, Azure 파일 동기화 에이전트를 설치하고, Windows 서버를 저장소 동기화 서비스로 등록하고, 동기화 그룹 및 클라우드 끝점을 만들고, 서버 끝점을 만들고, Azure의 유효성을 검사했습니다. 파일 동기화 작업.
