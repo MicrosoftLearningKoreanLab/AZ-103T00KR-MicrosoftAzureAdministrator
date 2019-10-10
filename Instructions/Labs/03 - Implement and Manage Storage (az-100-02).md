@@ -26,7 +26,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
 -  Azure Resource Manager 템플릿을 사용하여 Azure VM 배포
 
--  Azure Blob 저장소 구현 및 사용
+-  Azure 컨테이너 저장소 구현 및 사용
 
 -  Azure 파일 저장소 구현 및 사용
 
@@ -100,7 +100,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 > **결과**: 이 실습을 마친 후에는 이 실습의 두 번째 실습에서 사용할 Azure VM **az1000201-vm1** 의 템플릿 배포를 시작했습니다.
 
 
-### 연습 1: Azure Blob 저장소 구현 및 사용
+### 연습 1: Azure 컨테이너 저장소 구현 및 사용
 
 이 연습의 주요 작업은 다음과 같습니다:
 
@@ -108,11 +108,11 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
 1. Azure Storage 계정의 구성 설정 검토
 
-1. Azure Storage Blob 서비스 관리
+1. Azure Storage 컨테이너 서비스 관리
 
-1. Azure Storage 계정 간에 컨테이너 및 Blob 복사
+1. Azure Storage 계정 간에 컨테이너 복사
 
-1. SAS(공유 액세스 서명) 키를 사용하여 Blob에 액세스
+1. SAS(공유 액세스 서명) 키를 사용하여 컨테이너에 액세스
 
 
 #### 작업 1: Azure Storage 계정 만들기
@@ -201,16 +201,16 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 1. 스토리지 계정의 **암호화** 블레이드로 이동합니다. 이 경우 암호화도 기본적으로 활성화되어 있으며 사용자 고유의 키를 사용할 수 있습니다.
 
 
-#### 작업 3: Azure Storage Blob 서비스 관리
+#### 작업 3: Azure Storage 컨테이너 서비스 관리
 
-1. Azure 포털에서 첫 번째 스토리지 계정의 **Blob** 블레이드로 이동합니다. 
+1. Azure 포털에서 첫 번째 스토리지 계정의 **컨테이너** 블레이드로 이동합니다. 
 
-1. 첫 번째 스토리지 계정의 **Blob** 블레이드에서 **공용 액세스 수준** 이 **프라이빗(익명 액세스 없음)** 으로 설정된 **az1000202-container** 라는 새 컨테이너를 만듭니다. 
+1. 첫 번째 스토리지 계정의 **컨테이너** 블레이드에서 **공용 액세스 수준** 이 **프라이빗(익명 액세스 없음)** 으로 설정된 **az1000202-container** 라는 새 컨테이너를 만듭니다. 
 
 1. **az1000202-컨테이너** 블레이드에서 **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.json** 및 **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.parameters.json** 을 컨테이너에 업로드합니다.
 
 
-#### 작업 4: Azure Storage 계정 간에 컨테이너 및 Blob 복사
+#### 작업 4: Azure Storage 계정 간에 컨테이너 복사
 
 1. Azure 포털의 Cloud Shell 창에서 PowerShell 세션을 시작하십시오. 
 
@@ -228,7 +228,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
    $context2 = New-AzStorageContext -StorageAccountName $storageAccount2Name -StorageAccountKey $storageAccount2Key1
    ```
 
-   > **참고**: 이 명령은 이전 작업에서 업로드 한 Blob이 포함 된 Blob 컨테이너의 이름, 두 개의 저장소 계정, 해당 키 및 각각에 대한 해당 보안 컨텍스트를 나타내는 변수 값을 설정합니다. 이 값을 사용하여 AZCopy 명령 행 유틸리티를 사용하여 스토리지 계정간에 Blob을 복사하는 SAS 토큰을 생성합니다.
+   > **참고**: 이 명령은 이전 작업에서 업로드 한 컨테이너가 포함 된 컨테이너의 이름, 두 개의 저장소 계정, 해당 키 및 각각에 대한 해당 보안 컨텍스트를 나타내는 변수 값을 설정합니다. 이 값을 사용하여 AZCopy 명령 행 유틸리티를 사용하여 스토리지 계정간에 컨테이너를 복사하는 SAS 토큰을 생성합니다.
 
 1. Cloud Shell 창에서 다음 명령을 실행합니다:
 
@@ -245,7 +245,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
    $containerToken2 = New-AzStorageContainerSASToken -Context $context2 -ExpiryTime(get-date).AddHours(24) -FullUri -Name $containerName -Permission rwdl
    ```
 
-   > **참고**: 이 명령은 다음 단계에서 두 컨테이너간에 Blob을 복사하는 데 사용할 SAS 키를 생성합니다.
+   > **참고**: 이 명령은 다음 단계에서 두 컨테이너간 Blob을 복사하는 데 사용할 SAS 키를 생성합니다.
    
 1. Cloud Shell 창에서 다음 명령을 실행합니다:
 
@@ -257,12 +257,12 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
 1. 명령이 두 파일이 전송되었는지 확인하는 결과를 반환했는지 확인합니다. 
 
-1. 두 번째 스토리지 계정의 **Blob** 블레이드로 이동하여 새로 만든 **az1000202-container** 를 확인 하고 컨테이너에 복사된 Blob 두 개가 복사되어 있는지 확인합니다.
+1. 두 번째 스토리지 계정의 **컨테이너** 블레이드로 이동하여 새로 만든 **az1000202-container** 를 확인 하고 컨테이너에 복사된 Blob 두 개가 복사되어 있는지 확인합니다.
 
 
-#### 작업 5: SAS(공유 액세스 서명) 키를 사용하여 Blob에 액세스
+#### 작업 5: SAS(공유 액세스 서명) 키를 사용하여 컨테이너에 액세스
 
-1. 두 번째 스토리지 계정의 **Blob** 블레이드에서 컨테이너 **az1000202-container** 로 이동한 다음 **az-100-02_azuredeploy.json** 블레이드를 엽니다.
+1. 두 번째 스토리지 계정의 **컨테이너** 블레이드에서 **az1000202-container** 컨테이너로 이동한 다음 **az-100-02_azuredeploy.json** 블레이드를 엽니다.
 
 1. **az-100-02_azuredeploy.json** 블레이드에서 **URL** 속성의 값을 복사합니다.
 
@@ -292,7 +292,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
 1. 프롬프트가 표시되는 Microsoft Edge 창을 닫습니다.
 
-> **결과**: 이 연습을 완료한 후 두 개의 Azure Storage 계정을 만들고, 구성 설정을 검토하고, Blob 컨테이너를 만들고, 컨테이너에 Blob을 업로드하고, 스토리지 계정 간에 컨테이너 및 Blob을 복사하고, SAS 키를 사용하여 Blob 중 하나에 액세스할 수 있습니다. 
+> **결과**: 이 연습을 완료한 후 두 개의 Azure Storage 계정을 만들고, 구성 설정을 검토하고, 컨테이너를 만들고, 컨테이너에 Blob을 업로드하고, 스토리지 계정 간에 컨테이너 및 Blob을 복사하고, SAS 키를 사용하여 Blob 중 하나에 액세스할 수 있습니다. 
 
 
 ### 연습 2: Azure 파일 저장소 구현 및 사용
