@@ -525,3 +525,32 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 
 > **결과**: 이 연습을 완료한 후 Azure Network Watcher를 사용하여 가상 네트워크 피어링, Azure Storage에 대한 네트워크 연결 및 Azure SQL Database에 대한 네트워크 연결을 통해 Azure VM에 대한 네트워크 연결을 테스트했습니다.
+
+
+### 연습 5: 랩 리소스 삭제
+
+#### 작업 1: Cloud Shell 열기
+
+1. Azure 포털 상단에서 **Cloud Shell** 아이콘을 클릭하여 Cloud Shell 창을 엽니다.
+
+1. Cloud Shell 인터페이스에서 **Bash**를 선택합니다.
+
+1. **Cloud Shell** 명령 프롬프트에서 다음 명령을 입력하고 **Enter**를 눌러 이 랩에서 생성한 모든 리소스 그룹을 나열합니다.
+
+   ```sh
+   az group list --query "[?starts_with(name,'az1010')].name" --output tsv
+   ```
+
+1. 출력된 결과가 이 랩에서 생성한 리소스 그룹만 포함되어 있는지 확인합니다. 이 그룹은 다음 작업에서 삭제됩니다.
+
+#### 작업 2: 리소스 그룹 삭제하기
+
+1. **Cloud Shell** 명령 프롬프트에서 다음 명령을 입력하고 **Enter**를 눌러 이 랩에서 생성한 모든 리소스 그룹을 삭제합니다.
+
+   ```sh
+   az group list --query "[?starts_with(name,'az1010')].name" --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
+   ```
+
+1. **Cloud Shell** 명령 프롬프트를 닫습니다.
+
+> **결과**: 이 연습을 완료한 후 이 랩에서 사용된 리소스 그룹을 제거했습니다.
