@@ -207,11 +207,11 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     - 서비스: **Microsoft.Storage**
 
-    - 서브넷: **서브넷0**
+    - 서브넷: **subnet0**
 
     - 서비스: **Microsoft.Sql**
 
-    - 서브넷: **서브넷0**
+    - 서브넷: **subnet0**
 
 1. Azure 포털에서 **az1010301b-RG** 리소스그룹 블레이드로 이동합니다.
 
@@ -261,7 +261,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
         - 가상 네트워크: **az1010301b-vnet1**
 
-        - 서브넷 이름: **서브넷0/ 10.203.0.0/24**
+        - 서브넷 이름: **subnet0/ 10.203.0.0/24**
 
 > **결과**: 이 연습을 완료한 후 Azure Resource Manager 템플릿을 사용하여 Azure VM, Azure Storage 계정 및 Azure SQL Database 인스턴스를 배포하고 Azure Network Watcher 서비스를 사용하도록 설정하고 Azure virtual 간에 설정된 전역 피어링을 설정했습니다. Azure Storage 계정 및 Azure SQL Database 인스턴스에 대한 설정된 서비스 엔드포인트를 제공합니다.
 
