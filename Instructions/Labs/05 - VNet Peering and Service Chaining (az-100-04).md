@@ -54,7 +54,7 @@ Adatum Corporation은 Azure 구독에서 Azure 가상 네트워크 간의 서비
 
 1. **사용자 지정 배포** 블레이드에서 **편집기에서 사용자 고유의 템플릿을 빌드합니다.** 를 선택합니다.
 
-1. **템플릿 편집** 블레이드에서 템플릿 파일인 **Labfiles\\\AZ100\\Mod04\\az-100-04_01_azuredeploy.json** 을 로드합니다. 
+1. **템플릿 편집** 블레이드에서 템플릿 파일인 **Labfiles\\AZ100\\Mod04\\az-100-04_01_azuredeploy.json** 을 로드합니다. 
 
    > **참고**: 템플릿의 내용을 검토하고 Windows Server 2016 데이터 센터를 호스팅하는 Azure VM의 배포를 정의합니다.
 
