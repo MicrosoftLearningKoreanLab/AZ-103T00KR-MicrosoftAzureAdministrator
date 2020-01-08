@@ -91,7 +91,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
     - 가상 네트워크: 가상 네트워크 아래에 **새로 만들기**를 클릭한다.
     
-        - 이름: **az1000301-vnet0**
+        - 이름: **az1000301-RG-vnet**
 
         - 주소 범위: **10.103.0.0/16**
 
@@ -160,7 +160,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
    ```pwsh
    $availabilitySet = Get-AzAvailabilitySet -ResourceGroupName $resourceGroup.ResourceGroupName -Name 'az1000301-avset0'
-   $vnet = Get-AzVirtualNetwork -Name 'az1000301-vnet0' -ResourceGroupName $resourceGroup.ResourceGroupName
+   $vnet = Get-AzVirtualNetwork -Name 'az1000301-RG-vnet' -ResourceGroupName $resourceGroup.ResourceGroupName
    $subnetid = (Get-AzVirtualNetworkSubnetConfig -Name 'subnet0' -VirtualNetwork $vnet).Id
    ```
 
@@ -242,7 +242,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
 1. **템플릿 편집** 블레이드에서 템플릿 파일인 **Labfiles\\Module_02\\Deploy_and_Manage_Virtual_Machines\\az-100-03_azuredeploy.json** 을 로드합니다.
 
-   > **참고**: 템플릿의 내용을 검토하고 Linux Ubuntu를 호스팅하는 두 개의 Azure VM을 가용성 집합으로 기존 가상 네트워크 **az1000301-vnet0** 에 배포하도록 정의합니다.
+   > **참고**: 템플릿의 내용을 검토하고 Linux Ubuntu를 호스팅하는 두 개의 Azure VM을 가용성 집합으로 기존 가상 네트워크 **az1000301-RG-vnet** 에 배포하도록 정의합니다.
 
 1. 템플릿을 저장하고 **사용자 지정 배포** 블레이드로 돌아갑니다. 
 
@@ -270,7 +270,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
     - Admin Password: **Pa55w.rd1234**
 
-    - Virtual Network Name: **az1000301-vnet0**
+    - Virtual Network Name: **az1000301-RG-vnet**
 
     - Image Publisher: **Canonical**
 
@@ -386,7 +386,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
 1. **az1000301-vm0**의 RDP 세션 내에서,인터넷 익스플로러를 시작하고 [**https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html**](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 에서 **putty.exe**를 다운로드 한다.
 
-1. **putty.exe** 를 사용하여 **SSH** 프로토콜(TCP 22)을 통해 사설 IP 주소에서 **az1000302-vm0** 에 성공적으로 연결할 수 있는지 확인합니다.
+1. **putty.exe** 를 사용하여 **SSH** 프로토콜(TCP 22)을 통해 사설 IP 주소(**10.103.0.100**)에서 **az1000302-vm0** 에 성공적으로 연결할 수 있는지 확인합니다.
 
 1. 메시지가 표시되면 다음 값을 지정하여 인증합니다:
 
@@ -517,7 +517,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
     - Auto Upgrade Minor Version: **Yes**
 
-1. **az1000303vms0 - 인스턴스** 블레이드로 이동하여 **az1000303vmss0_0** 인스턴스의 업그레이드를 시작합니다.
+1. **az1000303vms0 - 인스턴스** 블레이드로 이동하고 **업그레이드**를 클릭하여 **az1000303vmss0_0** 인스턴스의 업그레이드를 시작합니다.
 
    > **참고**: 이 업데이트는 DSC 구성 스크립트의 응용 프로그램을 트리거합니다. 업그레이드가 완료될 때까지 기다립니다. 약 5 분이 소요됩니다. **az1000303vms0 - 인스턴스** 블레이드에서 진행 상황을 모니터링할 수 있습니다. 
 
