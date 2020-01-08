@@ -65,7 +65,7 @@
     },
     "virtualNetworkName": {
       "type": "string",
-      "defaultValue": "az1000301-vnet0",
+      "defaultValue": "az1000301-RG-vnet",
       "metadata": {
         "description": "Virtual network name"
       }
@@ -163,6 +163,7 @@
       },
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "[concat('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]",
         "nicLoop"
       ],
       "properties": {
