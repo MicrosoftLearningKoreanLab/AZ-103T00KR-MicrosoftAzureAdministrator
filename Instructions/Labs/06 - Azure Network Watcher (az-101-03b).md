@@ -32,7 +32,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 -  Azure Resource Manager 템플릿을 사용하여 Azure VM, Azure Storage 계정 및 Azure SQL Database 인스턴스 배포
 
--  Azure 네트워크 감시기를 사용하여 네트워크 연결 모니터링
+-  Azure Network Watcher를 사용하여 네트워크 연결 모니터링
 
 
 ### 연습 1: Azure Network Watcher 기반 모니터링을 위한 인프라 준비
@@ -203,11 +203,14 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. **az1010301b-vnet1** 가상 네트워크 블레이드에서 **az1010301b-vnet1 - 서비스 엔드포인트** 블레이드를 표시합니다.
 
-1. **az1010301b-vnet1 - 서비스 엔드포인트** 블레이드에서 다음 설정으로 서비스 엔드포인트를 추가합니다:
+1. **az1010301b-vnet1 - 서비스 엔드포인트** 블레이드에서 다음 설정으로 서비스 엔드포인트 2개를 추가합니다:
+    - **첫번째**
 
     - 서비스: **Microsoft.Storage**
 
     - 서브넷: **subnet0**
+
+    - **두번째**
 
     - 서비스: **Microsoft.Sql**
 
@@ -215,13 +218,13 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. Azure 포털에서 **az1010301b-RG** 리소스그룹 블레이드로 이동합니다.
 
-1. **az1010301b-RG** 리소스 그룹 블레이드에서 리소스 그룹에 포함된 저장소 계정의 블레이드로 이동합니다. 
+1. **az1010301b-RG** 리소스 그룹 블레이드에서 리소스 그룹에 포함된 저장소 계정 **az1010301bXXXXXXX**의 블레이드로 이동합니다. 
 
 1. 저장소 계정 블레이드에서 **방화벽 및 가상 네트워크** 블레이드로 이동합니다.
 
 1. 저장소 계정의 **방화벽 및 가상 네트워크** 블레이드에서 다음 설정을 구성합니다:
 
-    - 다음 에서 액세스 허용: **선택한 네트워크**
+    - 다음 에서 액세스 허용: **선택한 네트워크**을 선택하고 **+기존 가상 네트워크 추가** 로 추가한다.
 
     - 가상 네트워크: 
 
@@ -240,6 +243,8 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
         - 모든 네트워크에서 저장소 로깅에 대한 읽기 액세스 허용: **비활성화**
 
         - 모든 네트워크에서 저장소 메트릭에 대한 읽기 액세스 허용: **비활성화**
+        
+    - 상단 메뉴에서 **저장**으로 저장.
 
 1. Azure 포털에서 **az1010301b-RG** 리소스그룹 블레이드로 이동합니다.
 
@@ -247,11 +252,13 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. **az1010301b-db1** Azure SQL Database 블레이드에서 서버의 **방화벽 설정** 블레이드로 이동합니다.
 
-1. Azure SQLDatabase 서버의 **방화벽 설정** 블레이드에서 다음 설정을 구성합니다:
+1. Azure SQLDatabase 서버의 **서버 방화벽 설정** 블레이드에서 다음 설정을 구성합니다:
 
-    - Azure 서비스에 대한 액세스 허용: **켜기**
+    - Azure 서비스 및 리소스가 이 서버에 액세스할 수 있도록 허용: **설정**
 
     - 구성된 방화벽 규칙이 없습니다. 
+    
+    - **+ 기존 가상 네트워크 추가** 선택
 
     - 가상 네트워크:
 
@@ -262,7 +269,11 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
         - 가상 네트워크: **az1010301b-vnet1**
 
         - 서브넷 이름: **subnet0/ 10.203.0.0/24**
+        
+        - **확인**
 
+    - 상단 메뉴의 **저장**버튼으로 저장한다.
+    
 > **결과**: 이 연습을 완료한 후 Azure Resource Manager 템플릿을 사용하여 Azure VM, Azure Storage 계정 및 Azure SQL Database 인스턴스를 배포하고 Azure Network Watcher 서비스를 사용하도록 설정하고 Azure virtual 간에 설정된 전역 피어링을 설정했습니다. Azure Storage 계정 및 Azure SQL Database 인스턴스에 대한 설정된 서비스 엔드포인트를 제공합니다.
 
 
@@ -285,7 +296,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. **Network Watcher - 연결 문제해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
 
-    - 출처: 
+    - 소스: 
 
         - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -299,7 +310,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
         - URI, FQDN 또는 IPv4: **10.203.16.4**
 
-      > **참고**: **10.203.16.4는** 다른 Azure 지역에 배포한 두 번째 Azure VM az1010301b-vm1의 개인 IP 주소입니다
+      > **참고**: **10.203.16.4는** 다른 Azure 지역에 배포한 두 번째 Azure VM az1010302b-vm2의 개인 IP 주소입니다
 
     - 프로브 설정:
 
@@ -310,6 +321,8 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
     - 고급 설정:
 
         - 원본 포트: 비어 있음
+        
+    - **선택**
 
 1. 연결 검사 결과가 반환될 때까지 기다렸다가 상태가 **연결 가능** 상태인지 확인합니다. 네트워크 경로를 검토하고 VM 사이에 중간 홉이 없는 연결이 직접적이라는 점에 유의하십시오.
 
@@ -330,7 +343,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. 결과 문자열을 기록하고 **Network Watcher - 연결 문제 해결** 블레이드에서 다음설정으로 검사를 시작합니다:
 
-    - 출처: 
+    - 소스: 
 
         - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -358,7 +371,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 이전 연습에서 만든 서비스 엔드포인트를 통해 이루어집니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 사용합니다.
 
-1. **Network Watcher - 연결 문제 해결** 블레이드에서 **Network Watcher로 이동 - 다음 홉** 블레이드및 다음 홉을 다음 설정으로 테스트합니다:
+1. **Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -372,7 +385,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     - 대상 IP 주소: 이 작업의 앞에서 확인한 저장소 계정의 Blob 서비스 엔드포인트의 IP 주소
 
-1. 결과가 다음 홉 유형을 **가상 네트워크 서비스 엔드포인트** 식별하는지 확인합니다.
+1. 결과가 다음 홉 을 **VirtualNetworkServiceEndpoint**로 식별하는지 확인합니다.
 
 1. **Network Watcher - 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
 
@@ -404,7 +417,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 성공하지만 인터넷을 통해 설정됩니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 다시 사용합니다.
 
-1. **Network Watcher - 연결 문제 해결** 블레이드에서 **Network Watcher로 이동 - 다음 홉** 블레이드및 다음 홉을 다음 설정으로 테스트합니다:
+1. **Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -418,7 +431,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     - 대상 IP 주소: 이 작업의 앞에서 확인한 저장소 계정의 Blob 서비스 엔드포인트의 IP 주소
 
-1. 결과가 다음 홉 유형을 **인터넷**으로 식별하는지 확인합니다.
+1. 결과가 다음 홉 형식을 **Internet**으로 식별하는지 확인합니다.
 
 
 #### 작업 3: Network Watcher를 사용하여 Azure SQL 데이터베이스에 대한 네트워크 연결 테스트
@@ -461,7 +474,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 이전 연습에서 만든 서비스 엔드포인트를 통해 이루어집니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 사용합니다.
 
-1. **Network Watcher - 연결 문제 해결** 블레이드에서 **Network Watcher로 이동 - 다음 홉** 블레이드및 다음 홉을 다음 설정으로 테스트합니다:
+1.**Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -475,7 +488,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     - 대상 IP 주소: 이 작업의 앞에서 확인한 Azure SQL Database 서버의 IP 주소입니다.
 
-1. 결과가 다음 홉 유형을 **가상 네트워크 서비스 엔드포인트** 식별하는지 확인합니다.
+1. 결과가 다음 홉 형식을 **VirtualNetworkServiceEndpoint** 식별하는지 확인합니다.
 
 1. **Network Watcher - 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
 
@@ -507,7 +520,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 성공하지만 인터넷을 통해 설정됩니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 다시 사용합니다.
 
-1. **Network Watcher - 연결 문제 해결** 블레이드에서 **Network Watcher로 이동 - 다음 홉** 블레이드및 다음 홉을 다음 설정으로 테스트합니다:
+1. **Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -521,7 +534,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     - 대상 IP 주소: 이 작업의 앞에서 확인한 Azure SQL Database 서버의 IP 주소입니다
 
-1. 결과가 다음 홉 유형을 **인터넷** 으로 식별하는지 확인합니다.
+1. 결과가 다음 홉 형식을 **Internet** 으로 식별하는지 확인합니다.
 
 
 > **결과**: 이 연습을 완료한 후 Azure Network Watcher를 사용하여 가상 네트워크 피어링, Azure Storage에 대한 네트워크 연결 및 Azure SQL Database에 대한 네트워크 연결을 통해 Azure VM에 대한 네트워크 연결을 테스트했습니다.
