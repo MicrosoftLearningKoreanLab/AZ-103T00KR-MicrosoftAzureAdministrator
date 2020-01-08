@@ -81,7 +81,7 @@ Adatum Corporation은 Site Resovert 자격 증명를 구현하여 지역간 Azur
 
     - Image SKU: **2016-Datacenter-Server-Core-smalldisk**
 
-    - Vm Size: **Standard_DS1_v2**
+    - Vm Size: **Standard_DS2_v2**
 
    > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 
@@ -158,15 +158,15 @@ Adatum Corporation은 Site Resovert 자격 증명를 구현하여 지역간 Azur
 
     - 대상 가용성 집합: **해당 없음**
 
-    - 복제 정책: 새 복제 정책의 이름 **12-hour-retention-policy**
+    - 복제 정책: 새 복제 정책의 이름 **24-hour-retention-policy**
 
-    - 복구 지점 보존: **12 시간**
+    - 복구 지점 보존: **24 시간**
 
-    - 앱 일관된 스냅샷 빈도: **6 시간**
+    - 앱 일관된 스냅샷 빈도: **4 시간**
 
-    - 다중 VM 일관성: **아니요**
+    - 복제 그룹 : **없음**
 
-1. **설정 구성** 블레이드에서 대상 리소스 만들기를 시작하고 **복제 사용** 블레이드로 리디렉션될 때까지 기다립니다.
+1. **Setting Configure** 블레이드에서 **대상 리소스 만들기**를 시작하고 **복제 사용** 블레이드로 리디렉션될 때까지 기다립니다.
 
 1. **복제 사용** 블레이드에서복제를 사용하도록 설정합니다.
 
