@@ -225,7 +225,9 @@ Adatum Corporation은 ID 보호를 위해 Azure AD Premium 기능을 활용하�
 
 1. AdatumLab101-4b Azure AD 테넌트의 **사용자 - 모든 사용자** 블레이드를 **AdatumLab101-4b - 개요** 블레이드로 이동합니다.
 
-1. **AdatumLab101-4b - 개요** 블레이드에서 **AdatumLab101-4b - MFA** 블레이드로 이동합니다.
+1. **AdatumLab101-4b - 개요** 블레이드에서 **Multi-Factor Authentication** 블레이드로 이동합니다.
+
+    > **참고**: 먼저 Azure Active Directory 테넨트 블레이드의 네비게이터에서 **보안**을 클릭해야 할 수 있습니다.
 
 1. **Multi-Factor Authentication - 시작** 블레이드에서 **Multi-Factor Authentication - 사기 행위 경고** 블레이드로 이동하여 다음 설정을 구성합니다:
 
@@ -303,7 +305,7 @@ Adatum Corporation은 ID 보호를 위해 Azure AD Premium 기능을 활용하�
 
         - 조건:
 
-            - 사용자 위험: **중간 이상**
+            - 사용자 위험: **낮음 이상**
 
     - 컨트롤:
 
@@ -375,9 +377,9 @@ Adatum Corporation은 ID 보호를 위해 Azure AD Premium 기능을 활용하�
 
 1. 인터넷 익스플로러를 시작하고 [**http://portal.azure.com**](http://portal.azure.com) 에서 Azure 포털을 탐색하고 **AdatumLab101-4b Azure AD 테넌트**를 만드는 데 사용한 Microsoft 계정을 사용하여 로그인합니다. 
 
-1. Azure 포털에서 **Azure AD Identity Protection - 위험 검색(위험 이벤트)** 블레이드로 이동하여 **익명 IP 주소에서 로그인** 을 나타내는 항목이 있음을 확인합니다.
+1. Azure 포털에서 **Azure AD Identity Protection - 위험 검색(위험 탐지)** 블레이드로 이동하여 **익명 IP 주소에서 로그인** 을 나타내는 항목이 있음을 확인합니다.
 
-1. Azure **Azure AD Identity Protection - 위험 검색(위험 이벤트)** 블레이드에서 **Azure AD Identity Protection - 위험한 사용자(위험 플래그가 지정된 사용자)**로 이동 및 **aaduser2**를 나타내는 항목을 적어둡니다.
+1. Azure **Azure AD Identity Protection - 위험 검색(위험 탐지)** 블레이드에서 **Azure AD Identity Protection - 위험한 사용자(위험 플래그가 지정된 사용자)**로 이동 및 **aaduser2**를 나타내는 항목을 적어둡니다.
 
 > **결과**: 이 연습을 완료한 후 위험 이벤트를 시뮬레이션하여 Azure AD ID 보호, 구성된 사용자 위험 정책 및 로그인 위험 정책을 활성화하고 유효성을 검사한 Azure AD ID 보호 구성을 활성화했습니다.
 

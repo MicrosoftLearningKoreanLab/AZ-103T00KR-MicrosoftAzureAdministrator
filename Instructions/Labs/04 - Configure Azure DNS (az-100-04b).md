@@ -185,7 +185,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 1. Cloud Shell 창에서 다음을 실행하여 첫 번째 가상 네트워크와 두 번째 가상 네트워크에서 레코드 조회를 지원하는 사설 DNS 영역을 만듭니다.
 
    ```pwsh
-   New-AzDnsZone -Name adatum.local -ResourceGroupName $rg2.ResourceGroupName -ZoneType Private -RegistrationVirtualNetworkId @($vnet1.Id) -ResolutionVirtualNetworkId @($vnet2.Id)
+   New-AzDnsZone -Name adatum.corp -ResourceGroupName $rg2.ResourceGroupName -ZoneType Private -RegistrationVirtualNetworkId @($vnet1.Id) -ResolutionVirtualNetworkId @($vnet2.Id)
    ```
 
    > **참고**: Azure DNS 영역에 할당하는 가상 네트워크에는 리소스가 포함될 수 없습니다.
@@ -233,7 +233,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 1. **az1000402b-vm2**의 원격 데스크톱 세션 내에서 명령 프롬프트 창을 시작하고 다음을 실행합니다. 
 
    ```
-   nslookup az1000402b-vm1.adatum.local
+   nslookup az1000402b-vm1.adatum.corp
    ```
 
 1. 이름이 성공적으로 조회되는지 확인합니다.
@@ -241,13 +241,13 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 1. 랩 가상 컴퓨터로 다시 전환하고 Azure 포털 창의 Cloud Shell 창에서 다음을 실행하여 사설 DNS 영역에서 추가 DNS 레코드를 만듭니다.
 
    ```pwsh
-   New-AzDnsRecordSet -ResourceGroupName $rg2.ResourceGroupName -Name www -RecordType A -ZoneName adatum.local -Ttl 3600 -DnsRecords (New-AzDnsRecordConfig -IPv4Address "10.104.0.4")
+   New-AzDnsRecordSet -ResourceGroupName $rg2.ResourceGroupName -Name www -RecordType A -ZoneName adatum.corp -Ttl 3600 -DnsRecords (New-AzDnsRecordConfig -IPv4Address "10.104.0.4")
    ```
 
 1. **az1000402b-vm2**의 원격 데스크톱 세션으로 다시 전환하고 명령 프롬프트 창에서 다음을 실행합니다. 
 
    ```
-   nslookup www.adatum.local
+   nslookup www.adatum.corp
    ```
 
 1. 이름이 성공적으로 조회되는지 확인합니다.
