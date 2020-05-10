@@ -71,7 +71,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
     - 이미지: **[smalldisk] Windows Server 2016 Datacenter**
 
-    - 크기: **표준 DS2 V2**
+    - 크기: **표준 D2s_v3**
 
     - 사용자 이름: **Student**
 
@@ -142,7 +142,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
    ```pwsh
    $vmName = 'az1000301-vm1'
-   $vmSize = 'Standard_DS2_v2'
+   $vmSize = 'Standard_D2s_v3'
    ```
 
    > **참고**: 이렇게 하면 Azure VM 이름과 크기를 지정하는 변수의 값이 설정됩니다.
@@ -278,7 +278,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
     - Image SKU: **16.04.0-LTS**
 
-    - Vm Size: **Standard_DS2_v2**
+    - Vm Size: **Standard_D2s_v3**
 
    > **참고**: 다음 작업을 진행하기 전에 배포가 완료될 때까지 기다립니다. 약 5 분이 소요됩니다.
 
@@ -462,7 +462,7 @@ Adatum Corporation은 Azure 가상 머신(VM) 및 Azure VM 확장 집합을 사�
 
     - 인스턴스 수: **1**
 
-    - 인스턴스 크기: **DS2 v2**
+    - 인스턴스 크기: **D2s_v3**
 
     - 낮은 우선 순위로 배포: **아니요**
 

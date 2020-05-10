@@ -83,7 +83,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
     - 지역: 랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 지역
 
-    - Vm Size: **Standard_DS2_v2**
+    - Vm Size: **Standard_D2s_v3**
 
     - Vm Name: **az1000201-vm1**
 

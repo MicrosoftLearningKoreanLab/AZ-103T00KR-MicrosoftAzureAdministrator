@@ -80,7 +80,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     - 위치: 랩 위치에 가장 가까운 Azure 지역의 이름및 Azure VM 및 Azure SQL Database를 프로비전할 수 있는 위치
 
-    - Vm Size: **Standard_DS2_v2**
+    - Vm Size: **Standard_D2s_v3**
 
     - Vm Name: **az1010301b-vm1**
 
@@ -142,7 +142,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     - 위치: Azure VM을 프로비전할 수 있지만 이전 배포 중에 선택한 것과 **다른** Azure 영역의 이름입니다. 
 
-    - Vm Size: **Standard_DS2_v2**
+    - Vm Size: **Standard_D2s_v3**
 
     - Vm Name: **az1010302b-vm2**
 

@@ -145,11 +145,11 @@ Adatum Corporation은 Azure 역할 기반 액세스 제어 및 Azure 정책을 �
 
     - 할당 이름: **허용된 가상 머신 크기**
 
-    - 설명: **선택된 가상 머신 SKU 허용(표준_DS1_v2)**
+    - 설명: **선택된 가상 머신 SKU 허용(표준_D2s_v3)**
 
     - 할당된 사람: 항목을 기본값으로 설정
 	
-    - 허용된 SKU: **Standard_DS1_v2**
+    - 허용된 SKU: **Standard_D2s_v3**
 
     - 관리되는 ID 만들기: 항목을 비워 둡니다
 
@@ -252,7 +252,7 @@ Adatum Corporation은 Azure 역할 기반 액세스 제어 및 Azure 정책을 �
 
 1. **템플릿 편집** 블레이드에서 **변수** 섹션으로 돌아가 **vmSize** 항목을 찾습니다.
 
-1. **Standard_B2s**값을 **Standard_DS1_v2** 로 바꾸고 변경 값을 저장합니다.
+1. **Standard_B2s**값을 **Standard_D2s_v3** 로 바꾸고 변경 값을 저장합니다.
 
 1. 배포를 다시 시작합니다. 이 시간 유효성 검사는 성공했습니다. 
 

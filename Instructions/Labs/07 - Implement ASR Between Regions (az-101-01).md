@@ -81,7 +81,11 @@ Adatum Corporation은 Site Resovert 자격 증명를 구현하여 지역간 Azur
 
     - Image SKU: **2016-Datacenter-Server-Core-smalldisk**
 
+<<<<<<< HEAD
     - Vm Size: **Standard_DS2_v2**
+=======
+    - Vm Size: **Standard_D2s_v3**
+>>>>>>> Change D2s_v3 (VM size)
 
    > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 

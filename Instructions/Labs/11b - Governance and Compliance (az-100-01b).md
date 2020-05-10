@@ -78,7 +78,7 @@ Adatum Corporation은 Azure 구독에서 리소스 태그 지정을 적용하기
 
     - 위치: 랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 위치
 
-    - Vm Size: **Standard_DS1_v2**
+    - Vm Size: **Standard_D2s_v3**
 
     - Vm Name: **az1000101b-vm1**
 
@@ -242,7 +242,7 @@ Adatum Corporation은 Azure 구독에서 리소스 태그 지정을 적용하기
 
     - 위치: 이 연습의 첫 번째 작업에서 선택한 Azure 지역의 이름입니다.
 
-    - Vm Size: **Standard_DS1_v2**
+    - Vm Size: **Standard_D2s_v3**
 
     - Vm Name: **az1000102b-vm1**
 
@@ -334,7 +334,7 @@ Adatum Corporation은 Azure 구독에서 리소스 태그 지정을 적용하기
 
     - 위치: 이 연습의 첫 번째 작업에서 선택한 Azure 지역의 이름입니다.
 
-    - Vm Size: **Standard_DS1_v2**
+    - Vm Size: **Standard_D2s_v3**
 
     - Vm Name: **az1000102b-vm1**
 
