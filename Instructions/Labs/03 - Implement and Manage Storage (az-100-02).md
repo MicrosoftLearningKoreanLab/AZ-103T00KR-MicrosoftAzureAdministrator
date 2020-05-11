@@ -221,7 +221,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
    ```pwsh
    $containerName = 'az1000202-container'
    $storageAccount1Name = (Get-AzStorageAccount -ResourceGroupName 'az1000202-RG')[0].StorageAccountName
-   $storageAccount2Name = (Get-AzStorageAccount -ResourceGroupName 'az1000203-RG')[0].StorageAccountName
+   $storageAccount2Name = (Get-AzStorageAccount -ResourceGroupName 'az1000203-RG')[1].StorageAccountName
    $storageAccount1Key1 = (Get-AzStorageAccountKey -ResourceGroupName 'az1000202-RG' -StorageAccountName $storageAccount1Name)[0].Value
    $storageAccount2Key1 = (Get-AzStorageAccountKey -ResourceGroupName 'az1000203-RG' -StorageAccountName $storageAccount2Name)[0].Value
    $context1 = New-AzStorageContext -StorageAccountName $storageAccount1Name -StorageAccountKey $storageAccount1Key1
