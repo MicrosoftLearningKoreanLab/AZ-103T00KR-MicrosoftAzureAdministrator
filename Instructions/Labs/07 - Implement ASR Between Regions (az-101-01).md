@@ -67,7 +67,7 @@ Adatum Corporation은 Site Resovert 자격 증명를 구현하여 지역간 Azur
 
     - 리소스 그룹: **az1010101-RG** 이름으로 새로 만들기
 
-    - 지역: 랩 지역에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 지역
+    - 지역: **(Asia Pacific) 한국 중부** (랩 지역에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 지역)
 
     - Vm Name: **az1010101-vm**
 
@@ -81,11 +81,7 @@ Adatum Corporation은 Site Resovert 자격 증명를 구현하여 지역간 Azur
 
     - Image SKU: **2016-Datacenter-Server-Core-smalldisk**
 
-<<<<<<< HEAD
-    - Vm Size: **Standard_DS2_v2**
-=======
     - Vm Size: **Standard_D2s_v3**
->>>>>>> Change D2s_v3 (VM size)
 
    > **참고**: Azure VM을 프로비전할 수 있는 Azure 지역을 식별하려면 [**https://azure.microsoft.com/ko-kr/regions/offers/**](https://azure.microsoft.com/ko-kr/regions/offers/)참고하십시오.
 
@@ -108,7 +104,7 @@ Adatum Corporation은 Site Resovert 자격 증명를 구현하여 지역간 Azur
 
     - 자격 증명 모음 이름: **vaultaz1010102**
 
-    - 지역: 이 연습의 이전 작업에서 Azure VM을 배포한 지역과 다른 구독에서 사용할 수 있는 Azure 영역의 이름입니다
+    - 지역: **(Asia Pacific) 한국 남부** (이 연습의 이전 작업에서 Azure VM을 배포한 지역과 다른 구독에서 사용할 수 있는 Azure 영역의 이름 입니다.)
 
     > **참고**: 배포가 완료될 때 까지 기다립니다. 약 1분 정소 소요됩니다.
 
@@ -140,17 +136,17 @@ Adatum Corporation은 Site Resovert 자격 증명를 구현하여 지역간 Azur
 
     - 소스: **Azure**
 
-    - 원본 위치: 이 랩의 이전 연습에서 Azure VM을 배포한 동일한 Azure 지역
+    - 원본 위치: **(Asia Pacific) 한국 중부** (이 랩의 이전 연습에서 Azure VM을 배포한 동일한 Azure 지역)
 
     - Azure 가상 시스템 배포 모델: **Resource Manager**
 
-    - 원본 구독 :이 실습의 이전 실습에서 사용한 것과 동일한 Azure 구독
+    - 원본 구독: 이 실습의 이전 실습에서 사용한 것과 동일한 Azure 구독
 
     - 원본 리소스 그룹: **az1010101-RG**
 
     - 가상 머신: **az1010101-vm**
 
-    - 대상 위치: 구독에서 사용할 수 있고 이전 작업에서 Azure VM을 배포한 지역과 다른 Azure 영역의 이름입니다. 가능하면 Site Resovert 자격 증명 자격 증명 모음을 배포한 것과 동일한 Azure 지역을 사용합니다.
+    - 대상 위치: **(Asia Pacific) 한국 남부** (구독에서 사용할 수 있고 이전 작업에서 Azure VM을 배포한 지역과 다른 Azure 영역의 이름입니다. 가능하면 Site Resovert 자격 증명 자격 증명 모음을 배포한 것과 동일한 Azure 지역을 사용합니다.)
 
     - 대상 리소스 그룹: **(신규) az1010101-RG-asr**
 
@@ -162,11 +158,11 @@ Adatum Corporation은 Site Resovert 자격 증명를 구현하여 지역간 Azur
 
     - 대상 가용성 집합: **해당 없음**
 
-    - 복제 정책: 새 복제 정책의 이름 **24-hour-retention-policy**
+    - 복제 정책: 새 복제 정책의 이름 **12-hour-retention-policy**
 
-    - 복구 지점 보존: **24 시간**
+    - 복구 지점 보존: **12 시간**
 
-    - 앱 일관된 스냅샷 빈도: **4 시간**
+    - 앱 일관된 스냅샷 빈도: **6 시간**
 
     - 복제 그룹 : **없음**
 
@@ -177,13 +173,13 @@ Adatum Corporation은 Site Resovert 자격 증명를 구현하여 지역간 Azur
 
 #### 작업 2: Azure VM 복제 설정 검토
 
-1. Azure 포털에서 **vaultaz1010102 - 복제된 항목** 블레이드로이동합니다.
+1. Azure 포털에서 **vaultaz1010102 | 복제된 항목** 블레이드로이동합니다.
 
-1. **vaultaz1010102 - 복제된 항목** 블레이드에서 Azure VM을 나타내는 **az1010101-vm** 항목이 있는지 확인하고 **복제 상태**가 **정상**인지 확인하고 **상태**가 **복제를 사용하도록 설정**하는지 확인합니다.
+1. **vaultaz1010102 | 복제된 항목** 블레이드에서 Azure VM을 나타내는 **az1010101-vm** 항목이 있는지 확인하고 **복제 상태**가 **정상**인지 확인하고 **상태**가 **복제를 사용하도록 설정**하는지 확인합니다.
 
-    > **참고**: **vaultaz1010102 - 복제된 항목** 블레이드에 **az1010101-vm**이 나타날 때까지 몇 분 정도 기다려야 할 수 있습니다.
+    > **참고**: **vaultaz1010102 | 복제된 항목** 블레이드에 **az1010101-vm**이 나타날 때까지 몇 분 정도 기다려야 할 수 있습니다.
 
-1. **vaultaz1010102 - 복제된 항목** 블레이드에서 **az1010101-vm** Azure VM의 복제된 항목 블레이드를 표시합니다.
+1. **vaultaz1010102 | 복제된 항목** 블레이드에서 **az1010101-vm** Azure VM의 복제된 항목 블레이드를 표시합니다.
 
 1. **az1010101-vm** 복제된 항목 블레이드에서 상태 및 **상태**, **장애 조치(Failover) 준비**, **최신 복구 지점** 및 **인프라 보기** 섹션을 검토합니다. **장애 조치(Failover)**와 **테스트 장애 조치(failover)** 도구 모음 아이콘을 참고합니다.
 

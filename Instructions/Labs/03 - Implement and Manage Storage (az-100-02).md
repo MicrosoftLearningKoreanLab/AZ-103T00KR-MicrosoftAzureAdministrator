@@ -49,11 +49,11 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 1. 구독 속성을 표시하는 블레이드에서 **리소스 공급자** 블레이드로 이동합니다.
 
 1. **리소스 공급자** 블레이드에서 다음 리소스 공급자를 등록합니다(이러한 리소스 공급자가 아직 등록되지 않은 경우).
-- Microsoft.Network
-- Microsoft.Compute
-- Microsoft.Storage
+   - Microsoft.Network
+   - Microsoft.Compute
+   - Microsoft.Storage
 
-**참고:** 이 단계에서는 Azure Resource Manager Microsoft.Network, Microsoft.Compute 및 Microsoft.Storage 리소스 공급자를 등록합니다. Azure Resource Manager 템플릿을 사용하여 이러한 리소스 공급자가 관리하는 리소스를 배포하는 데 필요한 일회성 작업(구독당)입니다(이러한 리소스 공급자가 아직 등록되지 않은 경우).
+   > **참고:** 이 단계에서는 Azure Resource Manager Microsoft.Network, Microsoft.Compute 및 Microsoft.Storage 리소스 공급자를 등록합니다. Azure Resource Manager 템플릿을 사용하여 이러한 리소스 공급자가 관리하는 리소스를 배포하는 데 필요한 일회성 작업(구독당)입니다(이러한 리소스 공급자가 아직 등록되지 않은 경우).
 
 1. Azure 포털에서 **리소스 만들기** 블레이드로 이동합니다.
 
@@ -129,7 +129,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
     - 리소스 그룹: **az1000202-RG** 이름으로 새로 만들기
 
-    - 스토리지 계정 이름: 소문자와 숫자로 구성된 3~24자 사이의 유효하고 고유한 이름
+    - 스토리지 계정 이름: **az1000202stxxx** (xxx는 유니크 해야 함)
 
     - 지역: 이전 작업에서 선택한 Azure 지역의 이름
 
@@ -157,7 +157,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
     - 리소스 그룹: **az1000203-RG** 이름으로 새로 만들기
 
-    - 스토리지 계정 이름: 소문자와 숫자로 구성된 3~24자 사이의 유효하고 고유한 이름
+    - 스토리지 계정 이름: **az1000203stxxx** (xxx는 유니크 해야 함)
 
     - 지역: 첫 번째 스토리지 계정을 만들 때 선택한 것과 다른 Azure 영역의 이름
 
@@ -207,7 +207,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
 1. 첫 번째 스토리지 계정의 **컨테이너** 블레이드에서 **공용 액세스 수준** 이 **프라이빗(익명 액세스 없음)** 으로 설정된 **az1000202-container** 라는 새 컨테이너를 만듭니다.
 
-1. **az1000202-컨테이너** 블레이드에서 **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.json** 및 **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.parameters.json** 을 컨테이너에 업로드합니다.
+1. **az1000202-container** 블레이드에서 **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.json** 및 **Labfiles\\Module_03\\Implement_and_Manage_Storage\\az-100-02_azuredeploy.parameters.json** 을 컨테이너에 업로드합니다.
 
 
 #### 작업 4: Azure Storage 계정 간에 컨테이너 및 Blob 복사
@@ -218,10 +218,10 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
 1. Cloud Shell 창에서 다음 명령을 실행합니다.
 
-   ```pwsh
+   ```powershell
    $containerName = 'az1000202-container'
    $storageAccount1Name = (Get-AzStorageAccount -ResourceGroupName 'az1000202-RG')[0].StorageAccountName
-   $storageAccount2Name = (Get-AzStorageAccount -ResourceGroupName 'az1000203-RG')[1].StorageAccountName
+   $storageAccount2Name = (Get-AzStorageAccount -ResourceGroupName 'az1000203-RG')[0].StorageAccountName
    $storageAccount1Key1 = (Get-AzStorageAccountKey -ResourceGroupName 'az1000202-RG' -StorageAccountName $storageAccount1Name)[0].Value
    $storageAccount2Key1 = (Get-AzStorageAccountKey -ResourceGroupName 'az1000203-RG' -StorageAccountName $storageAccount2Name)[0].Value
    $context1 = New-AzStorageContext -StorageAccountName $storageAccount1Name -StorageAccountKey $storageAccount1Key1
@@ -232,7 +232,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
 1. Cloud Shell 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
+   ```powershell
    New-AzStorageContainer -Name $containerName -Context $context2 -Permission Off
    ```
 
@@ -240,7 +240,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
 
 1. Cloud Shell 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
+   ```powershell
    $containerToken1 = New-AzStorageContainerSASToken -Context $context1 -ExpiryTime(get-date).AddHours(24) -FullUri -Name $containerName -Permission rwdl
    $containerToken2 = New-AzStorageContainerSASToken -Context $context2 -ExpiryTime(get-date).AddHours(24) -FullUri -Name $containerName -Permission rwdl
    ```
@@ -249,7 +249,7 @@ Adatum Corporation은 데이터를 호스팅하기 위해 Azure 스토리지를 
    
 1. Cloud Shell 창에서 다음 명령을 실행합니다:
 
-   ```pwsh
+   ```powershell
    azcopy cp $containerToken1 $containerToken2 --recursive=true
    ```
 

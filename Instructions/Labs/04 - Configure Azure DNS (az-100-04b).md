@@ -62,7 +62,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
     - 이름: **.com** 네임스페이스의 고유하고 유효한 DNS 도메인 이름
 
-    - 리소스 그룹 위치: 랩 위치에 가장 가까운 Azure 영역의 이름 및 Azure DNS 영역을 프로비전할 수 있는 지역
+    - 리소스 그룹 위치: **(Asia Pacific) 한국 중부** (랩 위치에 가장 가까운 Azure 영역의 이름 및 Azure DNS 영역을 프로비전할 수 있는 지역)
 
 
 #### 작업 2: 공용 DNS 영역에서 DNS 레코드 만들기
@@ -73,7 +73,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. Cloud Shell 창에서 랩 컴퓨터의 공용 IP 주소를 식별하려면 다음을 실행합니다.
 
-   ```pwsh
+   ```powershell
    Invoke-RestMethod http://ipinfo.io/json | Select-Object -ExpandProperty IP
    ```
 
@@ -81,7 +81,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. Cloud Shell 창에서 공용 IP 주소 리소스를 만들려면 다음을 실행합니다.
 
-   ```pwsh
+   ```powershell
    $rg = Get-AzResourceGroup -Name az1000401b-RG
 
    New-AzPublicIpAddress -ResourceGroupName $rg.ResourceGroupName -Sku Basic -AllocationMethod Static -Name az1000401b-pip -Location $rg.Location
@@ -132,7 +132,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. 랩 가상 컴퓨터에서 명령 프롬프트를 시작하고 다음을 실행하여 새로 만든 두 DNS 레코드의 이름 확인을 확인합니다(여기서 &lt;custom_DNS_domain&gt; 이 연습의 첫 번째 작업에서 만든 사용자 지정 DNS 도메인을 나타내고 &lt;name_server&gt;는 이전 단계에서 식별한 DNS 이름 서버의 이름을 나타냅니다. 
 
-   ```
+   ```cmd
    nslookup mylabvmpip.<custom_DNS_domain> <name_server>
    
    nslookup myazurepip.<custom_DNS_domain> <name_server>
@@ -162,7 +162,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. Cloud Shell 창에서 리소스 그룹을 만들려면 다음을 실행합니다.
 
-   ```pwsh
+   ```powershell
    $rg1 = Get-AzResourceGroup -Name 'az1000401b-RG'
 
    $rg2 = New-AzResourceGroup -Name 'az1000402b-RG' -Location $rg1.Location
@@ -170,7 +170,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. Cloud Shell 창에서 두 개의 Azure 가상 네트워크를 만들려면 다음을 실행합니다:
 
-   ```pwsh
+   ```powershell
    $subnet1 = New-AzVirtualNetworkSubnetConfig -Name subnet1 -AddressPrefix '10.104.0.0/24'
 
    $vnet1 = New-AzVirtualNetwork -ResourceGroupName $rg2.ResourceGroupName -Location $rg2.Location -Name az1000402b-vnet1 -AddressPrefix 10.104.0.0/16 -Subnet $subnet1
@@ -184,15 +184,19 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. Cloud Shell 창에서 다음을 실행하여 첫 번째 가상 네트워크와 두 번째 가상 네트워크에서 레코드 조회를 지원하는 사설 DNS 영역을 만듭니다.
 
-   ```pwsh
-   New-AzDnsZone -Name adatum.corp -ResourceGroupName $rg2.ResourceGroupName -ZoneType Private -RegistrationVirtualNetworkId @($vnet1.Id) -ResolutionVirtualNetworkId @($vnet2.Id)
+   ```powershell
+   $zone = New-AzPrivateDnsZone -Name adatum.corp -ResourceGroupName $rg2.ResourceGroupName
+
+   $vnet1link = New-AzPrivateDnsVirtualNetworkLink -ZoneName $zone.Name -ResourceGroupName $rg2.ResourceGroupName -Name "vnet1Link" -VirtualNetworkId $vnet1.id -EnableRegistration
+
+   $vnet2link = New-AzPrivateDnsVirtualNetworkLink -ZoneName $zone.Name -ResourceGroupName $rg2.ResourceGroupName -Name "vnet2Link" -VirtualNetworkId $vnet2.id
    ```
 
    > **참고**: Azure DNS 영역에 할당하는 가상 네트워크에는 리소스가 포함될 수 없습니다.
 
 1. Cloud Shell 창에서 다음을 실행하여 사설 DNS 영역이 성공적으로 만들어졌는지 확인합니다.
 
-   ```
+   ```powershell
    Get-AzDnsZone -ResourceGroupName $rg2.ResourceGroupName
    ```
 
@@ -203,7 +207,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. Cloud Shell 창에서 Azure VM을 첫 번째 가상 네트워크에 배포하려면 다음을 실행합니다.
 
-   ```pwsh
+   ```powershell
    cd $home
 
    New-AzResourceGroupDeployment -ResourceGroupName $rg2.ResourceGroupName -TemplateFile "./az-100-04b_01_azuredeploy.json" -TemplateParameterFile "./az-100-04_azuredeploy.parameters.json" -AsJob
@@ -211,7 +215,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. Cloud Shell 창에서 Azure VM을 두 번째 가상 네트워크에 배포하려면 다음을 실행합니다.
 
-   ```pwsh
+   ```powershell
    New-AzResourceGroupDeployment -ResourceGroupName $rg2.ResourceGroupName -TemplateFile "./az-100-04b_02_azuredeploy.json" -TemplateParameterFile "./az-100-04_azuredeploy.parameters.json" -AsJob
    ```
 
@@ -232,7 +236,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. **az1000402b-vm2**의 원격 데스크톱 세션 내에서 명령 프롬프트 창을 시작하고 다음을 실행합니다. 
 
-   ```
+   ```cmd
    nslookup az1000402b-vm1.adatum.corp
    ```
 
@@ -240,13 +244,13 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 
 1. 랩 가상 컴퓨터로 다시 전환하고 Azure 포털 창의 Cloud Shell 창에서 다음을 실행하여 사설 DNS 영역에서 추가 DNS 레코드를 만듭니다.
 
-   ```pwsh
+   ```powershell
    New-AzDnsRecordSet -ResourceGroupName $rg2.ResourceGroupName -Name www -RecordType A -ZoneName adatum.corp -Ttl 3600 -DnsRecords (New-AzDnsRecordConfig -IPv4Address "10.104.0.4")
    ```
 
 1. **az1000402b-vm2**의 원격 데스크톱 세션으로 다시 전환하고 명령 프롬프트 창에서 다음을 실행합니다. 
 
-   ```
+   ```cmd
    nslookup www.adatum.corp
    ```
 

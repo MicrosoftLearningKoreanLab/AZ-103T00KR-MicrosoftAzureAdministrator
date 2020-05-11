@@ -16,6 +16,7 @@ lab:
 
 -  **Labfiles\\Module_08\\Load_Balancer_and_Traffic_Manager\\az-101-03_01_2_azuredeploy.parameters.json**
 
+
 ### 시나리오
   
 Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크 주소 변환) 기능을 활용하여 자회사 Contoso Corporation의 관리를 가용성 이면에 맞게 구현하고자 합니다. 
@@ -71,7 +72,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
     - 리소스 그룹: **az1010301-RG** 이름으로 새로 만들기
 
-    - 지역: 랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 지역
+    - 지역: **(Asia Pacific) 한국 중부** (랩 위치에 가장 가까운 Azure 지역의 이름 및 Azure VM을 프로비전할 수 있는 지역)
 
     - Admin Username: **Student**
 
@@ -140,7 +141,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
     - 리소스 그룹: 새 리소스 그룹 **az1010302-RG** 의 이름
 
-    - 지역 : 이전 작업에서 선택한 것과 다른 Azure 영역의 이름과 Azure VM을 준비 할 수있는 지역
+    - 지역: **(Asia Pacific) 한국 남부** (이전 작업에서 선택한 것과 다른 Azure 영역의 이름과 Azure VM을 준비 할 수 있는 지역)
 
     - Admin Username: **Student**
 
@@ -214,7 +215,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
     - 이름: **az1010301w-lb**
 
-    - 지역: 이전 연습의 첫 번째 작업에 Azure VM을 배포한 Azure 영역의 이름입니다
+    - 지역: **(Asia Pacific) 한국 중부** (이전 연습의 첫 번째 작업에 Azure VM을 배포한 Azure 영역의 이름입니다)
 
     - 형식: **공개**
 
@@ -232,7 +233,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
 1. **az1010301w-lb** 블레이드에서 **az1010301w-lb - 백 엔드 풀** 블레이드로 이동합니다.
 
-1. **az1010301w-lb - 백 엔드 풀** 블레이드에서 다음 설정으로 백 엔드 풀을 추가합니다:
+1. **az1010301w-lb | 백 엔드 풀** 블레이드에서 다음 설정으로 백 엔드 풀을 추가합니다:
 
     - 이름: **az1010301w-bepool**
 
@@ -256,9 +257,9 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
    > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. **az1010301w-lb - 백 엔드 풀** 블레이드에서 **az1010301w-lb - 상태 프로브** 블레이드로 이동합니다.
+1. **az1010301w-lb | 백 엔드 풀** 블레이드에서 **az1010301w-lb | 상태 프로브** 블레이드로 이동합니다.
 
-1. **az1010301w-lb - 상태 프로브** 블레이드에서 다음 설정으로 상태 프로브를 추가합니다.
+1. **az1010301w-lb | 상태 프로브** 블레이드에서 다음 설정으로 상태 프로브를 추가합니다.
 
     - 이름: **az1010301w-healthprobe**
 
@@ -272,9 +273,9 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
     > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. **az1010301w-lb - 상태 프로브** 블레이드에서 **az1010301w-lb - 부하 분산 규칙** 블레이드로 이동합니다.
+1. **az1010301w-lb | 상태 프로브** 블레이드에서 **az1010301w-lb | 부하 분산 규칙** 블레이드로 이동합니다.
 
-1. **az1010301w-lb - 부하 분산 규칙** 블레이드에서 다음 설정으로 부하 분산 규칙을 추가합니다.
+1. **az1010301w-lb | 부하 분산 규칙** 블레이드에서 다음 설정으로 부하 분산 규칙을 추가합니다.
 
     - 이름: **az1010301w-lbrule01**
 
@@ -317,7 +318,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
     - 이름: **az1010302w-lb**
 
-    - 지역: 이전 연습의 첫 번째 작업에 Azure VM을 배포한 Azure 영역의 이름입니다
+    - 지역: **(Asia Pacific) 한국 남부** 이전 연습의 두 번째 작업에 Azure VM을 배포한 Azure 영역의 이름입니다
 
     - 형식: **공개**
 
@@ -333,9 +334,9 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
 1. Azure 포털에서 새로 배포 된 Azure Load Balancer 장치인 **az1010302w-lb** 의 블레이드로 이동합니다.
 
-1. **az1010302w-lb** 블레이드에서 **az1010302w-lb - 백 엔드 풀** 블레이드로 이동합니다.
+1. **az1010302w-lb** 블레이드에서 **az1010302w-lb | 백 엔드 풀** 블레이드로 이동합니다.
 
-1. **az1010302w-lb - 백 엔드 풀** 블레이드에서 다음 설정으로 백 엔드 풀을 추가합니다:
+1. **az1010302w-lb | 백 엔드 풀** 블레이드에서 다음 설정으로 백 엔드 풀을 추가합니다:
 
     - 이름: **az1010302w-bepool**
 
@@ -357,9 +358,9 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
    > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. **az1010302w-lb - 백 엔드 풀** 블레이드에서 **az1010302w-lb - 상태 프로브** 블레이드로 이동합니다.
+1. **az1010302w-lb | 백 엔드 풀** 블레이드에서 **az1010302w-lb | 상태 프로브** 블레이드로 이동합니다.
 
-1. **az1010302w-lb - 상태 프로브** 블레이드에서 다음 설정으로 상태 프로브를 추가합니다.
+1. **az1010302w-lb | 상태 프로브** 블레이드에서 다음 설정으로 상태 프로브를 추가합니다.
 
     - 이름: **az1010302w-healthprobe**
 
@@ -373,9 +374,9 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
     > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. **az1010302w-lb - 상태 프로브** 블레이드에서 **az1010302w-lb - 부하 분산 규칙** 블레이드로 이동합니다.
+1. **az1010302w-lb | 상태 프로브** 블레이드에서 **az1010302w-lb | 부하 분산 규칙** 블레이드로 이동합니다.
 
-1. **az1010302w-lb - 부하 분산 규칙** 블레이드에서 다음 설정으로 부하 분산 규칙을 추가합니다.
+1. **az1010302w-lb | 부하 분산 규칙** 블레이드에서 다음 설정으로 부하 분산 규칙을 추가합니다.
 
     - 이름: **az1010302w-lbrule01**
 
@@ -404,11 +405,11 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
 1. Azure 포털에서 Azure load balancer인 **az1010301w-lb** 의 블레이드로 이동합니다.
 
-1. **az1010301w-lb** 블레이드에서 **az1010301w-lb - 인바운드 NAT 규칙** 블레이드로 이동합니다.
+1. **az1010301w-lb** 블레이드에서 **az1010301w-lb | 인바운드 NAT 규칙** 블레이드로 이동합니다.
 
    > **참고**: NAT 기능은 상태 프로브에 의존하지 않습니다.
 
-1. **az1010301w-lb - 인바운드 NAT 규칙** 블레이드에서 다음 설정으로 첫 번째 인바운드 NAT 규칙을 추가합니다:
+1. **az1010301w-lb | 인바운드 NAT 규칙** 블레이드에서 다음 설정으로 첫 번째 인바운드 NAT 규칙을 추가합니다:
 
     - 이름: **az1010301w-vm0-RDP**
 
@@ -434,7 +435,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
     > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. **az1010301w-lb - 인바운드 NAT 규칙** 블레이드에서 다음 설정으로 두 번째 인바운드 NAT 규칙을 추가합니다:
+1. **az1010301w-lb | 인바운드 NAT 규칙** 블레이드에서 다음 설정으로 두 번째 인바운드 NAT 규칙을 추가합니다:
 
     - 이름: **az1010301w-vm1-RDP**
 
@@ -465,9 +466,9 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
 1. Azure 포털에서 Azure Load Balancer인 **az1010302w-lb** 의 블레이드로 이동합니다.
 
-1. **az1010302w-lb** 블레이드에서 **az1010302w-lb - 인 바운드 NAT 규칙** 블레이드로 이동합니다.
+1. **az1010302w-lb** 블레이드에서 **az1010302w-lb | 인바운드 NAT 규칙** 블레이드로 이동합니다.
 
-1. **az1010302w-lb - 인바운드 NAT 규칙** 블레이드에서 다음 설정으로 첫 번째 인바운드 NAT 규칙을 추가합니다:
+1. **az1010302w-lb | 인바운드 NAT 규칙** 블레이드에서 다음 설정으로 첫 번째 인바운드 NAT 규칙을 추가합니다:
 
     - 이름: **az1010302w-vm0-RDP**
 
@@ -493,7 +494,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
     > **참고**: 작업이 완료될 때까지 기다립니다. 이 작업은 1 분 미만이 소요됩니다.
 
-1. **az1010302w-lb - 인바운드 NAT 규칙** 블레이드에서 다음 설정으로 두 번째 인바운드 NAT 규칙을 추가합니다:
+1. **az1010302w-lb | 인바운드 NAT 규칙** 블레이드에서 다음 설정으로 두 번째 인바운드 NAT 규칙을 추가합니다:
 
     - 이름: **az1010302w-vm1-RDP**
 
@@ -538,7 +539,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
 1. 랩 가상 컴퓨터에서 &lt;az1010301w-lb_public_IP&amp;자리 표시자를 이전 작업에서 식별한 IP 주소로 대체한 후 다음 명령을 실행합니다:
 
-   ```
+   ```cmd
    mstsc /v:<az1010301w-lb_public_IP>:33890
    ```
 
@@ -552,7 +553,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
 1. 로그인하면 명령 프롬프트에서 다음 명령을 실행합니다:
 
-   ```
+   ```cmd
    hostname
    ```
 
@@ -613,7 +614,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
     - 리소스 그룹: **az1010303-RG** 이름으로 새로 만들기
 
-    - 지역: 이 랩의 앞에서 사용한 Azure 지역 중 하나
+    - 지역: **(Asia Pacific) 한국 중부** (이 랩의 앞에서 사용한 Azure 지역 중 하나)
 
 1. Azure 포털에서 새로 프로비저닝 된 Traffic Manager 프로필의 블레이드로 이동합니다.
 
@@ -670,7 +671,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
 1. Cloud Shell 창에서 다음 명령을 실행하여 &lt;TM_DNS_name&gt; 자리 표시자를 이전 작업에서 식별한 Traffic Manager 프로필에 할당된 DNS 이름 값으로 바꿉니다.
 
-   ```
+   ```cmd
    nslookup <TM_DNS_name>
    ```
 
@@ -678,7 +679,7 @@ Adatum Corporation은 Azure Load Balancer 의 부하 분산 및 NAT(네트워크
 
 1. 60초 이상 기다렸다가 동일한 명령을 다시 실행합니다:
 
-   ```
+   ```cmd
    nslookup <TM_DNS_name>
    ```
 1. 출력을 검토하고 **이름** 항목을 기록합니다. 이번에는 항목이 이전 작업에서 만든 다른 Traffic Manager 프로필 엔드포인트의 DNS 이름과 일치해야 합니다.

@@ -78,7 +78,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     - 리소스 그룹: **az1010301b-RG** 이름으로 새로 만들기
 
-    - 위치: 랩 위치에 가장 가까운 Azure 지역의 이름및 Azure VM 및 Azure SQL Database를 프로비전할 수 있는 위치
+    - 위치: **(Asia Pacific) 한국 중부** (랩 위치에 가장 가까운 Azure 지역의 이름및 Azure VM 및 Azure SQL Database를 프로비전할 수 있는 위치)
 
     - Vm Size: **Standard_D2s_v3**
 
@@ -102,13 +102,13 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
    > **참고**: 지정된 리전에서 구독에서 사용할 수 있는 VM 크기를 식별하려면 Cloud Shell에서 다음을 실행하여 **제한** 값을 검토합니다(여기서 &lt;location&gt;은 대상 Azure 지역을 나타냅니다).
    
-   ```
+   ```powershell
    Get-AzComputeResourceSku | where {$_.Locations -icontains "<location>"} | Where-Object {($_.ResourceType -ilike "virtualMachines")}
    ```
    
    > **참고**: 지정된 리전에서 Azure SQL Database를 프로비전할 수 있는지 여부를 확인하려면 Cloud Shell에서 다음을 실행하고 결과 **상태** 가 **사용 가능** 으로 설정되어 있는지 확인합니다(여기서 &lt;location&gt;은 대상 Azure 영역을 나타냅니다):
 
-   ```
+   ```powershell
    Get-AzSqlCapability -LocationName <location>
    ```
    
@@ -170,9 +170,9 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. Azure 포털에서 **az1010301b-vnet1** 가상 네트워크 블레이드로 이동합니다.
 
-1. **az1010301b-vnet1** 가상 네트워크 블레이드에서 **az1010301b-vnet1 - 피어링** 블레이드를 표시합니다.
+1. **az1010301b-vnet1** 가상 네트워크 블레이드에서 **az1010301b-vnet1 | 피어링** 블레이드를 표시합니다.
 
-1. **az1010301b-vnet1 - 피어링** 블레이드에서 다음 설정으로 VNet 피어링을 만듭니다.
+1. **az1010301b-vnet1 | 피어링** 블레이드에서 다음 설정으로 VNet 피어링을 만듭니다.
 
     - az1010301b-vnet1에서 원격 가상 네트워크(으)로 피어링 이름: **az1010301b-vnet1-to-az1010302b-vnet2**
 
@@ -203,7 +203,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. **az1010301b-vnet1** 가상 네트워크 블레이드에서 **az1010301b-vnet1 - 서비스 엔드포인트** 블레이드를 표시합니다.
 
-1. **az1010301b-vnet1 - 서비스 엔드포인트** 블레이드에서 다음 설정으로 서비스 엔드포인트 2개를 추가합니다:
+1. **az1010301b-vnet1 | 서비스 엔드포인트** 블레이드에서 다음 설정으로 서비스 엔드포인트 2개를 추가합니다:
     - **첫번째**
 
     - 서비스: **Microsoft.Storage**
@@ -272,7 +272,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
         
         - **확인**
 
-    - 상단 메뉴의 **저장**버튼으로 저장한다.
+    - 상단 메뉴의 **저장** 버튼을 클릭하여 저장한다.
     
 > **결과**: 이 연습을 완료한 후 Azure Resource Manager 템플릿을 사용하여 Azure VM, Azure Storage 계정 및 Azure SQL Database 인스턴스를 배포하고 Azure Network Watcher 서비스를 사용하도록 설정하고 Azure virtual 간에 설정된 전역 피어링을 설정했습니다. Azure Storage 계정 및 Azure SQL Database 인스턴스에 대한 설정된 서비스 엔드포인트를 제공합니다.
 
@@ -337,11 +337,11 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. Cloud Shell 창에서 다음 명령을 실행하여 이전 연습에서 프로비전한 Azure Storage 계정의 Blob 서비스 엔드포인트의 IP 주소를 식별합니다:
 
-   ```
+   ```powershell
    [System.Net.Dns]::GetHostAddresses($(Get-AzStorageAccount -ResourceGroupName 'az1010301b-RG')[0].StorageAccountName + '.blob.core.windows.net').IPAddressToString
    ```
 
-1. 결과 문자열을 기록하고 **Network Watcher - 연결 문제 해결** 블레이드에서 다음설정으로 검사를 시작합니다:
+1. 결과 문자열을 기록하고 **Network Watcher | 연결 문제 해결** 블레이드에서 다음설정으로 검사를 시작합니다:
 
     - 소스: 
 
@@ -371,7 +371,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 이전 연습에서 만든 서비스 엔드포인트를 통해 이루어집니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 사용합니다.
 
-1. **Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
+1. **Network Watcher | 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -387,7 +387,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. 결과가 다음 홉 을 **VirtualNetworkServiceEndpoint**로 식별하는지 확인합니다.
 
-1. **Network Watcher - 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
+1. **Network Watcher | 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
 
     - 출처: 
 
@@ -440,7 +440,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. 클라우드 셸 창에서 다음 명령을 실행하여 이전 연습에서 프로비전한 Azure SQL Database 서버의 IP 주소를 식별합니다:
 
-   ```
+   ```powershell
    [System.Net.Dns]::GetHostAddresses($(Get-AzSqlServer -ResourceGroupName 'az1010301b-RG')[0].FullyQualifiedDomainName).IPAddressToString
    ```
 
@@ -474,7 +474,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 이전 연습에서 만든 서비스 엔드포인트를 통해 이루어집니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 사용합니다.
 
-1.**Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
+1.**Network Watcher | 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -490,7 +490,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. 결과가 다음 홉 형식을 **VirtualNetworkServiceEndpoint** 식별하는지 확인합니다.
 
-1. **Network Watcher - 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
+1. **Network Watcher | 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
 
     - 출처: 
 
@@ -520,7 +520,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 성공하지만 인터넷을 통해 설정됩니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 다시 사용합니다.
 
-1. **Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
+1. **Network Watcher | 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
