@@ -170,9 +170,9 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. Azure 포털에서 **az1010301b-vnet1** 가상 네트워크 블레이드로 이동합니다.
 
-1. **az1010301b-vnet1** 가상 네트워크 블레이드에서 **az1010301b-vnet1 | 피어링** 블레이드를 표시합니다.
+1. **az1010301b-vnet1** 가상 네트워크 블레이드에서 **az1010301b-vnet1 - 피어링** 블레이드를 표시합니다.
 
-1. **az1010301b-vnet1 | 피어링** 블레이드에서 다음 설정으로 VNet 피어링을 만듭니다.
+1. **az1010301b-vnet1 - 피어링** 블레이드에서 다음 설정으로 VNet 피어링을 만듭니다.
 
     - az1010301b-vnet1에서 원격 가상 네트워크(으)로 피어링 이름: **az1010301b-vnet1-to-az1010302b-vnet2**
 
@@ -203,7 +203,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. **az1010301b-vnet1** 가상 네트워크 블레이드에서 **az1010301b-vnet1 - 서비스 엔드포인트** 블레이드를 표시합니다.
 
-1. **az1010301b-vnet1 | 서비스 엔드포인트** 블레이드에서 다음 설정으로 서비스 엔드포인트 2개를 추가합니다:
+1. **az1010301b-vnet1 - 서비스 엔드포인트** 블레이드에서 다음 설정으로 서비스 엔드포인트 2개를 추가합니다:
     - **첫번째**
 
     - 서비스: **Microsoft.Storage**
@@ -341,7 +341,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
    [System.Net.Dns]::GetHostAddresses($(Get-AzStorageAccount -ResourceGroupName 'az1010301b-RG')[0].StorageAccountName + '.blob.core.windows.net').IPAddressToString
    ```
 
-1. 결과 문자열을 기록하고 **Network Watcher | 연결 문제 해결** 블레이드에서 다음설정으로 검사를 시작합니다:
+1. 결과 문자열을 기록하고 **Network Watcher - 연결 문제 해결** 블레이드에서 다음설정으로 검사를 시작합니다:
 
     - 소스: 
 
@@ -371,7 +371,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 이전 연습에서 만든 서비스 엔드포인트를 통해 이루어집니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 사용합니다.
 
-1. **Network Watcher | 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
+1. **Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -387,7 +387,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. 결과가 다음 홉 을 **VirtualNetworkServiceEndpoint**로 식별하는지 확인합니다.
 
-1. **Network Watcher | 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
+1. **Network Watcher - 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
 
     - 출처: 
 
@@ -474,7 +474,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 이전 연습에서 만든 서비스 엔드포인트를 통해 이루어집니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 사용합니다.
 
-1.**Network Watcher | 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
+1.**Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
@@ -490,7 +490,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
 1. 결과가 다음 홉 형식을 **VirtualNetworkServiceEndpoint** 식별하는지 확인합니다.
 
-1. **Network Watcher | 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
+1. **Network Watcher - 연결 문제 해결** 블레이드에서 다음 설정으로 검사를 시작합니다:
 
     - 출처: 
 
@@ -520,7 +520,7 @@ Adatum Corporation은 Azure 네트워크 감시기를 사용하여 Azure 가상 
 
     > **참고**: 연결은 성공하지만 인터넷을 통해 설정됩니다. 이를 확인하려면 Network Watcher의 **다음 홉** 도구를 다시 사용합니다.
 
-1. **Network Watcher | 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
+1. **Network Watcher - 다음 홉** 블레이드에서 다음 설정으로 테스트합니다:
 
     - 구독: 이 랩에서 사용 중인 Azure 구독의 이름
 
