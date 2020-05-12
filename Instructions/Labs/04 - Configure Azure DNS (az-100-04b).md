@@ -74,7 +74,7 @@ Adatum Corporation은 자체 DNS 서버를 배포하지 않고도 Azure에서 �
 1. Cloud Shell 창에서 랩 컴퓨터의 공용 IP 주소를 식별하려면 다음을 실행합니다.
 
    ```powershell
-   Invoke-RestMethod http://ipinfo.io/json - Select-Object -ExpandProperty IP
+   Invoke-RestMethod http://ipinfo.io/json | Select-Object -ExpandProperty IP
    ```
 
    > **참고**: 이 IP 주소를 기록해 둡니다. 이 작업의 결과는 나중에 사용됩니다.
